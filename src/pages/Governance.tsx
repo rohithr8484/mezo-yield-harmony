@@ -1,5 +1,8 @@
 import PageLayout from "@/components/PageLayout";
-import { Vote, Users, BarChart3, Shield, Scale, FileText, Globe, CheckCircle2 } from "lucide-react";
+import { Vote, Users, BarChart3, Shield, Scale, Globe } from "lucide-react";
+import { useAccount, useReadContract } from "wagmi";
+import { formatUnits } from "viem";
+import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 
 const proposals = [
   { id: "MIP-042", title: "Increase BTC collateral ratio to 150%", status: "Active", votes: "89.2K MEZO", endsIn: "3 days" },
@@ -18,13 +21,31 @@ const pillars = [
 ];
 
 const Governance = () => {
+  const { isConnected, address } = useAccount();
+
+  const { data: musdSupply } = useReadContract({
+    address: CONTRACTS.testnet.MUSD,
+    abi: ERC20_ABI,
+    functionName: "totalSupply",
+    chainId: 31611,
+  });
+
+  const { data: musdBalance } = useReadContract({
+    address: CONTRACTS.testnet.MUSD,
+    abi: ERC20_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    chainId: 31611,
+    query: { enabled: !!address },
+  });
+
   return (
     <PageLayout>
       {/* Hero */}
       <section className="py-20 md:py-28">
         <div className="container text-center">
           <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
-            Decentralized Governance
+            🔗 Mezo Testnet · Chain ID 31611
           </span>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold leading-tight">
             <span className="text-gradient italic">Shape</span>{" "}
@@ -33,6 +54,24 @@ const Governance = () => {
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
             Mezo is governed by its community. MEZO token holders propose, discuss, and vote on every protocol decision.
           </p>
+
+          {isConnected && (
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+                <div className="text-xs text-muted-foreground">Your MUSD Balance</div>
+                <div className="text-lg font-display font-bold text-foreground">
+                  {musdBalance ? parseFloat(formatUnits(musdBalance as bigint, 18)).toFixed(2) : "0.00"} MUSD
+                </div>
+              </div>
+              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+                <div className="text-xs text-muted-foreground">MUSD Total Supply</div>
+                <div className="text-lg font-display font-bold text-gradient">
+                  {musdSupply ? parseFloat(formatUnits(musdSupply as bigint, 18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—"}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a href="#" className="px-8 py-3.5 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity">
               View Proposals
@@ -47,9 +86,7 @@ const Governance = () => {
       {/* Governance Pillars */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            Governance Pillars
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Governance Pillars</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-16">
             A robust framework ensuring transparent, fair, and effective decentralized governance.
           </p>
@@ -70,9 +107,7 @@ const Governance = () => {
       {/* Active Proposals */}
       <section className="py-20">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            Recent Proposals
-          </h2>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Recent Proposals</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Review and vote on active governance proposals.
           </p>
@@ -92,25 +127,38 @@ const Governance = () => {
                   <div className="font-medium text-foreground">{p.votes}</div>
                   <div>{p.endsIn}</div>
                 </div>
+                {isConnected && p.status === "Active" && (
+                  <button className="px-4 py-2 rounded-full bg-gradient-hero text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity">
+                    Vote
+                  </button>
+                )}
               </div>
             ))}
           </div>
+          {!isConnected && (
+            <p className="text-center text-sm text-muted-foreground mt-8">Connect your wallet to vote on proposals.</p>
+          )}
         </div>
       </section>
 
-      {/* Stats */}
+      {/* Tokenomics */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">MEZO Tokenomics</h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Total Genesis Supply: 1,000,000,000 MEZO
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
-              { label: "Total Proposals", value: "42" },
-              { label: "Voter Participation", value: "78%" },
-              { label: "MEZO Staked for Gov", value: "24M" },
-              { label: "Avg. Voting Period", value: "7 days" },
+              { label: "Community", value: "40%", amount: "400M" },
+              { label: "Investors & Partners", value: "30%", amount: "300M" },
+              { label: "Mezo Team", value: "20%", amount: "200M" },
+              { label: "Foundation", value: "10%", amount: "100M" },
             ].map((s) => (
-              <div key={s.label} className="text-center rounded-2xl bg-card border border-border p-8 shadow-card">
-                <div className="text-3xl sm:text-4xl font-display font-bold text-gradient mb-2">{s.value}</div>
-                <div className="text-sm text-muted-foreground font-medium">{s.label}</div>
+              <div key={s.label} className="text-center rounded-2xl bg-card border border-border p-6 shadow-card">
+                <div className="text-3xl font-display font-bold text-gradient mb-1">{s.value}</div>
+                <div className="text-sm font-semibold text-foreground mb-1">{s.amount}</div>
+                <div className="text-xs text-muted-foreground">{s.label}</div>
               </div>
             ))}
           </div>
