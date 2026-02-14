@@ -1,5 +1,9 @@
 import PageLayout from "@/components/PageLayout";
 import { ArrowRight, Vault, PiggyBank, ShieldCheck, TrendingUp, BarChart3, Wallet } from "lucide-react";
+import { useAccount, useBalance, useReadContract } from "wagmi";
+import { formatUnits } from "viem";
+import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
+import { useState } from "react";
 
 const vaults = [
   { name: "Conservative BTC Vault", strategy: "Delta-neutral hedging", apy: "3.8%", tvl: "$420M", risk: "Low" },
@@ -17,34 +21,143 @@ const features = [
 ];
 
 const Earn = () => {
+  const { isConnected, address } = useAccount();
+  const [borrowAmount, setBorrowAmount] = useState("");
+  const [collateralAmount, setCollateralAmount] = useState("");
+
+  const { data: btcBalance } = useBalance({ address, chainId: 31611 });
+  const { data: musdBalance } = useReadContract({
+    address: CONTRACTS.testnet.MUSD,
+    abi: ERC20_ABI,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+    chainId: 31611,
+    query: { enabled: !!address },
+  });
+  const { data: musdSupply } = useReadContract({
+    address: CONTRACTS.testnet.MUSD,
+    abi: ERC20_ABI,
+    functionName: "totalSupply",
+    chainId: 31611,
+  });
+
   return (
     <PageLayout>
       {/* Hero */}
       <section className="py-20 md:py-28">
         <div className="container text-center">
           <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
-            Mezo Earn
+            🔗 Mezo Testnet · Earn & Borrow
           </span>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold leading-tight">
-            <span className="text-foreground">Grow Your </span>
-            <span className="text-gradient italic">Bitcoin</span>
+            <span className="text-foreground">Borrow </span>
+            <span className="text-gradient italic">MUSD</span>
+            <span className="text-foreground"> with BTC</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Put your BTC to work. Choose from managed vaults, savings products, and yield strategies — all powered by Mezo.
+            MUSD is 100% backed by Bitcoin reserves. Borrow MUSD against your BTC collateral — live on Mezo testnet.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <a href="#" className="px-8 py-3.5 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity">
-              Explore Vaults
-            </a>
-            <a href="#" className="px-8 py-3.5 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-secondary transition-colors">
-              MUSD Savings
-            </a>
-          </div>
+
+          {isConnected && (
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+                <div className="text-xs text-muted-foreground">BTC Balance</div>
+                <div className="text-lg font-display font-bold text-foreground">
+                  {btcBalance ? parseFloat(formatUnits(btcBalance.value, 18)).toFixed(6) : "0.000000"} BTC
+                </div>
+              </div>
+              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+                <div className="text-xs text-muted-foreground">MUSD Balance</div>
+                <div className="text-lg font-display font-bold text-gradient">
+                  {musdBalance ? parseFloat(formatUnits(musdBalance as bigint, 18)).toFixed(2) : "0.00"} MUSD
+                </div>
+              </div>
+              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+                <div className="text-xs text-muted-foreground">MUSD Total Supply</div>
+                <div className="text-lg font-display font-bold text-foreground">
+                  {musdSupply ? parseFloat(formatUnits(musdSupply as bigint, 18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—"}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Borrow Form */}
+      <section className="py-20 bg-secondary/50">
+        <div className="container">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Borrow MUSD</h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Deposit BTC as collateral and borrow MUSD stablecoin. 1 MUSD = $1 USD, backed by Bitcoin.
+          </p>
+
+          {isConnected ? (
+            <div className="max-w-lg mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1 block">Collateral (BTC)</label>
+                  <input
+                    type="number"
+                    step="0.001"
+                    placeholder="0.1"
+                    value={collateralAmount}
+                    onChange={(e) => setCollateralAmount(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                  />
+                  {btcBalance && (
+                    <button
+                      onClick={() => setCollateralAmount(formatUnits(btcBalance.value, 18))}
+                      className="text-xs text-primary mt-1 hover:underline"
+                    >
+                      Max: {parseFloat(formatUnits(btcBalance.value, 18)).toFixed(6)} BTC
+                    </button>
+                  )}
+                </div>
+                <div>
+                  <label className="text-sm text-muted-foreground mb-1 block">Borrow (MUSD)</label>
+                  <input
+                    type="number"
+                    step="100"
+                    placeholder="5000"
+                    value={borrowAmount}
+                    onChange={(e) => setBorrowAmount(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-background text-foreground text-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all"
+                  />
+                </div>
+                <div className="rounded-xl bg-secondary/50 p-4 text-sm">
+                  <div className="flex justify-between mb-1">
+                    <span className="text-muted-foreground">Collateral Ratio</span>
+                    <span className="text-foreground font-semibold">
+                      {collateralAmount && borrowAmount
+                        ? `${((parseFloat(collateralAmount) * 65000 / parseFloat(borrowAmount)) * 100).toFixed(0)}%`
+                        : "—"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between mb-1">
+                    <span className="text-muted-foreground">Min. Ratio Required</span>
+                    <span className="text-foreground">110%</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">Interest Rate</span>
+                    <span className="text-bitcoin font-semibold">0.5% APR</span>
+                  </div>
+                </div>
+                <button className="w-full px-6 py-3.5 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity">
+                  Borrow MUSD (Testnet)
+                </button>
+                <p className="text-xs text-center text-muted-foreground">
+                  Contract: {CONTRACTS.testnet.MUSD.slice(0, 10)}...{CONTRACTS.testnet.MUSD.slice(-6)} · Chain ID 31611
+                </p>
+              </div>
+            </div>
+          ) : (
+            <p className="text-center text-sm text-muted-foreground">Connect your wallet to borrow MUSD on testnet.</p>
+          )}
         </div>
       </section>
 
       {/* Vaults */}
-      <section className="py-20 bg-secondary/50">
+      <section className="py-20">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Bitcoin Vaults</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
@@ -82,7 +195,7 @@ const Earn = () => {
       </section>
 
       {/* Features */}
-      <section className="py-20">
+      <section className="py-20 bg-secondary/50">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Why Earn with Mezo?</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-16">

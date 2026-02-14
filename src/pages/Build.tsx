@@ -1,5 +1,8 @@
 import PageLayout from "@/components/PageLayout";
-import { Rocket, Globe, Sparkles, Users, ArrowRight, Lightbulb, Handshake, GraduationCap } from "lucide-react";
+import { Rocket, Lightbulb, Handshake, GraduationCap, ArrowRight } from "lucide-react";
+import { useAccount, useBalance, useReadContract } from "wagmi";
+import { formatUnits } from "viem";
+import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 
 const ecosystem = [
   { name: "MezoSwap", category: "DEX", description: "Decentralized exchange for BTC-native token swaps with deep liquidity." },
@@ -18,34 +21,86 @@ const programs = [
 ];
 
 const Build = () => {
+  const { isConnected, address } = useAccount();
+  const { data: btcBalance } = useBalance({ address, chainId: 31611 });
+  const { data: musdSupply } = useReadContract({
+    address: CONTRACTS.testnet.MUSD,
+    abi: ERC20_ABI,
+    functionName: "totalSupply",
+    chainId: 31611,
+  });
+
   return (
     <PageLayout>
       {/* Hero */}
       <section className="py-20 md:py-28">
         <div className="container text-center">
           <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
-            Build on Mezo
+            🔗 Mezo Testnet · Build
           </span>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold leading-tight">
             <span className="text-gradient italic">Build</span>{" "}
             <span className="text-foreground">the Future of Bitcoin</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Join the growing ecosystem of dApps, protocols, and tools built on Mezo. Grants, resources, and community await.
+            Join the growing ecosystem of dApps, protocols, and tools built on Mezo. Deploy on testnet today.
           </p>
+
+          {isConnected && (
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+                <div className="text-xs text-muted-foreground">Your Testnet BTC</div>
+                <div className="text-lg font-display font-bold text-foreground">
+                  {btcBalance ? parseFloat(formatUnits(btcBalance.value, 18)).toFixed(6) : "0.000000"} BTC
+                </div>
+              </div>
+              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+                <div className="text-xs text-muted-foreground">MUSD Total Supply</div>
+                <div className="text-lg font-display font-bold text-gradient">
+                  {musdSupply ? parseFloat(formatUnits(musdSupply as bigint, 18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—"}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <a href="#" className="px-8 py-3.5 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity">
               Apply for Grants
             </a>
-            <a href="#" className="px-8 py-3.5 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-secondary transition-colors">
-              View Ecosystem
+            <a
+              href="https://explorer.test.mezo.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-8 py-3.5 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-secondary transition-colors"
+            >
+              Testnet Explorer ↗
             </a>
           </div>
         </div>
       </section>
 
-      {/* Ecosystem */}
+      {/* Network Info */}
       <section className="py-20 bg-secondary/50">
+        <div className="container">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-12">Testnet Network Info</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            {[
+              { label: "Chain ID", value: "31611" },
+              { label: "Currency", value: "BTC" },
+              { label: "RPC", value: "rpc.test.mezo.org" },
+              { label: "Explorer", value: "explorer.test.mezo.org" },
+            ].map((s) => (
+              <div key={s.label} className="text-center rounded-2xl bg-card border border-border p-6 shadow-card">
+                <div className="text-lg font-display font-bold text-gradient mb-1 break-all">{s.value}</div>
+                <div className="text-xs text-muted-foreground">{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Ecosystem */}
+      <section className="py-20">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Ecosystem</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
@@ -74,7 +129,7 @@ const Build = () => {
       </section>
 
       {/* Programs */}
-      <section className="py-20">
+      <section className="py-20 bg-secondary/50">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Builder Programs</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-16">
