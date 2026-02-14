@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
-  { label: "Governance", href: "#governance" },
-  { label: "Staking & Rewards", href: "#staking" },
-  { label: "Developer Infrastructure", href: "#developer" },
-  { label: "Earn", href: "#earn" },
-  { label: "Build", href: "#build" },
+  { label: "Governance", href: "/governance" },
+  { label: "Staking & Rewards", href: "/staking" },
+  { label: "Developer Infrastructure", href: "/developer" },
+  { label: "Earn", href: "/earn" },
+  { label: "Build", href: "/build" },
 ];
 
 const Navbar = () => {
