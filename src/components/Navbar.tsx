@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useAccount } from "wagmi";
+import { useBitcoinAccount } from "@mezo-org/passport";
 import WalletButton from "./WalletButton";
 import { Link } from "react-router-dom";
 
