@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useAccount } from "wagmi";
 import { useBitcoinAccount } from "@mezo-org/passport";
 import WalletButton from "./WalletButton";
+import WalletConnectButton from "./WalletConnectButton";
 import { Link } from "react-router-dom";
 
 const navLinks = [
@@ -56,6 +57,7 @@ const Navbar = () => {
               Explorer ↗
             </a>
           )}
+          <WalletConnectButton />
           <WalletButton />
         </div>
 
@@ -81,7 +83,8 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          <div className="mt-3">
+          <div className="mt-3 flex flex-col gap-2">
+            <WalletConnectButton />
             <WalletButton />
           </div>
         </div>
