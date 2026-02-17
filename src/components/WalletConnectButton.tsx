@@ -18,7 +18,7 @@ const WalletConnectButton = () => {
                 {account.displayName}
               </span>
             ) : (
-              "WalletConnect"
+              "Connect using Wallet Connect"
             )}
           </button>
         );
