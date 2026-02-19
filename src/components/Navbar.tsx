@@ -59,9 +59,13 @@ const Navbar = () => {
               Explorer ↗
             </a>
           )}
-          <div className="flex items-center gap-3 [&>*]:w-[220px]">
-            <WalletConnectButton />
-            <WalletButton />
+          <div className="flex items-center gap-3">
+            <div className="w-[200px]">
+              <WalletConnectButton />
+            </div>
+            <div className="w-[200px] [&>div]:w-full [&_button]:!w-full [&_button]:!h-10 [&_button]:!justify-center">
+              <WalletButton />
+            </div>
           </div>
         </div>
 
