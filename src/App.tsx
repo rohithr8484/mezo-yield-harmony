@@ -9,6 +9,8 @@ import Staking from "./pages/Staking";
 import Earn from "./pages/Earn";
 import Build from "./pages/Build";
 import Developer from "./pages/Developer";
+import Predict from "./pages/Predict";
+import Trade from "./pages/Trade";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/earn" element={<Earn />} />
           <Route path="/build" element={<Build />} />
           <Route path="/developer" element={<Developer />} />
+          <Route path="/predict" element={<Predict />} />
+          <Route path="/trade" element={<Trade />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
@@ -32,3 +36,4 @@ const App = () => (
 );
 
 export default App;
+
