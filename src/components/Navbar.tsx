@@ -12,6 +12,8 @@ const navLinks = [
   { label: "Developer Infrastructure", href: "/developer" },
   { label: "Earn", href: "/earn" },
   { label: "Build", href: "/build" },
+  { label: "Predict", href: "/predict" },
+  { label: "Trade", href: "/trade" },
 ];
 
 const Navbar = () => {
@@ -85,7 +87,7 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          <div className="mt-3 flex flex-col gap-2">
+          <div className="mt-3 flex flex-col gap-2 [&>*]:w-full">
             <WalletConnectButton />
             <WalletButton />
           </div>
