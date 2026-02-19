@@ -63,7 +63,7 @@ const Navbar = () => {
             <div className="w-[200px]">
               <WalletConnectButton />
             </div>
-            <div className="w-[200px] [&>div]:w-full [&_button]:!w-full [&_button]:!h-10 [&_button]:!justify-center">
+            <div className="w-[200px]">
               <WalletButton />
             </div>
           </div>
