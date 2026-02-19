@@ -57,8 +57,10 @@ const Navbar = () => {
               Explorer ↗
             </a>
           )}
-          <WalletConnectButton />
-          <WalletButton />
+          <div className="flex items-center gap-3 [&>*]:w-[220px]">
+            <WalletConnectButton />
+            <WalletButton />
+          </div>
         </div>
 
         {/* Mobile Toggle */}
