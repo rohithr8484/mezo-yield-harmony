@@ -6,6 +6,7 @@ import { Web3Provider } from "@/components/Web3Provider";
 import Index from "./pages/Index";
 import Governance from "./pages/Governance";
 import Staking from "./pages/Staking";
+import Bridge from "./pages/Bridge";
 import Earn from "./pages/Earn";
 import Build from "./pages/Build";
 import Developer from "./pages/Developer";
@@ -23,6 +24,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/governance" element={<Governance />} />
           <Route path="/staking" element={<Staking />} />
+          <Route path="/bridge" element={<Bridge />} />
           <Route path="/earn" element={<Earn />} />
           <Route path="/build" element={<Build />} />
           <Route path="/developer" element={<Developer />} />
