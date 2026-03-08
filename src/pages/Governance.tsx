@@ -138,7 +138,6 @@ const Governance = () => {
                   key={p.id}
                   className={`flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 p-6 hover:bg-secondary/50 transition-colors cursor-pointer ${idx < filteredProposals.length - 1 ? "border-b border-border" : ""}`}
                 >
-                >
                   {/* Left: content */}
                   <div className="flex-1 min-w-0">
                     <div className="mb-2">
