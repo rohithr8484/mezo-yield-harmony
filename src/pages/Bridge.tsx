@@ -339,7 +339,7 @@ const Bridge = () => {
       {/* How it works */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
-          <h2 className="text-3xl font-display font-bold text-center text-foreground mb-12">How the veBoost Calculator Works</h2>
+          <h2 className="text-3xl font-display font-bold text-center text-foreground mb-12">Receive fees and emissions by locking your assets.</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
               { icon: Coins, title: "Deposit", desc: "Choose BTC or MEZO to lock into the protocol" },
