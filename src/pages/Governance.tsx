@@ -374,32 +374,6 @@ const Governance = () => {
         </div>
       </section>
 
-      {/* Execution */}
-      <section className="py-20">
-        <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Execution</h2>
-          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Passed proposals are queued through a timelock before on-chain execution.
-          </p>
-          <div className="max-w-2xl mx-auto flex flex-col items-center gap-4">
-            <div className="w-full rounded-2xl bg-card border border-border p-6 shadow-card text-center">
-              <div className="h-12 w-12 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-4">
-                <Timer className="h-6 w-6 text-bitcoin" />
-              </div>
-              <h3 className="text-lg font-display font-bold text-foreground">Timelock + Execution</h3>
-              <p className="text-sm text-muted-foreground mt-2">48-hour security delay before any protocol changes take effect.</p>
-            </div>
-            <ArrowDown className="h-6 w-6 text-bitcoin" />
-            <div className="w-full rounded-2xl bg-gradient-to-r from-primary/10 to-bitcoin/10 border-2 border-bitcoin/30 p-6 shadow-card text-center">
-              <div className="h-12 w-12 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-6 w-6 text-bitcoin" />
-              </div>
-              <h3 className="text-lg font-display font-bold text-gradient">Protocol State Updated</h3>
-              <p className="text-sm text-muted-foreground mt-2">Changes are applied on-chain and the protocol state is updated.</p>
-            </div>
-          </div>
-        </div>
-      </section>
     </PageLayout>
   );
 };
