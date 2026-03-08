@@ -3,7 +3,7 @@ export type ProposalStatus = "Open for voting" | "Passed" | "Executed" | "Failed
 export interface TopVoter {
   address: string;
   displayName: string;
-  vote: "YAE" | "NAY";
+  vote: "YES" | "NO";
   amount: number;
 }
 
