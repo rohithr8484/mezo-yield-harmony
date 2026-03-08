@@ -1,28 +1,55 @@
 import PageLayout from "@/components/PageLayout";
 import { useAccount, useBalance, useReadContract } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { useState } from "react";
-import { ArrowDown, Lock, Coins, Shield, Zap } from "lucide-react";
+import { ArrowDown, Lock, Coins, Shield, Zap, ExternalLink, CheckCircle2 } from "lucide-react";
 
 type InputToken = "BTC" | "MEZO";
 type OutputToken = "veBTC" | "veMEZO" | "MUSD";
 
 const outputOptions: Record<InputToken, { token: OutputToken; description: string }[]> = {
   BTC: [
-    { token: "veBTC", description: "Lock BTC as Anchor Capital to receive veBTC" },
+    { token: "veBTC", description: "Lock BTC as Anchor Capital to receive veBTC NFT" },
     { token: "MUSD", description: "Borrow MUSD against your BTC collateral" },
   ],
   MEZO: [
-    { token: "veMEZO", description: "Lock MEZO to apply boost and receive veMEZO" },
+    { token: "veMEZO", description: "Lock MEZO to apply boost and receive veMEZO NFT" },
   ],
 };
 
-const lockDurations = [
-  { label: "7 Days", days: 7, multiplier: "1x" },
-  { label: "30 Days", days: 30, multiplier: "1.2x" },
-  { label: "90 Days", days: 90, multiplier: "1.5x" },
-  { label: "365 Days", days: 365, multiplier: "2x" },
+const lockDurationsBTC = [
+  { label: "1 Day", days: 1, multiplier: "1x" },
+  { label: "7 Days", days: 7, multiplier: "1.2x" },
+  { label: "14 Days", days: 14, multiplier: "1.5x" },
+  { label: "28 Days", days: 28, multiplier: "2x" },
+];
+
+const lockDurationsMEZO = [
+  { label: "1 Year", days: 365, multiplier: "1x" },
+  { label: "2 Years", days: 730, multiplier: "1.5x" },
+  { label: "3 Years", days: 1095, multiplier: "2x" },
+  { label: "4 Years", days: 1460, multiplier: "3x" },
+];
+
+const btcSteps = [
+  "Visit Mezo Earn",
+  "Navigate to the Lock section",
+  "Choose your lock amount (in BTC)",
+  "Select your lock duration (1–28 days)",
+  "Confirm the transaction",
+  "Receive your veBTC NFT",
+];
+
+const mezoSteps = [
+  "Visit Mezo Earn",
+  "Navigate to the Lock section",
+  "Select MEZO as the token to lock",
+  "Choose your lock amount",
+  "Select your lock duration (1–4 years)",
+  "Confirm the transaction",
+  "Receive your veMEZO NFT",
 ];
 
 const Bridge = () => {
@@ -30,7 +57,9 @@ const Bridge = () => {
   const [inputToken, setInputToken] = useState<InputToken>("BTC");
   const [outputToken, setOutputToken] = useState<OutputToken>("veBTC");
   const [amount, setAmount] = useState("");
-  const [selectedDuration, setSelectedDuration] = useState(1);
+  const [selectedDuration, setSelectedDuration] = useState(0);
+
+  const lockDurations = inputToken === "BTC" ? lockDurationsBTC : lockDurationsMEZO;
 
   const { data: btcBalance } = useBalance({ address, chainId: 31611 });
   const { data: musdBalance } = useReadContract({
@@ -46,7 +75,10 @@ const Bridge = () => {
     setInputToken(token);
     setOutputToken(token === "BTC" ? "veBTC" : "veMEZO");
     setAmount("");
+    setSelectedDuration(0);
   };
+
+  const instructionSteps = inputToken === "BTC" ? btcSteps : mezoSteps;
 
   return (
     <PageLayout>
@@ -61,7 +93,7 @@ const Bridge = () => {
             <span className="text-gradient italic">Receive.</span>
           </h1>
           <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
-            Lock BTC or MEZO to receive veBTC, veMEZO, or borrow MUSD. Your locked assets power the Mezo economy.
+            Select BTC or MEZO to lock, choose your amount & duration, confirm the transaction, and receive your veBTC or veMEZO NFT.
           </p>
         </div>
       </section>
@@ -74,7 +106,7 @@ const Bridge = () => {
             <div className="p-6 border-b border-border">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-7 w-7 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground text-xs font-bold">1</div>
-                <span className="text-sm font-semibold text-foreground">Select Input Token</span>
+                <span className="text-sm font-semibold text-foreground">Select Token to Lock</span>
               </div>
               <div className="flex gap-3">
                 {(["BTC", "MEZO"] as InputToken[]).map((token) => (
@@ -94,7 +126,7 @@ const Bridge = () => {
 
               {/* Amount */}
               <div className="mt-4">
-                <label className="text-xs text-muted-foreground mb-1 block">Amount</label>
+                <label className="text-xs text-muted-foreground mb-1 block">Choose your lock amount</label>
                 <input
                   type="number"
                   step="0.001"
@@ -121,16 +153,15 @@ const Bridge = () => {
               </div>
             </div>
 
-            {/* Step 2: Action */}
+            {/* Step 2: Lock Duration */}
             <div className="p-6 border-b border-border">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-7 w-7 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground text-xs font-bold">2</div>
                 <span className="text-sm font-semibold text-foreground">
-                  {inputToken === "BTC" ? "Lock BTC · Anchor Capital" : "Lock MEZO · Apply Boost"}
+                  Select Lock Duration {inputToken === "BTC" ? "(1–28 days)" : "(1–4 years)"}
                 </span>
               </div>
 
-              {/* Lock Duration */}
               <div className="grid grid-cols-2 gap-2">
                 {lockDurations.map((d, i) => (
                   <button
@@ -160,7 +191,7 @@ const Bridge = () => {
             <div className="p-6">
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-7 w-7 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground text-xs font-bold">3</div>
-                <span className="text-sm font-semibold text-foreground">Receive</span>
+                <span className="text-sm font-semibold text-foreground">Receive NFT</span>
               </div>
               <div className="space-y-2">
                 {outputOptions[inputToken].map((opt) => (
@@ -192,7 +223,7 @@ const Bridge = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">You receive</span>
-                    <span className="text-gradient font-semibold">{amount} {outputToken}</span>
+                    <span className="text-gradient font-semibold">{amount} {outputToken} NFT</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Boost</span>
@@ -201,16 +232,96 @@ const Bridge = () => {
                 </div>
               )}
 
-              {/* CTA */}
-              <button
-                disabled={!isConnected || !amount}
-                className="mt-4 w-full px-6 py-3.5 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {!isConnected ? "Connect Wallet" : `Lock ${inputToken} → ${outputToken}`}
-              </button>
+              {/* CTA - Connect Wallet or Lock */}
+              {!isConnected ? (
+                <div className="mt-4">
+                  <ConnectButton.Custom>
+                    {({ openConnectModal, mounted }) => (
+                      <button
+                        onClick={openConnectModal}
+                        disabled={!mounted}
+                        className="w-full px-6 py-3.5 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
+                      >
+                        Connect Wallet
+                      </button>
+                    )}
+                  </ConnectButton.Custom>
+                </div>
+              ) : (
+                <button
+                  disabled={!amount}
+                  className="mt-4 w-full px-6 py-3.5 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Lock {inputToken} → {outputToken} NFT
+                </button>
+              )}
               <p className="text-xs text-center text-muted-foreground mt-2">
                 Mezo Testnet (Chain ID 31611)
               </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Instructions Section */}
+      <section className="py-20 border-t border-border">
+        <div className="container max-w-3xl mx-auto">
+          <h2 className="text-3xl font-display font-bold text-center text-foreground mb-4">How to Lock</h2>
+          <p className="text-center text-muted-foreground mb-10">
+            Open the Mezo app → Click <strong>Lock</strong> in the left sidebar (under "Earn") → You'll see your eligible assets.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Lock BTC */}
+            <div className="rounded-2xl bg-card border border-border p-6 shadow-card">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-10 w-10 rounded-xl bg-bitcoin/10 flex items-center justify-center">
+                  <Coins className="h-5 w-5 text-bitcoin" />
+                </div>
+                <h3 className="text-lg font-display font-semibold text-foreground">Lock BTC → veBTC</h3>
+              </div>
+              <ol className="space-y-3">
+                {btcSteps.map((step, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <span className="text-sm text-muted-foreground">{step}</span>
+                  </li>
+                ))}
+              </ol>
+              <a
+                href="https://app.mezo.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                Visit Mezo Earn <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            </div>
+
+            {/* Lock MEZO */}
+            <div className="rounded-2xl bg-card border border-border p-6 shadow-card">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Lock className="h-5 w-5 text-primary" />
+                </div>
+                <h3 className="text-lg font-display font-semibold text-foreground">Lock MEZO → veMEZO</h3>
+              </div>
+              <ol className="space-y-3">
+                {mezoSteps.map((step, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <CheckCircle2 className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <span className="text-sm text-muted-foreground">{step}</span>
+                  </li>
+                ))}
+              </ol>
+              <a
+                href="https://app.mezo.org"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
+              >
+                Visit Mezo Earn <ExternalLink className="h-3.5 w-3.5" />
+              </a>
             </div>
           </div>
         </div>
@@ -223,8 +334,8 @@ const Bridge = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
               { icon: Coins, title: "Deposit", desc: "Choose BTC or MEZO to lock into the protocol" },
-              { icon: Lock, title: "Lock", desc: "BTC becomes Anchor Capital, MEZO applies boost" },
-              { icon: Zap, title: "Receive", desc: "Get veBTC, veMEZO, or borrow MUSD" },
+              { icon: Lock, title: "Lock", desc: "BTC locks for 1–28 days, MEZO locks for 1–4 years" },
+              { icon: Zap, title: "Receive", desc: "Get veBTC NFT, veMEZO NFT, or borrow MUSD" },
               { icon: Shield, title: "Earn", desc: "veBTC earns fees, veMEZO amplifies yield up to 5x" },
             ].map((item) => (
               <div key={item.title} className="text-center rounded-2xl bg-card border border-border p-6 shadow-card">
