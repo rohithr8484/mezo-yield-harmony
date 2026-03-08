@@ -4,6 +4,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { useState } from "react";
+import { toast } from "sonner";
 import { ArrowDown, Lock, Coins, Shield, Zap, ExternalLink, CheckCircle2 } from "lucide-react";
 
 type InputToken = "BTC" | "MEZO";
@@ -250,6 +251,14 @@ const Bridge = () => {
               ) : (
                 <button
                   disabled={!amount}
+                  onClick={() => {
+                    toast.success(`Lock ${amount} ${inputToken} → ${outputToken} NFT`, {
+                      description: `Duration: ${lockDurations[selectedDuration].label} · Boost: ${lockDurations[selectedDuration].multiplier}. Redirecting to Mezo Earn...`,
+                    });
+                    setTimeout(() => {
+                      window.open("https://app.mezo.org", "_blank");
+                    }, 1500);
+                  }}
                   className="mt-4 w-full px-6 py-3.5 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Lock {inputToken} → {outputToken} NFT
