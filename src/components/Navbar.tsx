@@ -3,7 +3,6 @@ import { Menu, X } from "lucide-react";
 import { useAccount } from "wagmi";
 import { useBitcoinAccount } from "@mezo-org/passport";
 import WalletButton from "./WalletButton";
-import WalletConnectButton from "./WalletConnectButton";
 import { Link } from "react-router-dom";
 
 const navLinks = [
