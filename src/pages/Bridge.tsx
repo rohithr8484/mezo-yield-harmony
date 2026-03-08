@@ -147,39 +147,6 @@ const Bridge = () => {
               </div>
             </div>
 
-            {/* Arrow */}
-            <div className="flex justify-center -my-4 relative z-10">
-              <div className="h-8 w-8 rounded-full bg-card border border-border shadow-sm flex items-center justify-center">
-                <ArrowDown className="h-4 w-4 text-muted-foreground" />
-              </div>
-            </div>
-
-            {/* Step 2: Lock Duration */}
-            <div className="p-6 border-b border-border">
-              <div className="flex items-center gap-2 mb-4">
-                <div className="h-7 w-7 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground text-xs font-bold">2</div>
-                <span className="text-sm font-semibold text-foreground">
-                  Select Lock Duration
-                </span>
-              </div>
-
-              <div className="grid grid-cols-2 gap-2">
-                {lockDurations.map((d, i) => (
-                  <button
-                    key={d.label}
-                    onClick={() => setSelectedDuration(i)}
-                    className={`px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${
-                      selectedDuration === i
-                        ? "bg-primary/10 border border-primary text-primary"
-                        : "bg-secondary border border-transparent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <div>{d.label}</div>
-                    <div className="text-[10px] mt-0.5 opacity-70">{d.multiplier} boost</div>
-                  </button>
-                ))}
-              </div>
-            </div>
 
             {/* Arrow */}
             <div className="flex justify-center -my-4 relative z-10">
@@ -187,6 +154,7 @@ const Bridge = () => {
                 <ArrowDown className="h-4 w-4 text-muted-foreground" />
               </div>
             </div>
+
 
             {/* Step 3: Output */}
             <div className="p-6">
