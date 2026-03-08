@@ -1,6 +1,9 @@
 import PageLayout from "@/components/PageLayout";
 import { useAccount } from "wagmi";
 import StakeCard from "@/components/staking/StakeCard";
+import PoolCard from "@/components/staking/PoolCard";
+import RewardTracker from "@/components/staking/RewardTracker";
+import StakingDashboard from "@/components/staking/StakingDashboard";
 import { stakingPools } from "@/components/staking/stakingData";
 
 const Staking = () => {
@@ -24,20 +27,55 @@ const Staking = () => {
         </div>
       </section>
 
-      {/* Stake Cards */}
-      <section className="pb-20">
+      {/* Dashboard */}
+      {isConnected && (
+        <section className="pb-12">
+          <div className="container">
+            <StakingDashboard />
+          </div>
+        </section>
+      )}
+
+      {/* Aave-style Stake Cards */}
+      <section className="pb-16">
         <div className="container max-w-3xl space-y-6">
           {stakingPools.map((pool) => (
             <StakeCard key={pool.id} pool={pool} />
           ))}
-
-          {!isConnected && (
-            <p className="text-center text-sm text-muted-foreground pt-4">
-              Connect your wallet to view balances, stake assets, and claim rewards on Mezo Testnet.
-            </p>
-          )}
         </div>
       </section>
+
+      {/* Staking Pools */}
+      <section className="py-12">
+        <div className="container">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-2">Staking Pools</h2>
+          <p className="text-muted-foreground text-lg mb-8">
+            Select a pool to stake, unstake, or claim rewards.
+          </p>
+          <div className="space-y-4">
+            {stakingPools.map((pool) => (
+              <PoolCard key={pool.id} pool={pool} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Reward Tracker */}
+      <section className="py-12 pb-20">
+        <div className="container">
+          <RewardTracker />
+        </div>
+      </section>
+
+      {!isConnected && (
+        <section className="pb-20">
+          <div className="container">
+            <p className="text-center text-sm text-muted-foreground">
+              Connect your wallet to view balances, stake assets, and claim rewards on Mezo Testnet.
+            </p>
+          </div>
+        </section>
+      )}
     </PageLayout>
   );
 };
