@@ -12,6 +12,7 @@ const navLinks = [
   
   
   { label: "Trade", href: "/trade" },
+  { label: "Liquidity", href: "/liquidity" },
 ];
 
 const Navbar = () => {
