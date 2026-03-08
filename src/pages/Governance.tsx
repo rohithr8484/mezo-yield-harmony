@@ -209,45 +209,6 @@ const Governance = () => {
         </div>
       </section>
 
-      {/* veMEZO Gauges */}
-      <section className="py-20">
-        <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">veMEZO Gauges</h2>
-          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Allocate gauge weights to direct protocol emissions and reward distribution.
-          </p>
-          <div className="max-w-3xl mx-auto">
-            <div className="rounded-2xl bg-card border-2 border-bitcoin/30 p-8 shadow-card">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="h-12 w-12 rounded-xl bg-bitcoin/10 flex items-center justify-center">
-                  <Gauge className="h-6 w-6 text-bitcoin" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-display font-bold text-foreground">veMEZO Gauges</h3>
-                  <p className="text-sm text-muted-foreground">Gauge Weight Voting</p>
-                </div>
-              </div>
-              <div className="grid sm:grid-cols-3 gap-4">
-                {["MUSD/BTC Pool", "MUSD Stability", "Protocol Treasury"].map((gauge) => (
-                  <div key={gauge} className="rounded-xl bg-secondary/80 border border-border p-4 text-center">
-                    <div className="text-sm font-semibold text-foreground mb-1">{gauge}</div>
-                    <div className="text-xs text-muted-foreground">Gauge Weight</div>
-                    <div className="mt-2 h-2 rounded-full bg-border overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-primary to-magenta" style={{ width: `${Math.random() * 40 + 30}%` }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="flex justify-center mt-6">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <ArrowDown className="h-4 w-4 text-bitcoin" />
-                  <span>Gauge Weight Voting directs emissions</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Proposal Creation */}
       <section className="py-20 bg-secondary/50">
