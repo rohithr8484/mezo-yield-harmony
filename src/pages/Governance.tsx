@@ -1,11 +1,137 @@
+import { useState, useMemo } from "react";
 import PageLayout from "@/components/PageLayout";
-import { Vote, Users, BarChart3, Shield, Scale, Globe, ArrowDown, ArrowRight, CheckCircle, XCircle, MinusCircle, Lock, Coins, Gauge, FileText, Timer, Zap, Wallet } from "lucide-react";
+import { Vote, Users, BarChart3, Shield, Scale, Globe, ArrowDown, ArrowRight, CheckCircle, XCircle, MinusCircle, Lock, Coins, Gauge, FileText, Timer, Zap, Wallet, Search, ChevronDown } from "lucide-react";
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 
+type ProposalStatus = "Open for voting" | "Passed" | "Executed" | "Failed";
+
+interface Proposal {
+  id: string;
+  title: string;
+  author: string;
+  summary: string;
+  status: ProposalStatus;
+  yae: number;
+  yaePct: number;
+  nay: number;
+  nayPct: number;
+  token: string;
+}
+
+const proposals: Proposal[] = [
+  {
+    id: "MIP-045",
+    title: "Increase BTC collateral ratio to 150% for enhanced protocol safety",
+    author: "Mezo Core (@mezocore)",
+    summary: "This proposal increases the BTC collateral ratio from 130% to 150% to provide additional safety margins during periods of high volatility, protecting MUSD peg stability.",
+    status: "Open for voting",
+    yae: 245000,
+    yaePct: 87.3,
+    nay: 35600,
+    nayPct: 12.7,
+    token: "MEZO",
+  },
+  {
+    id: "MIP-044",
+    title: "Add wstETH as collateral asset on Mezo",
+    author: "DeFi Committee (@deficommittee)",
+    summary: "Proposal to add Lido's wrapped staked ETH (wstETH) as an accepted collateral type, expanding the range of assets that can back MUSD minting.",
+    status: "Passed",
+    yae: 373000,
+    yaePct: 100,
+    nay: 0,
+    nayPct: 0,
+    token: "MEZO",
+  },
+  {
+    id: "MIP-043",
+    title: "Treasury allocation for Q2 ecosystem grants program",
+    author: "Grants Council (@grantcouncil)",
+    summary: "Allocate 2M MEZO from the community treasury to fund Q2 ecosystem grants, supporting developer tooling, integrations, and community initiatives.",
+    status: "Executed",
+    yae: 559000,
+    yaePct: 100,
+    nay: 0,
+    nayPct: 0,
+    token: "MEZO",
+  },
+  {
+    id: "MIP-042",
+    title: "Reduce protocol swap fees from 0.30% to 0.25%",
+    author: "TokenLogic (@tokenlogic)",
+    summary: "Lower the base swap fee on the MUSD/BTC pool to increase volume and competitiveness against other DEX protocols on Mezo.",
+    status: "Open for voting",
+    yae: 189000,
+    yaePct: 73.5,
+    nay: 68200,
+    nayPct: 26.5,
+    token: "MEZO",
+  },
+  {
+    id: "MIP-041",
+    title: "Deploy Mezo Gauge Controller v2 with veBoost integration",
+    author: "Mezo Labs (@mezolabs)",
+    summary: "Upgrade the gauge controller to v2 which integrates veBoost mechanics, allowing veMEZO lockers to receive amplified gauge voting power based on lock duration.",
+    status: "Passed",
+    yae: 412000,
+    yaePct: 96.8,
+    nay: 13600,
+    nayPct: 3.2,
+    token: "MEZO",
+  },
+  {
+    id: "MIP-040",
+    title: "Emergency parameter adjustment for MUSD stability module",
+    author: "Risk Team (@riskteam)",
+    summary: "Emergency proposal to adjust the MUSD Peg Stability Module parameters in response to recent market conditions, ensuring the stablecoin remains tightly pegged.",
+    status: "Failed",
+    yae: 98000,
+    yaePct: 34.2,
+    nay: 188500,
+    nayPct: 65.8,
+    token: "MEZO",
+  },
+];
+
+const statusStyles: Record<ProposalStatus, string> = {
+  "Open for voting": "border-emerald-500/40 text-emerald-600 bg-emerald-500/5",
+  "Passed": "border-emerald-500/40 text-emerald-600 bg-emerald-500/5",
+  "Executed": "border-emerald-500/40 text-emerald-600 bg-emerald-500/5",
+  "Failed": "border-destructive/40 text-destructive bg-destructive/5",
+};
+
+const filterOptions: Array<{ label: string; value: string }> = [
+  { label: "All proposals", value: "all" },
+  { label: "Open for voting", value: "Open for voting" },
+  { label: "Passed", value: "Passed" },
+  { label: "Executed", value: "Executed" },
+  { label: "Failed", value: "Failed" },
+];
+
+function formatVotes(n: number): string {
+  if (n >= 1000) return `${Math.round(n / 1000)}K`;
+  return n.toString();
+}
+
 const Governance = () => {
   const { isConnected, address } = useAccount();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [filterOpen, setFilterOpen] = useState(false);
+
+  const filteredProposals = useMemo(() => {
+    return proposals.filter((p) => {
+      const matchesSearch =
+        !searchQuery ||
+        p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.author.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesFilter = statusFilter === "all" || p.status === statusFilter;
+      return matchesSearch && matchesFilter;
+    });
+  }, [searchQuery, statusFilter]);
 
   const { data: musdSupply } = useReadContract({
     address: CONTRACTS.testnet.MUSD,
@@ -54,6 +180,106 @@ const Governance = () => {
               </div>
             </div>
           )}
+        </div>
+      </section>
+
+      {/* Proposals */}
+      <section className="py-20 bg-secondary/50">
+        <div className="container">
+          <div className="max-w-5xl mx-auto">
+            {/* Header with filter & search */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+              <h2 className="text-3xl font-display font-bold text-foreground">Proposals</h2>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <span className="text-sm text-muted-foreground hidden sm:block">Filter</span>
+                <div className="relative">
+                  <button
+                    onClick={() => setFilterOpen(!filterOpen)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
+                  >
+                    {filterOptions.find((f) => f.value === statusFilter)?.label}
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                  {filterOpen && (
+                    <div className="absolute top-full left-0 mt-1 w-48 rounded-lg border border-border bg-card shadow-lg z-10">
+                      {filterOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => { setStatusFilter(opt.value); setFilterOpen(false); }}
+                          className={`block w-full text-left px-4 py-2.5 text-sm hover:bg-secondary transition-colors first:rounded-t-lg last:rounded-b-lg ${statusFilter === opt.value ? "text-primary font-semibold" : "text-foreground"}`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="relative flex-1 sm:flex-initial">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search proposals"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full sm:w-56 pl-9 pr-4 py-2 rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Proposal List */}
+            <div className="space-y-0 rounded-2xl border border-border bg-card overflow-hidden shadow-card">
+              {filteredProposals.length === 0 && (
+                <div className="p-12 text-center text-muted-foreground text-sm">No proposals found.</div>
+              )}
+              {filteredProposals.map((p, idx) => (
+                <div
+                  key={p.id}
+                  className={`flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 p-6 hover:bg-secondary/50 transition-colors cursor-pointer ${idx < filteredProposals.length - 1 ? "border-b border-border" : ""}`}
+                >
+                  {/* Left: content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="mb-2">
+                      <span className={`inline-block px-2.5 py-0.5 rounded border text-xs font-medium ${statusStyles[p.status]}`}>
+                        {p.status}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-display font-bold text-foreground mb-1 leading-snug">{p.title}</h3>
+                    <p className="text-xs text-muted-foreground mb-2">Author: {p.author}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{p.summary}</p>
+                  </div>
+
+                  {/* Right: vote bars */}
+                  <div className="w-full lg:w-64 shrink-0 space-y-2">
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-semibold text-foreground">YAE&nbsp;&nbsp;{formatVotes(p.yae)}</span>
+                        <span className="text-muted-foreground">{p.yaePct.toFixed(2)}&nbsp;%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-border overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                          style={{ width: `${p.yaePct}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-semibold text-foreground">NAY&nbsp;&nbsp;{formatVotes(p.nay)}</span>
+                        <span className="text-muted-foreground">{p.nayPct.toFixed(2)}&nbsp;%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-border overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500"
+                          style={{ width: `${Math.max(p.nayPct, 1)}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
