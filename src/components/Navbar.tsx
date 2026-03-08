@@ -10,7 +10,7 @@ const navLinks = [
   { label: "Staking & Rewards", href: "/staking" },
   { label: "Mezo Locks", href: "/bridge" },
   
-  { label: "Predict", href: "/predict" },
+  
   { label: "Trade", href: "/trade" },
 ];
 
