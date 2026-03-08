@@ -256,7 +256,7 @@ const Bridge = () => {
                       description: `Duration: ${lockDurations[selectedDuration].label} · Boost: ${lockDurations[selectedDuration].multiplier}. Redirecting to Mezo Earn...`,
                     });
                     setTimeout(() => {
-                      window.open("https://app.mezo.org", "_blank");
+                      window.open("https://mezo.org/earn/lock", "_blank");
                     }, 1500);
                   }}
                   className="mt-4 w-full px-6 py-3.5 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
