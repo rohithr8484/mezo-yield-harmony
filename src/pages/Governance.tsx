@@ -1,24 +1,8 @@
 import PageLayout from "@/components/PageLayout";
-import { Vote, Users, BarChart3, Shield, Scale, Globe } from "lucide-react";
+import { Vote, Users, BarChart3, Shield, Scale, Globe, ArrowDown, ArrowRight, CheckCircle, XCircle, MinusCircle, Lock, Coins, Gauge, FileText, Timer, Zap, Wallet } from "lucide-react";
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
-
-const proposals = [
-  { id: "MIP-042", title: "Increase BTC collateral ratio to 150%", status: "Active", votes: "89.2K MEZO", endsIn: "3 days" },
-  { id: "MIP-041", title: "Add wstETH as collateral asset", status: "Passed", votes: "142K MEZO", endsIn: "Ended" },
-  { id: "MIP-040", title: "Treasury allocation for Q2 grants", status: "Passed", votes: "98.5K MEZO", endsIn: "Ended" },
-  { id: "MIP-039", title: "Reduce protocol fees by 0.05%", status: "Active", votes: "67.1K MEZO", endsIn: "5 days" },
-];
-
-const pillars = [
-  { icon: Vote, title: "On-chain Voting", description: "Every MEZO holder can vote on protocol proposals. One token, one vote — fully transparent and verifiable on-chain." },
-  { icon: Users, title: "Community Driven", description: "No central authority. The community decides on upgrades, fee structures, treasury allocation, and strategic direction." },
-  { icon: BarChart3, title: "Treasury Management", description: "A community-governed treasury funds development, audits, grants, and ecosystem growth initiatives." },
-  { icon: Scale, title: "Proposal Framework", description: "Structured MIP (Mezo Improvement Proposal) system ensures thorough discussion and review before voting." },
-  { icon: Shield, title: "Timelock Security", description: "All passed proposals go through a 48-hour timelock, giving the community time to review before execution." },
-  { icon: Globe, title: "Global Participation", description: "Governance is borderless. Anyone holding MEZO tokens can participate regardless of location." },
-];
 
 const Governance = () => {
   const { isConnected, address } = useAccount();
@@ -48,11 +32,10 @@ const Governance = () => {
             🔗 Mezo Testnet · Chain ID 31611
           </span>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold leading-tight">
-            <span className="text-gradient italic">Shape</span>{" "}
-            <span className="text-foreground">the Future</span>
+            <span className="text-gradient italic">Governance</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Mezo is governed by its community. MEZO token holders propose, discuss, and vote on every protocol decision.
+            Vote on MUSD, Mezo, veMezo gauges. Formal proposal and voting mechanisms powered by Governor Bravo.
           </p>
 
           {isConnected && (
@@ -71,96 +54,222 @@ const Governance = () => {
               </div>
             </div>
           )}
-
-          <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <a href="#" className="px-8 py-3.5 rounded-full bg-foreground text-background text-sm font-semibold hover:opacity-90 transition-opacity">
-              View Proposals
-            </a>
-            <a href="#" className="px-8 py-3.5 rounded-full border border-border text-foreground text-sm font-semibold hover:bg-secondary transition-colors">
-              Delegate Votes
-            </a>
-          </div>
         </div>
       </section>
 
-      {/* Governance Pillars */}
+      {/* Token Holders Layer */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Governance Pillars</h2>
-          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-16">
-            A robust framework ensuring transparent, fair, and effective decentralized governance.
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Token Holders Layer</h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Governance power flows from token holders who participate in the protocol.
           </p>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pillars.map((item) => (
-              <div key={item.title} className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
-                <div className="h-12 w-12 rounded-xl bg-bitcoin/10 flex items-center justify-center mb-6">
-                  <item.icon className="h-6 w-6 text-bitcoin" />
+          <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+            {[
+              { icon: Coins, title: "MUSD Holders", desc: "Holders of Mezo's native stablecoin participate in protocol decisions and fee governance." },
+              { icon: Lock, title: "veMEZO Lockers", desc: "Lock MEZO tokens to receive veMEZO, gaining boosted voting power and gauge influence." },
+              { icon: Gauge, title: "Gauge System", desc: "Direct protocol emissions and rewards through gauge weight voting with veMEZO." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center">
+                <div className="h-14 w-14 rounded-xl bg-bitcoin/10 flex items-center justify-center mb-5 mx-auto">
+                  <item.icon className="h-7 w-7 text-bitcoin" />
                 </div>
                 <h3 className="text-xl font-display font-semibold text-foreground mb-3">{item.title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{item.description}</p>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Active Proposals */}
+      {/* veMEZO Gauges */}
       <section className="py-20">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Recent Proposals</h2>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">veMEZO Gauges</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Review and vote on active governance proposals.
+            Allocate gauge weights to direct protocol emissions and reward distribution.
           </p>
-          <div className="max-w-3xl mx-auto space-y-4">
-            {proposals.map((p) => (
-              <div key={p.id} className="rounded-2xl bg-card border border-border p-6 shadow-card flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-xs font-mono text-muted-foreground">{p.id}</span>
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-semibold ${p.status === "Active" ? "bg-bitcoin/10 text-bitcoin" : "bg-secondary text-muted-foreground"}`}>
-                      {p.status}
-                    </span>
-                  </div>
-                  <h3 className="text-foreground font-semibold">{p.title}</h3>
+          <div className="max-w-3xl mx-auto">
+            <div className="rounded-2xl bg-card border-2 border-bitcoin/30 p-8 shadow-card">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-12 w-12 rounded-xl bg-bitcoin/10 flex items-center justify-center">
+                  <Gauge className="h-6 w-6 text-bitcoin" />
                 </div>
-                <div className="text-right text-sm text-muted-foreground">
-                  <div className="font-medium text-foreground">{p.votes}</div>
-                  <div>{p.endsIn}</div>
+                <div>
+                  <h3 className="text-xl font-display font-bold text-foreground">veMEZO Gauges</h3>
+                  <p className="text-sm text-muted-foreground">Gauge Weight Voting</p>
                 </div>
-                {isConnected && p.status === "Active" && (
-                  <button className="px-4 py-2 rounded-full bg-gradient-hero text-primary-foreground text-xs font-semibold hover:opacity-90 transition-opacity">
-                    Vote
-                  </button>
-                )}
               </div>
-            ))}
+              <div className="grid sm:grid-cols-3 gap-4">
+                {["MUSD/BTC Pool", "MUSD Stability", "Protocol Treasury"].map((gauge) => (
+                  <div key={gauge} className="rounded-xl bg-secondary/80 border border-border p-4 text-center">
+                    <div className="text-sm font-semibold text-foreground mb-1">{gauge}</div>
+                    <div className="text-xs text-muted-foreground">Gauge Weight</div>
+                    <div className="mt-2 h-2 rounded-full bg-border overflow-hidden">
+                      <div className="h-full rounded-full bg-gradient-to-r from-primary to-magenta" style={{ width: `${Math.random() * 40 + 30}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-center mt-6">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <ArrowDown className="h-4 w-4 text-bitcoin" />
+                  <span>Gauge Weight Voting directs emissions</span>
+                </div>
+              </div>
+            </div>
           </div>
-          {!isConnected && (
-            <p className="text-center text-sm text-muted-foreground mt-8">Connect your wallet to vote on proposals.</p>
-          )}
         </div>
       </section>
 
-      {/* Tokenomics */}
+      {/* Proposal Creation */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">MEZO Tokenomics</h2>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Proposal Creation</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Total Genesis Supply: 1,000,000,000 MEZO
+            Any eligible token holder can create a governance proposal.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            {[
-              { label: "Community", value: "40%", amount: "400M" },
-              { label: "Investors & Partners", value: "30%", amount: "300M" },
-              { label: "Mezo Team", value: "20%", amount: "200M" },
-              { label: "Foundation", value: "10%", amount: "100M" },
-            ].map((s) => (
-              <div key={s.label} className="text-center rounded-2xl bg-card border border-border p-6 shadow-card">
-                <div className="text-3xl font-display font-bold text-gradient mb-1">{s.value}</div>
-                <div className="text-sm font-semibold text-foreground mb-1">{s.amount}</div>
-                <div className="text-xs text-muted-foreground">{s.label}</div>
+          <div className="max-w-2xl mx-auto">
+            <div className="rounded-2xl bg-card border border-border p-8 shadow-card">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <FileText className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-bold text-foreground">Governance Proposal</h3>
+                </div>
               </div>
-            ))}
+              <div className="space-y-3">
+                {[
+                  { label: "Parameter Change", desc: "Adjust protocol parameters like collateral ratios, fees, or thresholds" },
+                  { label: "Gauge Allocation", desc: "Modify gauge weights and emission distribution across pools" },
+                  { label: "Protocol Upgrade", desc: "Propose smart contract upgrades or new feature implementations" },
+                ].map((type) => (
+                  <div key={type.label} className="flex items-start gap-3 rounded-xl bg-secondary/80 border border-border p-4">
+                    <ArrowRight className="h-4 w-4 text-bitcoin mt-0.5 shrink-0" />
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">{type.label}</div>
+                      <div className="text-xs text-muted-foreground">{type.desc}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Governor Bravo Contract */}
+      <section className="py-20">
+        <div className="container">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Governance Contract</h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Powered by Governor Bravo — battle-tested on-chain governance.
+          </p>
+          <div className="max-w-2xl mx-auto">
+            <div className="rounded-2xl bg-card border-2 border-primary/30 p-8 shadow-card">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Shield className="h-6 w-6 text-primary" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-display font-bold text-foreground">Governor Bravo</h3>
+                  <p className="text-sm text-muted-foreground">On-chain Governance Contract</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { fn: "Propose", icon: FileText, desc: "Create proposal" },
+                  { fn: "Queue", icon: Timer, desc: "Queue for execution" },
+                  { fn: "Vote", icon: Vote, desc: "Cast your vote" },
+                  { fn: "Execute", icon: Zap, desc: "Execute on-chain" },
+                ].map((item) => (
+                  <div key={item.fn} className="rounded-xl bg-secondary/80 border border-border p-4 text-center hover:border-primary/40 transition-colors">
+                    <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-3">
+                      <item.icon className="h-5 w-5 text-primary" />
+                    </div>
+                    <div className="text-sm font-bold font-display text-foreground">{item.fn}</div>
+                    <div className="text-xs text-muted-foreground mt-1">{item.desc}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Community Voting */}
+      <section className="py-20 bg-secondary/50">
+        <div className="container">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Community Voting</h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Every token holder can cast their vote on active proposals.
+          </p>
+          <div className="max-w-md mx-auto">
+            <div className="rounded-2xl bg-card border border-border p-8 shadow-card">
+              <div className="flex justify-center mb-6">
+                <div className="flex -space-x-3">
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className="h-12 w-12 rounded-full bg-secondary border-2 border-card flex items-center justify-center">
+                      <Wallet className="h-5 w-5 text-muted-foreground" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 p-4">
+                  <CheckCircle className="h-6 w-6 text-emerald-500 shrink-0" />
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-foreground">For</div>
+                    <div className="text-xs text-muted-foreground">Support the proposal</div>
+                  </div>
+                  <div className="text-sm font-bold text-emerald-500">67%</div>
+                </div>
+                <div className="flex items-center gap-3 rounded-xl bg-destructive/10 border border-destructive/20 p-4">
+                  <XCircle className="h-6 w-6 text-destructive shrink-0" />
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-foreground">Against</div>
+                    <div className="text-xs text-muted-foreground">Oppose the proposal</div>
+                  </div>
+                  <div className="text-sm font-bold text-destructive">21%</div>
+                </div>
+                <div className="flex items-center gap-3 rounded-xl bg-secondary border border-border p-4">
+                  <MinusCircle className="h-6 w-6 text-muted-foreground shrink-0" />
+                  <div className="flex-1">
+                    <div className="text-sm font-semibold text-foreground">Abstain</div>
+                    <div className="text-xs text-muted-foreground">Neutral position</div>
+                  </div>
+                  <div className="text-sm font-bold text-muted-foreground">12%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Execution */}
+      <section className="py-20">
+        <div className="container">
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Execution</h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Passed proposals are queued through a timelock before on-chain execution.
+          </p>
+          <div className="max-w-2xl mx-auto flex flex-col items-center gap-4">
+            <div className="w-full rounded-2xl bg-card border border-border p-6 shadow-card text-center">
+              <div className="h-12 w-12 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-4">
+                <Timer className="h-6 w-6 text-bitcoin" />
+              </div>
+              <h3 className="text-lg font-display font-bold text-foreground">Timelock + Execution</h3>
+              <p className="text-sm text-muted-foreground mt-2">48-hour security delay before any protocol changes take effect.</p>
+            </div>
+            <ArrowDown className="h-6 w-6 text-bitcoin" />
+            <div className="w-full rounded-2xl bg-gradient-to-r from-primary/10 to-bitcoin/10 border-2 border-bitcoin/30 p-6 shadow-card text-center">
+              <div className="h-12 w-12 rounded-xl bg-bitcoin/10 flex items-center justify-center mx-auto mb-4">
+                <Zap className="h-6 w-6 text-bitcoin" />
+              </div>
+              <h3 className="text-lg font-display font-bold text-gradient">Protocol State Updated</h3>
+              <p className="text-sm text-muted-foreground mt-2">Changes are applied on-chain and the protocol state is updated.</p>
+            </div>
           </div>
         </div>
       </section>
