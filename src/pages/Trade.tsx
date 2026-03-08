@@ -1,123 +1,199 @@
 import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
-import { ExternalLink, ArrowDownUp, Copy, CheckCircle2 } from "lucide-react";
-import { toast } from "sonner";
+import { ArrowDownUp, Settings, Zap, ChevronDown } from "lucide-react";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 
-const contracts = {
-  router: "0x16A76d3cd3C1e3CE843C6680d6B37E9116b5C706",
-  poolFactory: "0x83FE469C636C4081b87bA5b3Ae9991c6Ed104248",
-};
-
-const tokens = [
-  { symbol: "BTC (tBTC)", address: "0x7b7C000000000000000000000000000000000000", decimals: 18, desc: "Native Bitcoin representation" },
-  { symbol: "MUSD", address: "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186", decimals: 18, desc: "Mezo USD stablecoin proxy" },
-  { symbol: "mUSDC", address: "0x04671C72Aab5AC02A03c1098314b1BB6B560c197", decimals: 6, desc: "Bridged USDC" },
-  { symbol: "mUSDT", address: "0xeB5a5d39dE4Ea42C2Aa6A57EcA2894376683bB8E", decimals: 6, desc: "Bridged USDT" },
+const tokenList = [
+  { symbol: "BTC", name: "Bitcoin", color: "bg-orange-500" },
+  { symbol: "MUSD", name: "Mezo USD", color: "bg-amber-400" },
+  { symbol: "mUSDC", name: "Bridged USDC", color: "bg-blue-500" },
+  { symbol: "mUSDT", name: "Bridged USDT", color: "bg-emerald-500" },
 ];
 
-const CopyButton = ({ text }: { text: string }) => {
-  const [copied, setCopied] = useState(false);
+const TokenSelector = ({
+  selected,
+  onSelect,
+  open,
+  onToggle,
+}: {
+  selected: string;
+  onSelect: (s: string) => void;
+  open: boolean;
+  onToggle: () => void;
+}) => {
+  const token = tokenList.find((t) => t.symbol === selected)!;
   return (
-    <button
-      onClick={() => {
-        navigator.clipboard.writeText(text);
-        setCopied(true);
-        toast.success("Address copied");
-        setTimeout(() => setCopied(false), 2000);
-      }}
-      className="text-muted-foreground hover:text-foreground transition-colors"
-    >
-      {copied ? <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
-    </button>
+    <div className="relative">
+      <button
+        onClick={onToggle}
+        className="flex items-center gap-2 px-4 py-3 rounded-xl border border-border bg-card hover:bg-secondary/60 transition-colors"
+      >
+        <span className={`h-6 w-6 rounded-full ${token.color}`} />
+        <span className="font-semibold text-foreground text-sm">{token.symbol}</span>
+        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full mt-2 w-44 rounded-xl border border-border bg-card shadow-lg z-20 py-1">
+          {tokenList
+            .filter((t) => t.symbol !== selected)
+            .map((t) => (
+              <button
+                key={t.symbol}
+                onClick={() => {
+                  onSelect(t.symbol);
+                  onToggle();
+                }}
+                className="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-foreground hover:bg-secondary/60 transition-colors"
+              >
+                <span className={`h-5 w-5 rounded-full ${t.color}`} />
+                {t.symbol}
+              </button>
+            ))}
+        </div>
+      )}
+    </div>
   );
 };
 
-const shortenAddr = (addr: string) => `${addr.slice(0, 6)}…${addr.slice(-4)}`;
-
 const Trade = () => {
+  const { isConnected } = useAccount();
+  const [payToken, setPayToken] = useState("mUSDT");
+  const [receiveToken, setReceiveToken] = useState("MUSD");
+  const [payAmount, setPayAmount] = useState("");
+  const [payDropdown, setPayDropdown] = useState(false);
+  const [receiveDropdown, setReceiveDropdown] = useState(false);
+
+  const handleFlip = () => {
+    setPayToken(receiveToken);
+    setReceiveToken(payToken);
+    setPayAmount("");
+  };
+
   return (
     <PageLayout>
-      {/* Hero */}
       <section className="py-16 md:py-24">
-        <div className="container text-center max-w-3xl mx-auto">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
-            <ArrowDownUp className="h-4 w-4" /> Mezo Mainnet
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight">
-            <span className="text-foreground">Tigris </span>
-            <span className="text-gradient italic">DEX</span>
-          </h1>
-          <p className="mt-4 text-lg text-muted-foreground max-w-xl mx-auto">
-            Decentralized Exchange on Mezo. Swap tokens, provide liquidity, and trade on-chain with the Tigris protocol.
-          </p>
-          <a
-            href={`https://explorer.mezo.org/address/${contracts.router}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
-          >
-            Open on Explorer <ExternalLink className="h-4 w-4" />
-          </a>
-        </div>
-      </section>
-
-      {/* Contracts */}
-      <section className="pb-16">
-        <div className="container max-w-3xl mx-auto">
-          <h2 className="text-xl font-display font-bold text-foreground mb-6">Protocol Contracts</h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {[
-              { label: "Router", address: contracts.router },
-              { label: "Pool Factory", address: contracts.poolFactory },
-            ].map((c) => (
-              <div key={c.label} className="rounded-xl border border-border bg-card p-5">
-                <p className="text-xs text-muted-foreground mb-1">{c.label}</p>
-                <div className="flex items-center gap-2">
-                  <code className="text-sm font-mono text-foreground">{shortenAddr(c.address)}</code>
-                  <CopyButton text={c.address} />
-                  <a
-                    href={`https://explorer.mezo.org/address/${c.address}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                </div>
+        <div className="container max-w-lg mx-auto">
+          {/* Header */}
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-bitcoin/10 flex items-center justify-center">
+                <ArrowDownUp className="h-5 w-5 text-bitcoin" />
               </div>
-            ))}
+              <div>
+                <h1 className="text-2xl font-display font-bold text-bitcoin">Swap</h1>
+                <p className="text-xs text-muted-foreground">Tigris DEX</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-bitcoin/30 text-bitcoin text-xs font-medium">
+                <Zap className="h-3.5 w-3.5" /> Instant
+              </button>
+              <button className="h-8 w-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                <Settings className="h-4 w-4" />
+              </button>
+            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Token Contracts */}
-      <section className="pb-20">
-        <div className="container max-w-3xl mx-auto">
-          <h2 className="text-xl font-display font-bold text-foreground mb-6">Token Contracts</h2>
-          <div className="space-y-3">
-            {tokens.map((t) => (
-              <div key={t.symbol} className="rounded-xl border border-border bg-card p-5 flex items-center justify-between gap-4">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-semibold text-foreground text-sm">{t.symbol}</span>
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{t.decimals} decimals</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground">{t.desc}</p>
-                  <code className="text-xs font-mono text-muted-foreground mt-1 block truncate">{t.address}</code>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <CopyButton text={t.address} />
-                  <a
-                    href={`https://explorer.mezo.org/address/${t.address}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    <ExternalLink className="h-3.5 w-3.5" />
-                  </a>
-                </div>
+          {/* Swap Card */}
+          <div className="rounded-2xl border border-border bg-card shadow-card overflow-hidden">
+            {/* You Pay */}
+            <div className="p-6 pb-4">
+              <p className="text-sm font-medium text-foreground mb-3">You Pay</p>
+              <div className="flex gap-3">
+                <input
+                  type="number"
+                  placeholder="0.0"
+                  value={payAmount}
+                  onChange={(e) => setPayAmount(e.target.value)}
+                  className="flex-1 bg-secondary/50 rounded-xl border border-border px-4 py-3.5 text-foreground text-lg placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-bitcoin/30 focus:border-bitcoin/40 transition-all"
+                />
+                <TokenSelector
+                  selected={payToken}
+                  onSelect={(t) => {
+                    if (t === receiveToken) setReceiveToken(payToken);
+                    setPayToken(t);
+                  }}
+                  open={payDropdown}
+                  onToggle={() => {
+                    setPayDropdown(!payDropdown);
+                    setReceiveDropdown(false);
+                  }}
+                />
               </div>
-            ))}
+            </div>
+
+            {/* Flip */}
+            <div className="flex justify-center -my-3 relative z-10">
+              <button
+                onClick={handleFlip}
+                className="h-9 w-9 rounded-full bg-card border border-border shadow-sm flex items-center justify-center hover:bg-secondary transition-colors"
+              >
+                <ArrowDownUp className="h-4 w-4 text-muted-foreground" />
+              </button>
+            </div>
+
+            {/* You Receive */}
+            <div className="p-6 pt-4">
+              <p className="text-sm font-medium text-foreground mb-3">You Receive</p>
+              <div className="flex gap-3">
+                <input
+                  type="number"
+                  placeholder="0"
+                  readOnly
+                  value={payAmount ? (parseFloat(payAmount) * 0.998).toFixed(4) : ""}
+                  className="flex-1 bg-secondary/50 rounded-xl border border-border px-4 py-3.5 text-foreground text-lg placeholder:text-muted-foreground cursor-default"
+                />
+                <TokenSelector
+                  selected={receiveToken}
+                  onSelect={(t) => {
+                    if (t === payToken) setPayToken(receiveToken);
+                    setReceiveToken(t);
+                  }}
+                  open={receiveDropdown}
+                  onToggle={() => {
+                    setReceiveDropdown(!receiveDropdown);
+                    setPayDropdown(false);
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Info */}
+            <div className="mx-6 mb-6 rounded-xl border border-border p-4 space-y-2 text-sm">
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">Slippage</span>
+                <span className="text-foreground font-medium">0.5%</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">DEX</span>
+                <span className="text-bitcoin font-medium">Tigris</span>
+              </div>
+            </div>
+
+            {/* CTA */}
+            <div className="px-6 pb-6">
+              {!isConnected ? (
+                <ConnectButton.Custom>
+                  {({ openConnectModal, mounted }) => (
+                    <button
+                      onClick={openConnectModal}
+                      disabled={!mounted}
+                      className="w-full py-4 rounded-xl bg-gradient-hero text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity"
+                    >
+                      Connect Wallet
+                    </button>
+                  )}
+                </ConnectButton.Custom>
+              ) : (
+                <button
+                  disabled={!payAmount || parseFloat(payAmount) <= 0}
+                  className="w-full py-4 rounded-xl bg-gradient-hero text-primary-foreground font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {payAmount ? "Swap" : "Enter Amount"}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </section>
