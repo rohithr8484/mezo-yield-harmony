@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 const navLinks = [
   { label: "Governance", href: "/governance" },
   { label: "Staking & Rewards", href: "/staking" },
+  { label: "Bridge", href: "/bridge" },
   { label: "Developer Infrastructure", href: "/developer" },
   { label: "Earn", href: "/earn" },
   { label: "Build", href: "/build" },
@@ -58,13 +59,8 @@ const Navbar = () => {
               Explorer ↗
             </a>
           )}
-          <div className="flex items-center gap-3">
-            <div className="w-[200px]">
-              <WalletConnectButton />
-            </div>
-            <div className="w-[200px]">
-              <WalletButton />
-            </div>
+          <div className="w-[200px]">
+            <WalletButton />
           </div>
         </div>
 
@@ -90,8 +86,7 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          <div className="mt-3 flex flex-col gap-2 [&>*]:w-full">
-            <WalletConnectButton />
+          <div className="mt-3 [&>*]:w-full">
             <WalletButton />
           </div>
         </div>
