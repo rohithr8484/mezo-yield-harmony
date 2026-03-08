@@ -21,7 +21,7 @@ const Staking = () => {
             <span className="text-gradient italic">Earn. Compound.</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Stake BTC, MEZO, and MUSD to earn yield from Mezo network activity. Auto-compound for maximum returns.
+            Stake your tokens or underlying assets to earn rewards. In case of a shortfall event, your stake may be slashed to cover the deficit.
           </p>
         </div>
       </section>
