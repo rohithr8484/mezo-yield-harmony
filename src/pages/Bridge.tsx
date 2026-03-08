@@ -87,7 +87,7 @@ const Bridge = () => {
       <section className="py-16 md:py-24">
         <div className="container text-center">
           <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
-            🔗 Mezo Testnet · veBoost Calculator
+            🔗 Mezo Testnet
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight">
             <span className="text-foreground">Lock. </span>
