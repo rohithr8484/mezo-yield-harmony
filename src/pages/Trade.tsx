@@ -6,6 +6,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 
 const tokenList = [
   { symbol: "BTC", name: "Bitcoin", color: "bg-orange-500" },
+  { symbol: "MEZO", name: "Mezo Network", color: "bg-primary" },
   { symbol: "MUSD", name: "Mezo USD", color: "bg-amber-400" },
   { symbol: "mUSDC", name: "Bridged USDC", color: "bg-blue-500" },
   { symbol: "mUSDT", name: "Bridged USDT", color: "bg-emerald-500" },
