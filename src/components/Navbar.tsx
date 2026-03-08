@@ -9,7 +9,7 @@ const navLinks = [
   { label: "Governance", href: "/governance" },
   { label: "Staking & Rewards", href: "/staking" },
   { label: "Mezo Locks", href: "/bridge" },
-  { label: "Developer Infrastructure", href: "/developer" },
+  
   { label: "Earn", href: "/earn" },
   { label: "Build", href: "/build" },
   { label: "Predict", href: "/predict" },
