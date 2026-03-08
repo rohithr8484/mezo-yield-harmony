@@ -159,7 +159,7 @@ const Bridge = () => {
               <div className="flex items-center gap-2 mb-4">
                 <div className="h-7 w-7 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground text-xs font-bold">2</div>
                 <span className="text-sm font-semibold text-foreground">
-                  Select Lock Duration {inputToken === "BTC" ? "(1–28 days)" : "(1–4 years)"}
+                  Select Lock Duration
                 </span>
               </div>
 
@@ -298,7 +298,7 @@ const Bridge = () => {
                 ))}
               </ol>
               <a
-                href="https://app.mezo.org"
+                href="https://mezo.org/earn/lock"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
@@ -324,7 +324,7 @@ const Bridge = () => {
                 ))}
               </ol>
               <a
-                href="https://app.mezo.org"
+                href="https://mezo.org/earn/lock"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
