@@ -54,7 +54,7 @@ const Bridge = () => {
       <section className="py-16 md:py-24">
         <div className="container text-center">
           <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
-            🔗 Mezo Testnet · Bridge
+            🔗 Mezo Testnet · veBoost Calculator
           </span>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight">
             <span className="text-foreground">Lock. </span>
@@ -66,7 +66,7 @@ const Bridge = () => {
         </div>
       </section>
 
-      {/* Bridge Card */}
+      {/* veBoost Calculator Card */}
       <section className="pb-20">
         <div className="container max-w-lg mx-auto">
           <div className="rounded-2xl bg-card border border-border shadow-card overflow-hidden">
@@ -219,7 +219,7 @@ const Bridge = () => {
       {/* How it works */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
-          <h2 className="text-3xl font-display font-bold text-center text-foreground mb-12">How the Bridge Works</h2>
+          <h2 className="text-3xl font-display font-bold text-center text-foreground mb-12">How the veBoost Calculator Works</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-4xl mx-auto">
             {[
               { icon: Coins, title: "Deposit", desc: "Choose BTC or MEZO to lock into the protocol" },
