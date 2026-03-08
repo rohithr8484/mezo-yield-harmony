@@ -85,17 +85,17 @@ const ProposalDetail = () => {
                     {proposal.status === "Open for voting" && (
                       <div className="grid grid-cols-3 gap-2">
                         <button className="px-3 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-semibold text-emerald-600 hover:bg-emerald-500/20 transition-colors">
-                          YAE
+                          YES
                         </button>
                         <button className="px-3 py-2.5 rounded-xl bg-destructive/10 border border-destructive/30 text-sm font-semibold text-destructive hover:bg-destructive/20 transition-colors">
-                          NAY
+                          NO
                         </button>
                         <button className="px-3 py-2.5 rounded-xl bg-secondary border border-border text-sm font-semibold text-muted-foreground hover:bg-secondary/80 transition-colors">
                           Abstain
                         </button>
                       </div>
                     )}
-                    <p className="text-xs text-muted-foreground">Connected — ready to vote with MEZO</p>
+                    <p className="text-xs text-muted-foreground">Connected — vote with MEZO tokens</p>
                   </div>
                 )}
               </div>
@@ -104,25 +104,25 @@ const ProposalDetail = () => {
               <div className="rounded-2xl bg-card border border-border shadow-card p-6">
                 <h3 className="text-lg font-display font-bold text-foreground mb-5">Voting results</h3>
 
-                {/* YAE bar */}
+                {/* YES bar */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-semibold text-foreground">YAE&nbsp;&nbsp;{formatVotes(proposal.yae)}&nbsp;MEZO</span>
-                    <span className="text-muted-foreground">{proposal.yaePct.toFixed(2)}&nbsp;%</span>
+                    <span className="font-semibold text-foreground">YES&nbsp;&nbsp;{formatVotes(proposal.yes)}&nbsp;MEZO</span>
+                    <span className="text-muted-foreground">{proposal.yesPct.toFixed(2)}&nbsp;%</span>
                   </div>
                   <div className="h-2.5 rounded-full bg-border overflow-hidden">
-                    <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${proposal.yaePct}%` }} />
+                    <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${proposal.yesPct}%` }} />
                   </div>
                 </div>
 
-                {/* NAY bar */}
+                {/* NO bar */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-semibold text-foreground">NAY&nbsp;&nbsp;{formatVotes(proposal.nay)}&nbsp;MEZO</span>
-                    <span className="text-muted-foreground">{proposal.nayPct.toFixed(2)}&nbsp;%</span>
+                    <span className="font-semibold text-foreground">NO&nbsp;&nbsp;{formatVotes(proposal.no)}&nbsp;MEZO</span>
+                    <span className="text-muted-foreground">{proposal.noPct.toFixed(2)}&nbsp;%</span>
                   </div>
                   <div className="h-2.5 rounded-full bg-border overflow-hidden">
-                    <div className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500" style={{ width: `${Math.max(proposal.nayPct, 1)}%` }} />
+                    <div className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500" style={{ width: `${Math.max(proposal.noPct, 1)}%` }} />
                   </div>
                 </div>
 
@@ -145,7 +145,7 @@ const ProposalDetail = () => {
                           </a>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
-                          <span className={voter.vote === "YAE" ? "text-emerald-600 font-medium" : "text-destructive font-medium"}>
+                          <span className={voter.vote === "YES" ? "text-emerald-600 font-medium" : "text-destructive font-medium"}>
                             {voter.vote}
                           </span>
                           <span className="text-foreground font-semibold">{formatVotes(voter.amount)}</span>

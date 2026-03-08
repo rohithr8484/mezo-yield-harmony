@@ -154,25 +154,25 @@ const Governance = () => {
                   <div className="w-full lg:w-64 shrink-0 space-y-2">
                     <div>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-foreground">YAE&nbsp;&nbsp;{formatVotes(p.yae)}</span>
-                        <span className="text-muted-foreground">{p.yaePct.toFixed(2)}&nbsp;%</span>
+                        <span className="font-semibold text-foreground">YES&nbsp;&nbsp;{formatVotes(p.yes)}</span>
+                        <span className="text-muted-foreground">{p.yesPct.toFixed(2)}&nbsp;%</span>
                       </div>
                       <div className="h-2 rounded-full bg-border overflow-hidden">
                         <div
                           className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                          style={{ width: `${p.yaePct}%` }}
+                          style={{ width: `${p.yesPct}%` }}
                         />
                       </div>
                     </div>
                     <div>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-foreground">NAY&nbsp;&nbsp;{formatVotes(p.nay)}</span>
-                        <span className="text-muted-foreground">{p.nayPct.toFixed(2)}&nbsp;%</span>
+                        <span className="font-semibold text-foreground">NO&nbsp;&nbsp;{formatVotes(p.no)}</span>
+                        <span className="text-muted-foreground">{p.noPct.toFixed(2)}&nbsp;%</span>
                       </div>
                       <div className="h-2 rounded-full bg-border overflow-hidden">
                         <div
                           className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500"
-                          style={{ width: `${Math.max(p.nayPct, 1)}%` }}
+                          style={{ width: `${Math.max(p.noPct, 1)}%` }}
                         />
                       </div>
                     </div>
