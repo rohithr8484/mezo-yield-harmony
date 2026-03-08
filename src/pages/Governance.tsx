@@ -183,6 +183,106 @@ const Governance = () => {
         </div>
       </section>
 
+      {/* Proposals */}
+      <section className="py-20 bg-secondary/50">
+        <div className="container">
+          <div className="max-w-5xl mx-auto">
+            {/* Header with filter & search */}
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
+              <h2 className="text-3xl font-display font-bold text-foreground">Proposals</h2>
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <span className="text-sm text-muted-foreground hidden sm:block">Filter</span>
+                <div className="relative">
+                  <button
+                    onClick={() => setFilterOpen(!filterOpen)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
+                  >
+                    {filterOptions.find((f) => f.value === statusFilter)?.label}
+                    <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                  </button>
+                  {filterOpen && (
+                    <div className="absolute top-full left-0 mt-1 w-48 rounded-lg border border-border bg-card shadow-lg z-10">
+                      {filterOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => { setStatusFilter(opt.value); setFilterOpen(false); }}
+                          className={`block w-full text-left px-4 py-2.5 text-sm hover:bg-secondary transition-colors first:rounded-t-lg last:rounded-b-lg ${statusFilter === opt.value ? "text-primary font-semibold" : "text-foreground"}`}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div className="relative flex-1 sm:flex-initial">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <input
+                    type="text"
+                    placeholder="Search proposals"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full sm:w-56 pl-9 pr-4 py-2 rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Proposal List */}
+            <div className="space-y-0 rounded-2xl border border-border bg-card overflow-hidden shadow-card">
+              {filteredProposals.length === 0 && (
+                <div className="p-12 text-center text-muted-foreground text-sm">No proposals found.</div>
+              )}
+              {filteredProposals.map((p, idx) => (
+                <div
+                  key={p.id}
+                  className={`flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 p-6 hover:bg-secondary/50 transition-colors cursor-pointer ${idx < filteredProposals.length - 1 ? "border-b border-border" : ""}`}
+                >
+                  {/* Left: content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="mb-2">
+                      <span className={`inline-block px-2.5 py-0.5 rounded border text-xs font-medium ${statusStyles[p.status]}`}>
+                        {p.status}
+                      </span>
+                    </div>
+                    <h3 className="text-lg font-display font-bold text-foreground mb-1 leading-snug">{p.title}</h3>
+                    <p className="text-xs text-muted-foreground mb-2">Author: {p.author}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{p.summary}</p>
+                  </div>
+
+                  {/* Right: vote bars */}
+                  <div className="w-full lg:w-64 shrink-0 space-y-2">
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-semibold text-foreground">YAE&nbsp;&nbsp;{formatVotes(p.yae)}</span>
+                        <span className="text-muted-foreground">{p.yaePct.toFixed(2)}&nbsp;%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-border overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                          style={{ width: `${p.yaePct}%` }}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex items-center justify-between text-sm mb-1">
+                        <span className="font-semibold text-foreground">NAY&nbsp;&nbsp;{formatVotes(p.nay)}</span>
+                        <span className="text-muted-foreground">{p.nayPct.toFixed(2)}&nbsp;%</span>
+                      </div>
+                      <div className="h-2 rounded-full bg-border overflow-hidden">
+                        <div
+                          className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500"
+                          style={{ width: `${Math.max(p.nayPct, 1)}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Token Holders Layer */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
