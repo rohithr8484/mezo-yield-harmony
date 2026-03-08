@@ -26,6 +26,7 @@ const lockDurationsBTC = [
   { label: "14 Days", days: 14, multiplier: "1.5x" },
   { label: "28 Days", days: 28, multiplier: "2x" },
 ];
+];
 
 const lockDurationsMEZO = [
   { label: "1 Year", days: 365, multiplier: "1x" },
