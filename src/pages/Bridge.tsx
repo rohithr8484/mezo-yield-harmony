@@ -159,7 +159,7 @@ const Bridge = () => {
             {/* Step 3: Output */}
             <div className="p-6">
               <div className="flex items-center gap-2 mb-4">
-                <div className="h-7 w-7 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground text-xs font-bold">3</div>
+                <div className="h-7 w-7 rounded-full bg-gradient-hero flex items-center justify-center text-primary-foreground text-xs font-bold">2</div>
                 <span className="text-sm font-semibold text-foreground">Receive NFT</span>
               </div>
               <div className="space-y-2">
