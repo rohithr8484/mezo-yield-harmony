@@ -5,8 +5,9 @@ import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ArrowDown, Lock, Coins, Shield, Zap, ExternalLink, CheckCircle2 } from "lucide-react";
+import { ArrowDown, Lock, Coins, Shield, Zap, ExternalLink, CheckCircle2, Vote, Users, BarChart3, FileText } from "lucide-react";
 import VeBoostCalculator from "@/components/VeBoostCalculator";
+import { Link } from "react-router-dom";
 
 type InputToken = "BTC" | "MEZO";
 type OutputToken = "veBTC" | "veMEZO" | "MUSD";
@@ -330,6 +331,61 @@ const Bridge = () => {
 
       {/* veBoost Calculator */}
       <VeBoostCalculator />
+
+      {/* Governance Section */}
+      <section className="py-20 border-t border-border">
+        <div className="container">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-4">
+              🗳️ Community Governance
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground mb-4">Shape the Future of Mezo</h2>
+            <p className="text-muted-foreground">
+              Participate in on-chain governance. Vote on proposals, adjust protocol parameters, and help guide the evolution of Bitcoin finance.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-12">
+            {[
+              { icon: Vote, title: "On-chain Voting", desc: "Cast votes on MIPs using veMEZO voting power. Every vote is recorded on-chain and verifiable." },
+              { icon: Users, title: "Community Driven", desc: "Protocol decisions are made collectively by token holders, not centralized teams." },
+              { icon: BarChart3, title: "Treasury Management", desc: "Community-governed treasury ensures sustainable protocol growth and development funding." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+                  <item.icon className="h-6 w-6 text-primary" />
+                </div>
+                <h3 className="text-xl font-display font-semibold text-foreground mb-3">{item.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Governance CTA */}
+          <div className="max-w-2xl mx-auto">
+            <div className="rounded-2xl bg-gradient-to-br from-primary/10 via-card to-card border border-primary/20 p-8">
+              <div className="flex flex-col sm:flex-row items-center gap-6">
+                <div className="h-14 w-14 rounded-xl bg-primary/20 flex items-center justify-center shrink-0">
+                  <FileText className="h-7 w-7 text-primary" />
+                </div>
+                <div className="text-center sm:text-left">
+                  <h3 className="text-xl font-display font-bold text-foreground mb-2">View Active Proposals</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    See what's being voted on right now. Your veMEZO gives you voting power on protocol decisions.
+                  </p>
+                  <Link
+                    to="/governance"
+                    className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-hero text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity"
+                  >
+                    Go to Governance
+                    <ArrowDown className="h-4 w-4 rotate-[-90deg]" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </PageLayout>
   );
 };
