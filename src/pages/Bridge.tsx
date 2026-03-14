@@ -327,6 +327,9 @@ const Bridge = () => {
           </div>
         </div>
       </section>
+
+      {/* veBoost Calculator */}
+      <VeBoostCalculator />
     </PageLayout>
   );
 };
