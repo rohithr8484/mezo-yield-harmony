@@ -5,8 +5,9 @@ import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ArrowDown, Lock, Coins, Shield, Zap, ExternalLink, CheckCircle2 } from "lucide-react";
+import { ArrowDown, Lock, Coins, Shield, Zap, ExternalLink, CheckCircle2, Vote, Users, BarChart3, FileText } from "lucide-react";
 import VeBoostCalculator from "@/components/VeBoostCalculator";
+import { Link } from "react-router-dom";
 
 type InputToken = "BTC" | "MEZO";
 type OutputToken = "veBTC" | "veMEZO" | "MUSD";
