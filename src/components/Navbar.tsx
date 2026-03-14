@@ -6,11 +6,11 @@ import WalletButton from "./WalletButton";
 import { Link } from "react-router-dom";
 
 const navLinks = [
-  { label: "Governance", href: "/governance" },
   { label: "Staking & Rewards", href: "/staking" },
   { label: "Mezo Locks", href: "/bridge" },
   { label: "Bridge", href: "/trade" },
   { label: "Liquidity", href: "/liquidity" },
+  { label: "Governance", href: "/governance" },
 ];
 
 const Navbar = () => {
