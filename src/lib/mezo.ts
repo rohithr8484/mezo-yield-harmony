@@ -48,11 +48,11 @@ export const mezoMainnet = defineChain({
 // Contract addresses
 export const CONTRACTS = {
   testnet: {
-    MUSD: "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503" as `0x${string}`,
+    MUSD: "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`,
     BTC: "0x7b7C000000000000000000000000000000000000" as `0x${string}`,
   },
   mainnet: {
-    MUSD: "0xdD468A1DDc392dcdbEf6db6e34E89AA338F9F186" as `0x${string}`,
+    MUSD: "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`,
     BTC: "0x7b7C000000000000000000000000000000000000" as `0x${string}`,
     POOL_FACTORY: "0x83FE469C636C4081b87bA5b3Ae9991c6Ed104248" as `0x${string}`,
     MUSD_BTC_POOL: "0x52e604c44417233b6CcEDDDc0d640A405Caacefb" as `0x${string}`,

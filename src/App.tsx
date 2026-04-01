@@ -6,14 +6,6 @@ import { Web3Provider } from "@/components/Web3Provider";
 import Index from "./pages/Index";
 import Governance from "./pages/Governance";
 import ProposalDetail from "./pages/ProposalDetail";
-import Staking from "./pages/Staking";
-import Bridge from "./pages/Bridge";
-import Earn from "./pages/Earn";
-import Build from "./pages/Build";
-import Developer from "./pages/Developer";
-import Predict from "./pages/Predict";
-import Trade from "./pages/Trade";
-import Liquidity from "./pages/Liquidity";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -26,14 +18,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/governance" element={<Governance />} />
           <Route path="/governance/:id" element={<ProposalDetail />} />
-          <Route path="/staking" element={<Staking />} />
-          <Route path="/bridge" element={<Bridge />} />
-          <Route path="/earn" element={<Earn />} />
-          <Route path="/build" element={<Build />} />
-          <Route path="/developer" element={<Developer />} />
-          <Route path="/predict" element={<Predict />} />
-          <Route path="/trade" element={<Trade />} />
-          <Route path="/liquidity" element={<Liquidity />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
