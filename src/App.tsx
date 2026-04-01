@@ -7,7 +7,6 @@ import Index from "./pages/Index";
 import Governance from "./pages/Governance";
 import ProposalDetail from "./pages/ProposalDetail";
 import NotFound from "./pages/NotFound";
-import NotFound from "./pages/NotFound";
 
 const App = () => (
   <Web3Provider>
