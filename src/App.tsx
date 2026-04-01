@@ -26,14 +26,6 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/governance" element={<Governance />} />
           <Route path="/governance/:id" element={<ProposalDetail />} />
-          <Route path="/staking" element={<Staking />} />
-          <Route path="/bridge" element={<Bridge />} />
-          <Route path="/earn" element={<Earn />} />
-          <Route path="/build" element={<Build />} />
-          <Route path="/developer" element={<Developer />} />
-          <Route path="/predict" element={<Predict />} />
-          <Route path="/trade" element={<Trade />} />
-          <Route path="/liquidity" element={<Liquidity />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
