@@ -5,14 +5,14 @@ import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { Link } from "react-router-dom";
-import { proposals, statusStyles, formatVotes } from "@/lib/proposals";
+import { proposals, statusStyles, formatVotes, type ProposalStatus } from "@/lib/proposals";
 
 const filterOptions: Array<{ label: string; value: string }> = [
   { label: "All proposals", value: "all" },
-  { label: "Open for voting", value: "Open for voting" },
-  { label: "Passed", value: "Passed" },
-  { label: "Executed", value: "Executed" },
-  { label: "Failed", value: "Failed" },
+  { label: "Active", value: "Active" },
+  { label: "Accepted", value: "Accepted" },
+  { label: "Rejected", value: "Rejected" },
+  { label: "Finished", value: "Finished" },
 ];
 
 const Governance = () => {
@@ -58,10 +58,10 @@ const Governance = () => {
             🔗 Mezo Testnet · Chain ID 31611
           </span>
           <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold leading-tight">
-            <span className="text-gradient italic">Governance</span>
+            <span className="text-gradient italic">Proposals</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Vote on MUSD, Mezo, veMezo gauges. Formal proposal and voting mechanisms powered by Governor Bravo.
+            Vote on MUSD, Mezo, veMezo gauges. Formal proposal and voting mechanisms powered by Governor Bravo. Fee: 0.2 MEZO or MUSD per vote.
           </p>
 
           {isConnected && (
@@ -89,7 +89,7 @@ const Governance = () => {
           <div className="max-w-5xl mx-auto">
             {/* Header with filter & search */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-              <h2 className="text-3xl font-display font-bold text-foreground">Proposals</h2>
+              <h2 className="text-3xl font-display font-bold text-foreground">All Proposals</h2>
               <div className="flex items-center gap-3 w-full sm:w-auto">
                 <span className="text-sm text-muted-foreground hidden sm:block">Filter</span>
                 <div className="relative">
@@ -140,7 +140,8 @@ const Governance = () => {
                 >
                   {/* Left: content */}
                   <div className="flex-1 min-w-0">
-                    <div className="mb-2">
+                    <div className="flex items-center gap-2 mb-2">
+                      <img src={p.authorAvatar} alt="" className="h-5 w-5 rounded-full" />
                       <span className={`inline-block px-2.5 py-0.5 rounded border text-xs font-medium ${statusStyles[p.status]}`}>
                         {p.status}
                       </span>
@@ -154,25 +155,25 @@ const Governance = () => {
                   <div className="w-full lg:w-64 shrink-0 space-y-2">
                     <div>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-foreground">YES&nbsp;&nbsp;{formatVotes(p.yes)}</span>
-                        <span className="text-muted-foreground">{p.yesPct.toFixed(2)}&nbsp;%</span>
+                        <span className="font-semibold text-foreground">For&nbsp;&nbsp;{formatVotes(p.forVotes)}</span>
+                        <span className="text-muted-foreground">{p.forPct.toFixed(2)}&nbsp;%</span>
                       </div>
                       <div className="h-2 rounded-full bg-border overflow-hidden">
                         <div
                           className="h-full rounded-full bg-emerald-500 transition-all duration-500"
-                          style={{ width: `${p.yesPct}%` }}
+                          style={{ width: `${p.forPct}%` }}
                         />
                       </div>
                     </div>
                     <div>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-foreground">NO&nbsp;&nbsp;{formatVotes(p.no)}</span>
-                        <span className="text-muted-foreground">{p.noPct.toFixed(2)}&nbsp;%</span>
+                        <span className="font-semibold text-foreground">Against&nbsp;&nbsp;{formatVotes(p.againstVotes)}</span>
+                        <span className="text-muted-foreground">{p.againstPct.toFixed(2)}&nbsp;%</span>
                       </div>
                       <div className="h-2 rounded-full bg-border overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500"
-                          style={{ width: `${Math.max(p.noPct, 1)}%` }}
+                          className="h-full rounded-full bg-destructive/60 transition-all duration-500"
+                          style={{ width: `${Math.max(p.againstPct, 1)}%` }}
                         />
                       </div>
                     </div>
@@ -208,7 +209,6 @@ const Governance = () => {
           </div>
         </div>
       </section>
-
 
       {/* Proposal Creation */}
       <section className="py-20 bg-secondary/50">
@@ -291,16 +291,14 @@ const Governance = () => {
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Community Voting</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Every token holder can cast their vote on active proposals.
+            Every token holder can cast their vote on active proposals. Fee: 0.2 MEZO or MUSD per vote.
           </p>
           <div className="max-w-md mx-auto">
             <div className="rounded-2xl bg-card border border-border p-8 shadow-card">
               <div className="flex justify-center mb-6">
                 <div className="flex -space-x-3">
-                  {[...Array(5)].map((_, i) => (
-                    <div key={i} className="h-12 w-12 rounded-full bg-secondary border-2 border-card flex items-center justify-center">
-                      <Wallet className="h-5 w-5 text-muted-foreground" />
-                    </div>
+                  {["voter1", "voter2", "voter3", "voter4", "voter5"].map((seed) => (
+                    <img key={seed} src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`} alt="" className="h-12 w-12 rounded-full border-2 border-card" />
                   ))}
                 </div>
               </div>

@@ -1,13 +1,28 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ExternalLink, CheckCircle2 } from "lucide-react";
-import { useAccount } from "wagmi";
+import { ArrowLeft, ExternalLink, CheckCircle2, MessageSquare, Send } from "lucide-react";
+import { useAccount, useConnect } from "wagmi";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
-import { proposals, statusStyles, formatVotes } from "@/lib/proposals";
+import { proposals, statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { toast } from "sonner";
+
+const CHART_COLORS = {
+  for: "hsl(142, 71%, 45%)",
+  against: "hsl(0, 84%, 60%)",
+  abstain: "hsl(215, 14%, 54%)",
+};
 
 const ProposalDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const [newComment, setNewComment] = useState("");
+  const [localDiscussions, setLocalDiscussions] = useState<typeof proposal.discussions>([]);
+  const [voted, setVoted] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
+  const [feeToken, setFeeToken] = useState<"MEZO" | "MUSD">("MEZO");
 
   const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
 
@@ -16,53 +31,146 @@ const ProposalDetail = () => {
       <PageLayout>
         <div className="container py-20 text-center">
           <h1 className="text-3xl font-display font-bold text-foreground mb-4">Proposal not found</h1>
-          <Link to="/governance" className="text-primary hover:underline">← Back to Governance</Link>
+          <Link to="/governance" className="text-primary hover:underline">← Back to Proposals</Link>
         </div>
       </PageLayout>
     );
   }
 
+  const allDiscussions = [...proposal.discussions, ...localDiscussions];
   const quorumReached = proposal.quorum >= proposal.quorumRequired;
   const diffReached = proposal.differential >= proposal.differentialRequired;
+
+  const chartData = [
+    { name: "For", value: proposal.forVotes, color: CHART_COLORS.for },
+    { name: "Against", value: proposal.againstVotes, color: CHART_COLORS.against },
+    { name: "Abstain", value: proposal.abstainVotes, color: CHART_COLORS.abstain },
+  ].filter((d) => d.value > 0);
+
+  const handleVote = (voteType: "FOR" | "AGAINST" | "ABSTAIN") => {
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    setVoted(voteType);
+    const tokenAddr = feeToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
+    toast.success(
+      `Vote cast: ${voteType}. Fee: ${VOTING_FEE} ${feeToken} (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
+      { duration: 5000 }
+    );
+  };
+
+  const handleComment = () => {
+    if (!newComment.trim()) return;
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    setLocalDiscussions((prev) => [
+      ...prev,
+      {
+        id: `local-${Date.now()}`,
+        author: address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "anon",
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${address}`,
+        message: newComment,
+        timestamp: "Just now",
+      },
+    ]);
+    setNewComment("");
+    toast.success("Comment posted!");
+  };
 
   return (
     <PageLayout>
       <section className="py-12 md:py-16">
         <div className="container">
           <Link to="/governance" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
-            <ArrowLeft className="h-4 w-4" /> Back to Governance
+            <ArrowLeft className="h-4 w-4" /> Back to Proposals
           </Link>
 
           <div className="grid lg:grid-cols-[1fr_340px] gap-8">
             {/* Left — Proposal Overview */}
-            <div className="rounded-2xl bg-card border border-border shadow-card overflow-hidden">
-              <div className="bg-secondary/50 border-b border-border px-6 py-4">
-                <h3 className="text-sm font-semibold text-foreground">Proposal overview</h3>
-              </div>
-              <div className="p-6 md:p-8">
-                <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-tight mb-4">
-                  {proposal.title}
-                </h1>
-
-                <div className="flex items-center gap-3 mb-8">
-                  <span className={`inline-block px-2.5 py-0.5 rounded border text-xs font-medium ${statusStyles[proposal.status]}`}>
-                    {proposal.status}
-                  </span>
-                  <span className="text-xs text-muted-foreground">by {proposal.author}</span>
+            <div className="space-y-6">
+              <div className="rounded-2xl bg-card border border-border shadow-card overflow-hidden">
+                <div className="bg-secondary/50 border-b border-border px-6 py-4">
+                  <h3 className="text-sm font-semibold text-foreground">Proposal overview</h3>
                 </div>
+                <div className="p-6 md:p-8">
+                  <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground leading-tight mb-4">
+                    {proposal.title}
+                  </h1>
 
-                <div className="space-y-8 text-sm text-muted-foreground leading-relaxed">
-                  <div>
-                    <h4 className="text-base font-bold text-foreground mb-3">Simple Summary</h4>
-                    <p>{proposal.summary}</p>
+                  <div className="flex items-center gap-3 mb-8">
+                    <img src={proposal.authorAvatar} alt="" className="h-6 w-6 rounded-full" />
+                    <span className={`inline-block px-2.5 py-0.5 rounded border text-xs font-medium ${statusStyles[proposal.status]}`}>
+                      {proposal.status}
+                    </span>
+                    <span className="text-xs text-muted-foreground">by {proposal.author}</span>
                   </div>
-                  <div>
-                    <h4 className="text-base font-bold text-foreground mb-3">Motivation</h4>
-                    <p>{proposal.motivation}</p>
+
+                  <div className="space-y-8 text-sm text-muted-foreground leading-relaxed">
+                    <div>
+                      <h4 className="text-base font-bold text-foreground mb-3">Simple Summary</h4>
+                      <p>{proposal.summary}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-base font-bold text-foreground mb-3">Motivation</h4>
+                      <p>{proposal.motivation}</p>
+                    </div>
+                    <div>
+                      <h4 className="text-base font-bold text-foreground mb-3">Specification</h4>
+                      <p>{proposal.specification}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="text-base font-bold text-foreground mb-3">Specification</h4>
-                    <p>{proposal.specification}</p>
+                </div>
+              </div>
+
+              {/* Discussion Section */}
+              <div className="rounded-2xl bg-card border border-border shadow-card overflow-hidden">
+                <div className="bg-secondary/50 border-b border-border px-6 py-4 flex items-center gap-2">
+                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                  <h3 className="text-sm font-semibold text-foreground">Discussion ({allDiscussions.length})</h3>
+                </div>
+                <div className="p-6 space-y-4">
+                  {allDiscussions.map((d) => (
+                    <div key={d.id} className="flex gap-3">
+                      <img src={d.avatar} alt="" className="h-8 w-8 rounded-full shrink-0 mt-0.5" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-sm font-semibold text-foreground">{d.author}</span>
+                          <span className="text-xs text-muted-foreground">{d.timestamp}</span>
+                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{d.message}</p>
+                      </div>
+                    </div>
+                  ))}
+                  {allDiscussions.length === 0 && (
+                    <p className="text-sm text-muted-foreground text-center py-4">No discussion yet. Be the first to comment!</p>
+                  )}
+                  <div className="flex gap-3 pt-4 border-t border-border">
+                    <div className="h-8 w-8 rounded-full bg-secondary shrink-0 flex items-center justify-center overflow-hidden">
+                      {isConnected && address ? (
+                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${address}`} alt="" className="h-8 w-8" />
+                      ) : (
+                        <span className="text-xs text-muted-foreground">?</span>
+                      )}
+                    </div>
+                    <div className="flex-1 flex gap-2">
+                      <input
+                        type="text"
+                        placeholder={isConnected ? "Add a comment..." : "Connect wallet to comment"}
+                        value={newComment}
+                        onChange={(e) => setNewComment(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleComment()}
+                        className="flex-1 px-3 py-2 rounded-lg border border-border bg-secondary/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                      />
+                      <button
+                        onClick={handleComment}
+                        className="px-3 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+                      >
+                        <Send className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -73,8 +181,11 @@ const ProposalDetail = () => {
               {/* Your Voting Info */}
               <div className="rounded-2xl bg-card border border-border shadow-card p-6">
                 <h3 className="text-lg font-display font-bold text-foreground mb-1">Your voting info</h3>
+                <p className="text-xs text-muted-foreground mb-2">
+                  {proposal.status === "Active" ? "Voting is live 🟢" : "Voting is closed 🔴"}
+                </p>
                 <p className="text-xs text-muted-foreground mb-4">
-                  Voting is on 🔴
+                  Fee: {VOTING_FEE} MEZO or MUSD per vote
                 </p>
                 {!isConnected ? (
                   <div className="w-full">
@@ -82,71 +193,136 @@ const ProposalDetail = () => {
                   </div>
                 ) : (
                   <div className="space-y-3">
-                    {proposal.status === "Open for voting" && (
-                      <div className="grid grid-cols-3 gap-2">
-                        <button className="px-3 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-semibold text-emerald-600 hover:bg-emerald-500/20 transition-colors">
-                          YES
-                        </button>
-                        <button className="px-3 py-2.5 rounded-xl bg-destructive/10 border border-destructive/30 text-sm font-semibold text-destructive hover:bg-destructive/20 transition-colors">
-                          NO
-                        </button>
-                        <button className="px-3 py-2.5 rounded-xl bg-secondary border border-border text-sm font-semibold text-muted-foreground hover:bg-secondary/80 transition-colors">
-                          Abstain
-                        </button>
+                    {voted ? (
+                      <div className="text-center py-3">
+                        <CheckCircle2 className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
+                        <p className="text-sm font-semibold text-foreground">You voted: {voted}</p>
+                        <p className="text-xs text-muted-foreground">Fee paid: {VOTING_FEE} {feeToken}</p>
                       </div>
+                    ) : proposal.status === "Active" ? (
+                      <>
+                        {/* Fee token selector */}
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs text-muted-foreground">Pay fee with:</span>
+                          <button
+                            onClick={() => setFeeToken("MEZO")}
+                            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${feeToken === "MEZO" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+                          >
+                            MEZO
+                          </button>
+                          <button
+                            onClick={() => setFeeToken("MUSD")}
+                            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${feeToken === "MUSD" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+                          >
+                            MUSD
+                          </button>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2">
+                          <button
+                            onClick={() => handleVote("FOR")}
+                            className="px-3 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-semibold text-emerald-600 hover:bg-emerald-500/20 transition-colors"
+                          >
+                            For
+                          </button>
+                          <button
+                            onClick={() => handleVote("AGAINST")}
+                            className="px-3 py-2.5 rounded-xl bg-destructive/10 border border-destructive/30 text-sm font-semibold text-destructive hover:bg-destructive/20 transition-colors"
+                          >
+                            Against
+                          </button>
+                          <button
+                            onClick={() => handleVote("ABSTAIN")}
+                            className="px-3 py-2.5 rounded-xl bg-secondary border border-border text-sm font-semibold text-muted-foreground hover:bg-secondary/80 transition-colors"
+                          >
+                            Abstain
+                          </button>
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-xs text-muted-foreground">Voting has ended for this proposal.</p>
                     )}
-                    <p className="text-xs text-muted-foreground">Connected — vote with MEZO tokens</p>
+                    <p className="text-xs text-muted-foreground">Connected — vote with MEZO or MUSD tokens</p>
                   </div>
                 )}
               </div>
 
-              {/* Voting Results */}
+              {/* Voting Results with Chart */}
               <div className="rounded-2xl bg-card border border-border shadow-card p-6">
                 <h3 className="text-lg font-display font-bold text-foreground mb-5">Voting results</h3>
 
-                {/* YES bar */}
+                {/* Donut chart */}
+                <div className="h-40 mb-4">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <PieChart>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={65}
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell key={index} fill={entry.color} stroke="transparent" />
+                        ))}
+                      </Pie>
+                      <Tooltip
+                        formatter={(value: number, name: string) => [`${formatVotes(value)} MEZO`, name]}
+                        contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Legend */}
+                <div className="flex justify-center gap-4 mb-4 text-xs">
+                  <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500" /> For</span>
+                  <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-destructive" /> Against</span>
+                  <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" /> Abstain</span>
+                </div>
+
+                {/* For bar */}
                 <div className="mb-4">
                   <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-semibold text-foreground">YES&nbsp;&nbsp;{formatVotes(proposal.yes)}&nbsp;MEZO</span>
-                    <span className="text-muted-foreground">{proposal.yesPct.toFixed(2)}&nbsp;%</span>
+                    <span className="font-semibold text-foreground">For&nbsp;&nbsp;{formatVotes(proposal.forVotes)}&nbsp;MEZO</span>
+                    <span className="text-muted-foreground">{proposal.forPct.toFixed(2)}&nbsp;%</span>
                   </div>
                   <div className="h-2.5 rounded-full bg-border overflow-hidden">
-                    <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${proposal.yesPct}%` }} />
+                    <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${proposal.forPct}%` }} />
                   </div>
                 </div>
 
-                {/* NO bar */}
+                {/* Against bar */}
                 <div className="mb-6">
                   <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-semibold text-foreground">NO&nbsp;&nbsp;{formatVotes(proposal.no)}&nbsp;MEZO</span>
-                    <span className="text-muted-foreground">{proposal.noPct.toFixed(2)}&nbsp;%</span>
+                    <span className="font-semibold text-foreground">Against&nbsp;&nbsp;{formatVotes(proposal.againstVotes)}&nbsp;MEZO</span>
+                    <span className="text-muted-foreground">{proposal.againstPct.toFixed(2)}&nbsp;%</span>
                   </div>
                   <div className="h-2.5 rounded-full bg-border overflow-hidden">
-                    <div className="h-full rounded-full bg-muted-foreground/40 transition-all duration-500" style={{ width: `${Math.max(proposal.noPct, 1)}%` }} />
+                    <div className="h-full rounded-full bg-destructive/60 transition-all duration-500" style={{ width: `${Math.max(proposal.againstPct, 1)}%` }} />
                   </div>
                 </div>
 
                 {/* Top voters */}
                 <div className="border-t border-border pt-4">
                   <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                    <span>Top 10 addresses</span>
+                    <span>Top voters</span>
                     <span>Votes</span>
                   </div>
                   <div className="space-y-2.5">
                     {proposal.topVoters.map((voter) => (
                       <div key={voter.address} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <div className="h-6 w-6 rounded-full bg-secondary flex items-center justify-center">
-                            <span className="text-[10px] text-muted-foreground">🟢</span>
-                          </div>
+                          <img src={voter.avatar} alt="" className="h-6 w-6 rounded-full" />
                           <a href="#" className="text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1">
                             {voter.displayName}
                             <ExternalLink className="h-3 w-3 text-muted-foreground" />
                           </a>
                         </div>
                         <div className="flex items-center gap-2 text-sm">
-                          <span className={voter.vote === "YES" ? "text-emerald-600 font-medium" : "text-destructive font-medium"}>
-                            {voter.vote}
+                          <span className={voter.vote === "FOR" ? "text-emerald-600 font-medium" : "text-destructive font-medium"}>
+                            {voter.vote === "FOR" ? "For" : "Against"}
                           </span>
                           <span className="text-foreground font-semibold">{formatVotes(voter.amount)}</span>
                         </div>
@@ -179,13 +355,6 @@ const ProposalDetail = () => {
                   <div>{formatVotes(proposal.quorumRequired)}</div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Current votes<br /><span className="text-xs">Required</span></span>
-                  <span className="text-right">
-                    <div className="font-medium text-foreground">{formatVotes(proposal.quorum)}</div>
-                    <div className="text-xs text-muted-foreground">{formatVotes(proposal.quorumRequired)}</div>
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Differential</span>
                   <span className="flex items-center gap-1 text-foreground font-medium">
                     {diffReached ? "Reached" : "Not reached"}
@@ -195,6 +364,15 @@ const ProposalDetail = () => {
                 <div className="text-xs text-right text-muted-foreground">
                   <div className="font-medium text-foreground">{formatVotes(proposal.differential)}</div>
                   <div>{formatVotes(proposal.differentialRequired)}</div>
+                </div>
+
+                {/* Contract addresses */}
+                <div className="border-t border-border pt-3 mt-3">
+                  <p className="text-xs text-muted-foreground mb-1">Voting fee contracts:</p>
+                  <div className="text-[10px] text-muted-foreground space-y-0.5">
+                    <div>MEZO: {MEZO_TOKEN.slice(0, 10)}...{MEZO_TOKEN.slice(-6)}</div>
+                    <div>MUSD: {MUSD_TOKEN.slice(0, 10)}...{MUSD_TOKEN.slice(-6)}</div>
+                  </div>
                 </div>
               </div>
             </div>

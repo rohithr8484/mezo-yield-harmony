@@ -6,7 +6,7 @@ import WalletButton from "./WalletButton";
 import { Link } from "react-router-dom";
 
 const navLinks = [
-  { label: "Governance", href: "/governance" },
+  { label: "Proposals", href: "/governance" },
 ];
 
 const Navbar = () => {
