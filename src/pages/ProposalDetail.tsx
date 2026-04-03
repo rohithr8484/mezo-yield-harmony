@@ -20,9 +20,32 @@ const ProposalDetail = () => {
   const { isConnected, address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const [newComment, setNewComment] = useState("");
-  const [localDiscussions, setLocalDiscussions] = useState<typeof proposal.discussions>([]);
+  const [localDiscussions, setLocalDiscussions] = useState<Array<{ id: string; author: string; avatar: string; message: string; timestamp: string }>>([]);
   const [voted, setVoted] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
-  const [feeToken, setFeeToken] = useState<"MEZO" | "MUSD">("MEZO");
+  const [selectedVote, setSelectedVote] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
+
+  const handleSelectVote = (voteType: "FOR" | "AGAINST" | "ABSTAIN") => {
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    setSelectedVote(voteType === selectedVote ? null : voteType);
+  };
+
+  const handlePayAndVote = (payToken: "MEZO" | "MUSD") => {
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    if (!selectedVote) return;
+    const tokenAddr = payToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
+    setVoted(selectedVote);
+    setSelectedVote(null);
+    toast.success(
+      `Vote cast: ${selectedVote}. Fee: ${VOTING_FEE} ${payToken} paid (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
+      { duration: 5000 }
+    );
+  };
 
   const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
 
@@ -46,19 +69,6 @@ const ProposalDetail = () => {
     { name: "Against", value: proposal.againstVotes, color: CHART_COLORS.against },
     { name: "Abstain", value: proposal.abstainVotes, color: CHART_COLORS.abstain },
   ].filter((d) => d.value > 0);
-
-  const handleVote = (voteType: "FOR" | "AGAINST" | "ABSTAIN") => {
-    if (!isConnected) {
-      openConnectModal?.();
-      return;
-    }
-    setVoted(voteType);
-    const tokenAddr = feeToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
-    toast.success(
-      `Vote cast: ${voteType}. Fee: ${VOTING_FEE} ${feeToken} (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
-      { duration: 5000 }
-    );
-  };
 
   const handleComment = () => {
     if (!newComment.trim()) return;
@@ -197,51 +207,56 @@ const ProposalDetail = () => {
                       <div className="text-center py-3">
                         <CheckCircle2 className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
                         <p className="text-sm font-semibold text-foreground">You voted: {voted}</p>
-                        <p className="text-xs text-muted-foreground">Fee paid: {VOTING_FEE} {feeToken}</p>
                       </div>
                     ) : proposal.status === "Active" ? (
                       <>
-                        {/* Fee token selector */}
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs text-muted-foreground">Pay fee with:</span>
-                          <button
-                            onClick={() => setFeeToken("MEZO")}
-                            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${feeToken === "MEZO" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                          >
-                            MEZO
-                          </button>
-                          <button
-                            onClick={() => setFeeToken("MUSD")}
-                            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${feeToken === "MUSD" ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                          >
-                            MUSD
-                          </button>
-                        </div>
                         <div className="grid grid-cols-3 gap-2">
                           <button
-                            onClick={() => handleVote("FOR")}
-                            className="px-3 py-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-semibold text-emerald-600 hover:bg-emerald-500/20 transition-colors"
+                            onClick={() => handleSelectVote("FOR")}
+                            className={`px-3 py-2.5 rounded-xl border text-sm font-semibold transition-colors ${selectedVote === "FOR" ? "bg-emerald-500 text-white border-emerald-500" : "bg-emerald-500/10 border-emerald-500/30 text-emerald-600 hover:bg-emerald-500/20"}`}
                           >
                             For
                           </button>
                           <button
-                            onClick={() => handleVote("AGAINST")}
-                            className="px-3 py-2.5 rounded-xl bg-destructive/10 border border-destructive/30 text-sm font-semibold text-destructive hover:bg-destructive/20 transition-colors"
+                            onClick={() => handleSelectVote("AGAINST")}
+                            className={`px-3 py-2.5 rounded-xl border text-sm font-semibold transition-colors ${selectedVote === "AGAINST" ? "bg-destructive text-white border-destructive" : "bg-destructive/10 border-destructive/30 text-destructive hover:bg-destructive/20"}`}
                           >
                             Against
                           </button>
                           <button
-                            onClick={() => handleVote("ABSTAIN")}
-                            className="px-3 py-2.5 rounded-xl bg-secondary border border-border text-sm font-semibold text-muted-foreground hover:bg-secondary/80 transition-colors"
+                            onClick={() => handleSelectVote("ABSTAIN")}
+                            className={`px-3 py-2.5 rounded-xl border text-sm font-semibold transition-colors ${selectedVote === "ABSTAIN" ? "bg-muted-foreground text-white border-muted-foreground" : "bg-secondary border-border text-muted-foreground hover:bg-secondary/80"}`}
                           >
                             Abstain
                           </button>
                         </div>
+                        {selectedVote && (
+                          <div className="space-y-2 pt-2">
+                            <p className="text-xs text-muted-foreground text-center">Pay {VOTING_FEE} token fee to cast your vote</p>
+                            <div className="grid grid-cols-2 gap-2">
+                              <button
+                                onClick={() => handlePayAndVote("MUSD")}
+                                className="px-3 py-2.5 rounded-xl bg-primary/10 border border-primary/30 text-sm font-semibold text-primary hover:bg-primary/20 transition-colors"
+                              >
+                                Pay with MUSD
+                              </button>
+                              <button
+                                onClick={() => handlePayAndVote("MEZO")}
+                                className="px-3 py-2.5 rounded-xl bg-bitcoin/10 border border-bitcoin/30 text-sm font-semibold text-bitcoin hover:bg-bitcoin/20 transition-colors"
+                              >
+                                Pay with MEZO
+                              </button>
+                            </div>
+                            <div className="text-[10px] text-muted-foreground text-center space-y-0.5">
+                              <div>MUSD: {MUSD_TOKEN.slice(0, 10)}...{MUSD_TOKEN.slice(-4)}</div>
+                              <div>MEZO: {MEZO_TOKEN.slice(0, 10)}...{MEZO_TOKEN.slice(-4)}</div>
+                            </div>
+                          </div>
+                        )}
                       </>
                     ) : (
                       <p className="text-xs text-muted-foreground">Voting has ended for this proposal.</p>
                     )}
-                    <p className="text-xs text-muted-foreground">Connected — vote with MEZO or MUSD tokens</p>
                   </div>
                 )}
               </div>
