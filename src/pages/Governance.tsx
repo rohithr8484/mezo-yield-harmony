@@ -23,6 +23,9 @@ const Governance = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [showSubmitForm, setShowSubmitForm] = useState(false);
+  const [proposalForm, setProposalForm] = useState({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
+  const { openConnectModal } = useConnectModal();
 
   const filteredProposals = useMemo(() => {
     return proposals.filter((p) => {
