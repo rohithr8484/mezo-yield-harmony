@@ -191,6 +191,115 @@ const Governance = () => {
         </div>
       </section>
 
+      {/* Submit Proposal */}
+      <section className="py-20">
+        <div className="container">
+          <div className="max-w-3xl mx-auto">
+            <div className="flex items-center justify-between mb-8">
+              <div>
+                <h2 className="text-3xl font-display font-bold text-foreground">Submit a Proposal</h2>
+                <p className="text-muted-foreground text-sm mt-1">Any token holder can submit a governance proposal</p>
+              </div>
+              <button
+                onClick={() => {
+                  if (!isConnected) {
+                    openConnectModal?.();
+                    return;
+                  }
+                  setShowSubmitForm(!showSubmitForm);
+                }}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                {showSubmitForm ? "Cancel" : "New Proposal"}
+              </button>
+            </div>
+
+            {showSubmitForm && (
+              <div className="rounded-2xl bg-card border border-border shadow-card p-6 md:p-8 space-y-5">
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Title</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Increase BTC collateral ratio to 160%"
+                    value={proposalForm.title}
+                    onChange={(e) => setProposalForm({ ...proposalForm, title: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-secondary/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Category</label>
+                  <select
+                    value={proposalForm.category}
+                    onChange={(e) => setProposalForm({ ...proposalForm, category: e.target.value })}
+                    className="w-full px-4 py-2.5 rounded-lg border border-border bg-secondary/50 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  >
+                    <option>Parameter Change</option>
+                    <option>Gauge Allocation</option>
+                    <option>Protocol Upgrade</option>
+                    <option>Treasury Allocation</option>
+                    <option>Security</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Summary</label>
+                  <Textarea
+                    placeholder="Brief description of your proposal"
+                    value={proposalForm.summary}
+                    onChange={(e) => setProposalForm({ ...proposalForm, summary: e.target.value })}
+                    className="bg-secondary/50"
+                    rows={3}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Motivation</label>
+                  <Textarea
+                    placeholder="Why is this proposal needed?"
+                    value={proposalForm.motivation}
+                    onChange={(e) => setProposalForm({ ...proposalForm, motivation: e.target.value })}
+                    className="bg-secondary/50"
+                    rows={4}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-foreground mb-1.5">Specification</label>
+                  <Textarea
+                    placeholder="Technical details of the proposed changes"
+                    value={proposalForm.specification}
+                    onChange={(e) => setProposalForm({ ...proposalForm, specification: e.target.value })}
+                    className="bg-secondary/50"
+                    rows={4}
+                  />
+                </div>
+                <div className="flex items-center gap-3 pt-2">
+                  <button
+                    onClick={() => {
+                      if (!proposalForm.title.trim() || !proposalForm.summary.trim()) {
+                        toast.error("Title and summary are required");
+                        return;
+                      }
+                      toast.success(`Proposal "${proposalForm.title}" submitted successfully! It will appear after review.`);
+                      setProposalForm({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
+                      setShowSubmitForm(false);
+                    }}
+                    className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+                  >
+                    Submit Proposal
+                  </button>
+                  <button
+                    onClick={() => setShowSubmitForm(false)}
+                    className="px-6 py-2.5 rounded-xl bg-secondary border border-border text-sm font-semibold text-muted-foreground hover:bg-secondary/80 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* Token Holders Layer */}
       <section className="py-20 bg-secondary/50">
         <div className="container">
