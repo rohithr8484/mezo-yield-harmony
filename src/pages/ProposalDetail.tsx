@@ -20,42 +20,29 @@ const ProposalDetail = () => {
   const { isConnected, address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const [newComment, setNewComment] = useState("");
-  const [localDiscussions, setLocalDiscussions] = useState<typeof proposal.discussions>([]);
+  const [localDiscussions, setLocalDiscussions] = useState<Array<{ id: string; author: string; avatar: string; message: string; timestamp: string }>>([]);
   const [voted, setVoted] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
-  const [feeToken, setFeeToken] = useState<"MEZO" | "MUSD">("MEZO");
+  const [selectedVote, setSelectedVote] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
 
-  const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
-
-  if (!proposal) {
-    return (
-      <PageLayout>
-        <div className="container py-20 text-center">
-          <h1 className="text-3xl font-display font-bold text-foreground mb-4">Proposal not found</h1>
-          <Link to="/governance" className="text-primary hover:underline">← Back to Proposals</Link>
-        </div>
-      </PageLayout>
-    );
-  }
-
-  const allDiscussions = [...proposal.discussions, ...localDiscussions];
-  const quorumReached = proposal.quorum >= proposal.quorumRequired;
-  const diffReached = proposal.differential >= proposal.differentialRequired;
-
-  const chartData = [
-    { name: "For", value: proposal.forVotes, color: CHART_COLORS.for },
-    { name: "Against", value: proposal.againstVotes, color: CHART_COLORS.against },
-    { name: "Abstain", value: proposal.abstainVotes, color: CHART_COLORS.abstain },
-  ].filter((d) => d.value > 0);
-
-  const handleVote = (voteType: "FOR" | "AGAINST" | "ABSTAIN") => {
+  const handleSelectVote = (voteType: "FOR" | "AGAINST" | "ABSTAIN") => {
     if (!isConnected) {
       openConnectModal?.();
       return;
     }
-    setVoted(voteType);
-    const tokenAddr = feeToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
+    setSelectedVote(voteType === selectedVote ? null : voteType);
+  };
+
+  const handlePayAndVote = (payToken: "MEZO" | "MUSD") => {
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    if (!selectedVote) return;
+    const tokenAddr = payToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
+    setVoted(selectedVote);
+    setSelectedVote(null);
     toast.success(
-      `Vote cast: ${voteType}. Fee: ${VOTING_FEE} ${feeToken} (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
+      `Vote cast: ${selectedVote}. Fee: ${VOTING_FEE} ${payToken} paid (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
       { duration: 5000 }
     );
   };
