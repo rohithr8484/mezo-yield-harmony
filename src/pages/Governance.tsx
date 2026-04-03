@@ -7,6 +7,8 @@ import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { Link } from "react-router-dom";
 import { proposals, statusStyles, formatVotes, type ProposalStatus } from "@/lib/proposals";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { toast } from "sonner";
 
 const filterOptions: Array<{ label: string; value: string }> = [
   { label: "All proposals", value: "all" },
