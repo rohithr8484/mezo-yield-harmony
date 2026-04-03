@@ -47,6 +47,29 @@ const ProposalDetail = () => {
     );
   };
 
+  const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
+
+  if (!proposal) {
+    return (
+      <PageLayout>
+        <div className="container py-20 text-center">
+          <h1 className="text-3xl font-display font-bold text-foreground mb-4">Proposal not found</h1>
+          <Link to="/governance" className="text-primary hover:underline">← Back to Proposals</Link>
+        </div>
+      </PageLayout>
+    );
+  }
+
+  const allDiscussions = [...proposal.discussions, ...localDiscussions];
+  const quorumReached = proposal.quorum >= proposal.quorumRequired;
+  const diffReached = proposal.differential >= proposal.differentialRequired;
+
+  const chartData = [
+    { name: "For", value: proposal.forVotes, color: CHART_COLORS.for },
+    { name: "Against", value: proposal.againstVotes, color: CHART_COLORS.against },
+    { name: "Abstain", value: proposal.abstainVotes, color: CHART_COLORS.abstain },
+  ].filter((d) => d.value > 0);
+
   const handleComment = () => {
     if (!newComment.trim()) return;
     if (!isConnected) {
