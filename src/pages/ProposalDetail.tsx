@@ -23,25 +23,41 @@ const ProposalDetail = () => {
   const [localDiscussions, setLocalDiscussions] = useState<Array<{ id: string; author: string; avatar: string; message: string; timestamp: string }>>([]);
   const [voted, setVoted] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
   const [selectedVote, setSelectedVote] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
+  const [pendingPayToken, setPendingPayToken] = useState<"MEZO" | "MUSD" | null>(null);
 
   const handleSelectVote = (voteType: "FOR" | "AGAINST" | "ABSTAIN") => {
     setSelectedVote(voteType === selectedVote ? null : voteType);
   };
 
-  const handlePayAndVote = (payToken: "MEZO" | "MUSD") => {
-    if (!isConnected) {
-      openConnectModal?.();
-      return;
-    }
+  // Complete the vote after wallet is connected
+  const completeVote = (payToken: "MEZO" | "MUSD") => {
     if (!selectedVote) return;
     const tokenAddr = payToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
     setVoted(selectedVote);
     setSelectedVote(null);
+    setPendingPayToken(null);
     toast.success(
       `Vote cast: ${selectedVote}. Fee: ${VOTING_FEE} ${payToken} paid (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
       { duration: 5000 }
     );
   };
+
+  const handlePayAndVote = (payToken: "MEZO" | "MUSD") => {
+    if (!selectedVote) return;
+    if (!isConnected) {
+      setPendingPayToken(payToken);
+      openConnectModal?.();
+      return;
+    }
+    completeVote(payToken);
+  };
+
+  // When wallet connects and there's a pending vote, complete it
+  React.useEffect(() => {
+    if (isConnected && pendingPayToken && selectedVote) {
+      completeVote(pendingPayToken);
+    }
+  }, [isConnected, pendingPayToken]);
 
   const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
 
