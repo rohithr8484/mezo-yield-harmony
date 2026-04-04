@@ -552,6 +552,7 @@ export const proposals: Proposal[] = [
       { id: "d1", author: "riskteam.eth", avatar: avatar("riskteam"), message: "Insurance is table stakes for mature DeFi protocols.", timestamp: "10 days ago" },
     ],
   },
+PLACEHOLDER_NEW_PROPOSALS
 ];
 
 export const statusStyles: Record<ProposalStatus, string> = {
