@@ -1610,3 +1610,4 @@ export function formatVotes(n: number): string {
 export const VOTING_FEE = "0.2"; // 0.2 token fee per vote
 export const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
 export const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
+
