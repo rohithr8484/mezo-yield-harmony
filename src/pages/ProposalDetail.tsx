@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, CheckCircle2, MessageSquare, Send } from "lucide-react";
 import { useAccount } from "wagmi";
