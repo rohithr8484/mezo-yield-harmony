@@ -29,35 +29,35 @@ const ProposalDetail = () => {
     setSelectedVote(voteType === selectedVote ? null : voteType);
   };
 
-  // Complete the vote after wallet is connected
-  const completeVote = (payToken: "MEZO" | "MUSD") => {
-    if (!selectedVote) return;
-    const tokenAddr = payToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
-    setVoted(selectedVote);
-    setSelectedVote(null);
-    setPendingPayToken(null);
-    toast.success(
-      `Vote cast: ${selectedVote}. Fee: ${VOTING_FEE} ${payToken} paid (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
-      { duration: 5000 }
-    );
-  };
-
+  // Handle pay button click — always requires wallet first
   const handlePayAndVote = (payToken: "MEZO" | "MUSD") => {
     if (!selectedVote) return;
+    
+    // If not connected, open wallet modal and store intent
     if (!isConnected) {
       setPendingPayToken(payToken);
       openConnectModal?.();
       return;
     }
-    completeVote(payToken);
+    
+    // Wallet is connected — execute vote
+    const tokenAddr = payToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
+    toast.success(
+      `Vote cast: ${selectedVote}. Fee: ${VOTING_FEE} ${payToken} deducted from wallet (${tokenAddr.slice(0, 6)}...${tokenAddr.slice(-4)})`,
+      { duration: 5000 }
+    );
+    setVoted(selectedVote);
+    setSelectedVote(null);
+    setPendingPayToken(null);
   };
 
-  // When wallet connects and there's a pending vote, complete it
+  // After wallet connects with a pending vote, show confirmation — don't auto-submit
   React.useEffect(() => {
     if (isConnected && pendingPayToken && selectedVote) {
-      completeVote(pendingPayToken);
+      toast.info(`Wallet connected! Click "Pay with ${pendingPayToken}" again to confirm your ${selectedVote} vote.`);
+      setPendingPayToken(null);
     }
-  }, [isConnected, pendingPayToken]);
+  }, [isConnected]);
 
   const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
 
