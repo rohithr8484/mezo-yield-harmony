@@ -25,15 +25,6 @@ const HeroSection = () => {
         <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
           Bring everyday finance to your Bitcoin.
         </p>
-
-        <div className="mt-10 animate-fade-in-up" style={{ animationDelay: "0.3s" }}>
-          <a
-            href="#"
-            className="inline-flex px-8 py-4 rounded-full bg-foreground text-background text-base font-semibold hover:opacity-90 transition-opacity shadow-lg"
-          >
-            Explore Mezo
-          </a>
-        </div>
       </div>
     </section>
   );

@@ -134,7 +134,7 @@ const Governance = () => {
             </div>
 
             {/* Proposal List */}
-            <div className="space-y-0 rounded-2xl border border-border bg-card overflow-hidden shadow-card">
+            <div className="space-y-0 rounded-2xl border border-border bg-card overflow-hidden shadow-card backdrop-blur-sm">
               {filteredProposals.length === 0 && (
                 <div className="p-12 text-center text-muted-foreground text-sm">No proposals found.</div>
               )}
@@ -142,43 +142,44 @@ const Governance = () => {
                 <Link
                   to={`/governance/${p.id}`}
                   key={p.id}
-                  className={`flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 p-6 hover:bg-secondary/50 transition-colors cursor-pointer ${idx < filteredProposals.length - 1 ? "border-b border-border" : ""}`}
+                  className={`group flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 p-6 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer ${idx < filteredProposals.length - 1 ? "border-b border-border" : ""}`}
                 >
                   {/* Left: content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
-                      <img src={p.authorAvatar} alt="" className="h-5 w-5 rounded-full" />
-                      <span className={`inline-block px-2.5 py-0.5 rounded border text-xs font-medium ${statusStyles[p.status]}`}>
+                      <img src={p.authorAvatar} alt="" className="h-5 w-5 rounded-full ring-1 ring-border" />
+                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wide ${statusStyles[p.status]}`}>
                         {p.status}
                       </span>
+                      <span className="text-[11px] text-muted-foreground font-mono">{p.id}</span>
                     </div>
-                    <h3 className="text-lg font-display font-bold text-foreground mb-1 leading-snug">{p.title}</h3>
-                    <p className="text-xs text-muted-foreground mb-2">Author: {p.author}</p>
+                    <h3 className="text-lg font-display font-bold text-foreground mb-1 leading-snug group-hover:text-primary transition-colors">{p.title}</h3>
+                    <p className="text-xs text-muted-foreground mb-2">by {p.author}</p>
                     <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{p.summary}</p>
                   </div>
 
                   {/* Right: vote bars */}
-                  <div className="w-full lg:w-64 shrink-0 space-y-2">
+                  <div className="w-full lg:w-64 shrink-0 space-y-2.5">
                     <div>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-foreground">For&nbsp;&nbsp;{formatVotes(p.forVotes)}</span>
-                        <span className="text-muted-foreground">{p.forPct.toFixed(2)}&nbsp;%</span>
+                        <span className="font-semibold text-emerald-600">For&nbsp;&nbsp;{formatVotes(p.forVotes)}</span>
+                        <span className="text-muted-foreground text-xs font-mono">{p.forPct.toFixed(1)}%</span>
                       </div>
                       <div className="h-2 rounded-full bg-border overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-700"
                           style={{ width: `${p.forPct}%` }}
                         />
                       </div>
                     </div>
                     <div>
                       <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-foreground">Against&nbsp;&nbsp;{formatVotes(p.againstVotes)}</span>
-                        <span className="text-muted-foreground">{p.againstPct.toFixed(2)}&nbsp;%</span>
+                        <span className="font-semibold text-destructive">Against&nbsp;&nbsp;{formatVotes(p.againstVotes)}</span>
+                        <span className="text-muted-foreground text-xs font-mono">{p.againstPct.toFixed(1)}%</span>
                       </div>
                       <div className="h-2 rounded-full bg-border overflow-hidden">
                         <div
-                          className="h-full rounded-full bg-destructive/60 transition-all duration-500"
+                          className="h-full rounded-full bg-gradient-to-r from-destructive/80 to-destructive/60 transition-all duration-700"
                           style={{ width: `${Math.max(p.againstPct, 1)}%` }}
                         />
                       </div>
