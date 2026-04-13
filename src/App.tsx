@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Governance from "./pages/Governance";
 import ProposalDetail from "./pages/ProposalDetail";
 import NotFound from "./pages/NotFound";
+import GovernanceChatBot from "./components/GovernanceChatBot";
 
 const App = () => (
   <Web3Provider>
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/governance/:id" element={<ProposalDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <GovernanceChatBot />
       </BrowserRouter>
     </TooltipProvider>
   </Web3Provider>
