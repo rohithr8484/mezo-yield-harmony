@@ -21,6 +21,7 @@ const App = () => (
           <Route path="/governance/:id" element={<ProposalDetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <GovernanceChatBot />
       </BrowserRouter>
     </TooltipProvider>
   </Web3Provider>
