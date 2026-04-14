@@ -20,6 +20,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/governance" element={<Governance />} />
           <Route path="/governance/:id" element={<ProposalDetail />} />
+          <Route path="/developer-services" element={<DeveloperServices />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <GovernanceChatBot />
