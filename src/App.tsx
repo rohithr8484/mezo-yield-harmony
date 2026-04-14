@@ -6,6 +6,7 @@ import { Web3Provider } from "@/components/Web3Provider";
 import Index from "./pages/Index";
 import Governance from "./pages/Governance";
 import ProposalDetail from "./pages/ProposalDetail";
+import DeveloperServices from "./pages/DeveloperServices";
 import NotFound from "./pages/NotFound";
 import GovernanceChatBot from "./components/GovernanceChatBot";
 
@@ -19,6 +20,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/governance" element={<Governance />} />
           <Route path="/governance/:id" element={<ProposalDetail />} />
+          <Route path="/developer-services" element={<DeveloperServices />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <GovernanceChatBot />
