@@ -6,7 +6,8 @@ import WalletButton from "./WalletButton";
 import { Link } from "react-router-dom";
 
 const navLinks = [
-  { label: "Proposals", href: "/governance" },
+  { label: "Mezo Governance (Proposals)", href: "/governance" },
+  { label: "Mezo Developer Infrastructure Services", href: "/developer-services" },
 ];
 
 const Navbar = () => {
