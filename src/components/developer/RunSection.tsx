@@ -179,7 +179,7 @@ export const RunSection = () => {
 
           <button
             onClick={handleAnalyze}
-            disabled={analyzing || (selected === "contract" && !fileName)}
+            disabled={analyzing || (selected === "contract" && !contractCode)}
             className="w-full py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {analyzing ? (
