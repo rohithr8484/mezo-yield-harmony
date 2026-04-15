@@ -92,11 +92,13 @@ export const RunSection = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [fileName, setFileName] = useState("");
+  const [contractCode, setContractCode] = useState("");
 
   const handleRun = (type: RunType) => {
     setSelected(type);
     setResult(null);
     setFileName("");
+    setContractCode("");
   };
 
   const handleAnalyze = () => {
@@ -113,6 +115,11 @@ export const RunSection = () => {
     const file = e.target.files?.[0];
     if (file) {
       setFileName(file.name);
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setContractCode((ev.target?.result as string) || "");
+      };
+      reader.readAsText(file);
     }
   };
 
