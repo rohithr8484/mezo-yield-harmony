@@ -92,11 +92,13 @@ export const RunSection = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [fileName, setFileName] = useState("");
+  const [contractCode, setContractCode] = useState("");
 
   const handleRun = (type: RunType) => {
     setSelected(type);
     setResult(null);
     setFileName("");
+    setContractCode("");
   };
 
   const handleAnalyze = () => {
@@ -113,6 +115,11 @@ export const RunSection = () => {
     const file = e.target.files?.[0];
     if (file) {
       setFileName(file.name);
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setContractCode((ev.target?.result as string) || "");
+      };
+      reader.readAsText(file);
     }
   };
 
@@ -143,23 +150,36 @@ export const RunSection = () => {
       {selected && (
         <div className="bg-card rounded-xl border border-border p-6 animate-in fade-in duration-300">
           {selected === "contract" && (
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-foreground mb-2">Upload Solidity File</label>
+            <div className="mb-4 space-y-3">
+              <label className="block text-sm font-medium text-foreground mb-2">Upload or Paste Solidity Contract</label>
               <div className="border-2 border-dashed border-border rounded-lg p-6 text-center hover:border-primary/50 transition-colors">
                 <input type="file" accept=".sol" onChange={handleFileChange} className="hidden" id="sol-upload" />
                 <label htmlFor="sol-upload" className="cursor-pointer">
                   <Upload className="h-8 w-8 mx-auto text-muted-foreground mb-2" />
                   <p className="text-sm text-muted-foreground">
-                    {fileName || "Click to upload .sol file"}
+                    {fileName ? `✓ ${fileName}` : "Click to upload .sol file"}
                   </p>
                 </label>
+              </div>
+              <div className="relative">
+                <textarea
+                  value={contractCode}
+                  onChange={(e) => { setContractCode(e.target.value); if (!fileName) setFileName("pasted-contract.sol"); }}
+                  placeholder="// Or paste your Solidity code here...&#10;pragma solidity ^0.8.0;&#10;&#10;contract MyContract {&#10;    // ...&#10;}"
+                  className="w-full h-48 rounded-lg bg-background border border-border p-4 text-sm font-mono text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring resize-y"
+                />
+                {contractCode && (
+                  <span className="absolute top-2 right-2 text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                    {contractCode.split('\n').length} lines
+                  </span>
+                )}
               </div>
             </div>
           )}
 
           <button
             onClick={handleAnalyze}
-            disabled={analyzing || (selected === "contract" && !fileName)}
+            disabled={analyzing || (selected === "contract" && !contractCode)}
             className="w-full py-3 rounded-lg bg-gradient-to-r from-primary to-accent text-primary-foreground font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {analyzing ? (
