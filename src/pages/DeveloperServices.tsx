@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Activity, Database, Zap, Vote } from "lucide-react";
+import { Activity, Database, Zap, Vote, Lock } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { PaymentGate } from "@/components/developer/PaymentGate";
 import { TransactionLookup } from "@/components/developer/TransactionLookup";
 import { RunSection } from "@/components/developer/RunSection";
 import { GovernanceAnalytics } from "@/components/developer/GovernanceAnalytics";
 import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
+import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
 
 const dataFeeds = [
   { name: "MUSD / USD", feedId: "0x0617a9b725011a126a2b9fd53563f4236501f32cf76d877644b943394606c6de" },
@@ -135,8 +136,30 @@ const DeveloperServices = () => {
         </div>
       </section>
 
+      {/* veNFT Marketplace */}
+      <section className="py-20 bg-secondary/50" id="venft-marketplace">
+        <div className="container">
+          <div className="text-center mb-4">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
+              <Lock className="h-3 w-3" /> Vote-Escrowed Positions
+            </span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
+            veBTC & veMEZO Marketplace
+          </h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
+            Buy already-locked veBTC and veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain settlement.
+          </p>
+          <div className="max-w-6xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
+            <PaymentGate serviceName="veNFT Marketplace" onPaymentSuccess={() => markPaid("venft")} isPaid={!!paidServices["venft"]}>
+              <VeNFTMarketplace />
+            </PaymentGate>
+          </div>
+        </div>
+      </section>
+
       {/* Run Section */}
-      <section className="py-20 bg-secondary/50" id="run">
+      <section className="py-20" id="run">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
             Run
