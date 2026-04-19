@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Activity, Database, Zap, Vote, Lock } from "lucide-react";
+import { Activity, Database, Zap, Vote, Lock, Play } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { PaymentGate } from "@/components/developer/PaymentGate";
 import { TransactionLookup } from "@/components/developer/TransactionLookup";
@@ -81,20 +81,20 @@ const DeveloperServices = () => {
               </PaymentGate>
             </div>
 
-            {/* Governance Proposals Analytics */}
+            {/* Run */}
             <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
-                <Vote className="h-6 w-6 text-primary-foreground" />
+                <Play className="h-6 w-6 text-primary-foreground" />
               </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">Governance Proposals</h3>
+              <h3 className="text-lg font-display font-semibold text-foreground mb-2">Run</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                DAO voting data and analytics — proposal outcomes, participation rates, voter breakdown.
+                Upload contracts, run simulations, deploy AI models, and index data — AI explains risks and attack vectors.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                0.01 MEZO / query
+                0.2 MEZO / run
               </span>
-              <PaymentGate serviceName="Governance Analytics" onPaymentSuccess={() => markPaid("governance")} isPaid={!!paidServices["governance"]}>
-                <GovernanceAnalytics />
+              <PaymentGate serviceName="Run Services" onPaymentSuccess={() => markPaid("run")} isPaid={!!paidServices["run"]}>
+                <RunSection />
               </PaymentGate>
             </div>
           </div>
@@ -158,18 +158,23 @@ const DeveloperServices = () => {
         </div>
       </section>
 
-      {/* Run Section */}
-      <section className="py-20" id="run">
+      {/* Governance Analytics Section */}
+      <section className="py-20" id="governance-analytics">
         <div className="container">
+          <div className="text-center mb-4">
+            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
+              <Vote className="h-3 w-3" /> DAO Voting Data
+            </span>
+          </div>
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            Run
+            Governance Analytics
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Upload contracts, run simulations, deploy AI models, and index data — AI explains risks, hidden fees, and attack vectors.
+            DAO voting data and analytics — proposal outcomes, participation rates, voter breakdown. Priced at 0.01 MEZO / query.
           </p>
           <div className="max-w-4xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
-            <PaymentGate serviceName="Run Services" onPaymentSuccess={() => markPaid("run")} isPaid={!!paidServices["run"]}>
-              <RunSection />
+            <PaymentGate serviceName="Governance Analytics" onPaymentSuccess={() => markPaid("governance")} isPaid={!!paidServices["governance"]}>
+              <GovernanceAnalytics />
             </PaymentGate>
           </div>
         </div>
