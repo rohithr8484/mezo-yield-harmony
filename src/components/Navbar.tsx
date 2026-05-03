@@ -3,6 +3,7 @@ import { Menu, X } from "lucide-react";
 import { useAccount } from "wagmi";
 import { useBitcoinAccount } from "@mezo-org/passport";
 import WalletButton from "./WalletButton";
+import BoarConnectButton from "./BoarConnectButton";
 import { Link } from "react-router-dom";
 
 const navLinks = [
@@ -53,8 +54,11 @@ const Navbar = () => {
               Explorer ↗
             </a>
           )}
-          <div className="w-[200px]">
+          <div className="w-[180px]">
             <WalletButton />
+          </div>
+          <div className="w-[180px]">
+            <BoarConnectButton />
           </div>
         </div>
 
@@ -80,8 +84,9 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          <div className="mt-3 [&>*]:w-full">
+          <div className="mt-3 space-y-2 [&>*]:w-full">
             <WalletButton />
+            <BoarConnectButton />
           </div>
         </div>
       )}
