@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Activity, Database, Zap, Vote, Lock, Play } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { PaymentGate } from "@/components/developer/PaymentGate";
@@ -16,8 +17,22 @@ const dataFeeds = [
 
 const DeveloperServices = () => {
   const [paidServices, setPaidServices] = useState<Record<string, boolean>>({});
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const markPaid = (key: string) => setPaidServices((prev) => ({ ...prev, [key]: true }));
+  const markPaid = (key: string) => {
+    setPaidServices((prev) => ({ ...prev, [key]: true }));
+    if (key === "governance") {
+      setTimeout(() => navigate("/governance"), 600);
+    }
+  };
+
+  useEffect(() => {
+    if (location.hash) {
+      const el = document.querySelector(location.hash);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location]);
 
   return (
     <PageLayout>
