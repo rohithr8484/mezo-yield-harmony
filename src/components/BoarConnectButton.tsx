@@ -6,7 +6,7 @@ const BOAR_CHAIN = {
   chainId: "0x7b7c", // 31612 — Mezo Mainnet
   chainName: "Mezo Mainnet (Boar)",
   nativeCurrency: { name: "Bitcoin", symbol: "BTC", decimals: 18 },
-  rpcUrls: ["https://rpc-http.mezo.boar.network/81YcmV8cjuhVuCdoidBcGlWIC0rSfy4c"],
+  rpcUrls: ["https://rpc-http.mezo.boar.network/0jg0cJ5DWuHRYmU9xIb6mlyweqr9HO1R"],
   blockExplorerUrls: ["https://explorer.mezo.org"],
 };
 
