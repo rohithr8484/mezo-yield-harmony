@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Activity, Database, Zap, Vote, Lock, Play } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { PaymentGate } from "@/components/developer/PaymentGate";
