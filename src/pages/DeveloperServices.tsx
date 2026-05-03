@@ -37,16 +37,20 @@ const DeveloperServices = () => {
   return (
     <PageLayout>
       {/* Hero */}
-      <section className="py-20 md:py-28">
+      <section className="relative py-20 md:py-28 overflow-hidden">
+        <div className="absolute inset-0 -z-10">
+          <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-primary/20 blur-3xl animate-blob" />
+          <div className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-bitcoin/20 blur-3xl animate-blob" style={{ animationDelay: "4s" }} />
+        </div>
         <div className="container text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
+          <span className="inline-block px-4 py-1.5 rounded-full glass-card text-sm font-medium text-muted-foreground mb-6 animate-fade-in">
             ⚡ Mezo Developer Infrastructure Services
           </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight animate-fade-in-up">
             <span className="text-foreground">Infrastructure for </span>
-            <span className="text-gradient italic">Bitcoin DeFi</span>
+            <span className="text-gradient-animated italic">Bitcoin DeFi</span>
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
             APIs, oracles, compute, and analytics — all priced in MEZO. Like AWS for Web3, powered by Bitcoin.
           </p>
         </div>
