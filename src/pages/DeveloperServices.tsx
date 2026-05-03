@@ -17,8 +17,22 @@ const dataFeeds = [
 
 const DeveloperServices = () => {
   const [paidServices, setPaidServices] = useState<Record<string, boolean>>({});
+  const location = useLocation();
+  const navigate = useNavigate();
 
-  const markPaid = (key: string) => setPaidServices((prev) => ({ ...prev, [key]: true }));
+  const markPaid = (key: string) => {
+    setPaidServices((prev) => ({ ...prev, [key]: true }));
+    if (key === "governance") {
+      setTimeout(() => navigate("/governance"), 600);
+    }
+  };
+
+  useEffect(() => {
+    if (location.hash) {
+      const el = document.querySelector(location.hash);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location]);
 
   return (
     <PageLayout>
