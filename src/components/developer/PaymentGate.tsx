@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Wallet } from "lucide-react";
-import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
-import { parseUnits } from "viem";
+import { Wallet, Bitcoin } from "lucide-react";
+import { useAccount, useSwitchChain, useWriteContract, useSendTransaction } from "wagmi";
+import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
