@@ -103,6 +103,14 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
           <Wallet className="h-4 w-4" />
           {pending === "MEZO" && isProcessing ? "Confirming..." : "Pay with MEZO"}
         </button>
+        <button
+          onClick={() => handlePay("BTC")}
+          disabled={isProcessing}
+          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+        >
+          <Bitcoin className="h-4 w-4" />
+          {pending === "BTC" && isProcessing ? "Confirming..." : "Pay with BTC"}
+        </button>
       </div>
       <div className="text-center space-y-1">
         <p className="text-[10px] font-mono text-muted-foreground">MUSD: {MUSD_TOKEN}</p>
