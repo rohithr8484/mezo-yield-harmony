@@ -41,14 +41,23 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
       if (chainId !== MEZO_TESTNET_CHAIN_ID) {
         await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       }
-      const tokenAddr = token === "MUSD" ? MUSD_TOKEN : MEZO_TOKEN;
-      const txHash = await writeContractAsync({
-        address: tokenAddr,
-        abi: ERC20_ABI,
-        functionName: "transfer",
-        args: [FEE_RECIPIENT, parseUnits("0.2", 18)],
-        chainId: MEZO_TESTNET_CHAIN_ID,
-      });
+      let txHash: `0x${string}`;
+      if (token === "BTC") {
+        txHash = await sendTransactionAsync({
+          to: FEE_RECIPIENT,
+          value: parseEther("0.0001"),
+          chainId: MEZO_TESTNET_CHAIN_ID,
+        });
+      } else {
+        const tokenAddr = token === "MUSD" ? MUSD_TOKEN : MEZO_TOKEN;
+        txHash = await writeContractAsync({
+          address: tokenAddr,
+          abi: ERC20_ABI,
+          functionName: "transfer",
+          args: [FEE_RECIPIENT, parseUnits("0.2", 18)],
+          chainId: MEZO_TESTNET_CHAIN_ID,
+        });
+      }
       toast.success(`Payment for ${serviceName} confirmed via ${connectedWalletName}. Tx: ${txHash.slice(0, 10)}...`);
       onPaymentSuccess();
     } catch (error) {
