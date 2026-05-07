@@ -23,11 +23,12 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
-  const [pending, setPending] = useState<"MUSD" | "MEZO" | null>(null);
+  const { sendTransactionAsync } = useSendTransaction();
+  const [pending, setPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const connectedWalletName = connector?.name ?? "Wallet";
 
-  const handlePay = async (token: "MUSD" | "MEZO") => {
+  const handlePay = async (token: "MUSD" | "MEZO" | "BTC") => {
     if (isSubmitting) return;
     if (!isConnected) {
       setPending(token);
