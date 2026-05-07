@@ -23,20 +23,29 @@ const BoarConnectButton = () => {
     if (!eth) return;
     eth.request({ method: "eth_accounts" })
       .then((accs: string[]) => {
-        const stored = localStorage.getItem("boar_connected") === "1";
-        if (stored && accs?.[0]) setAccount(accs[0]);
+        if (accs?.[0] && localStorage.getItem("boar_connected") === "1") {
+          setAccount(accs[0]);
+        }
       })
       .catch(() => {});
     const onAccounts = (accs: string[]) => {
       if (!accs?.length) {
         setAccount(null);
         localStorage.removeItem("boar_connected");
-      } else if (localStorage.getItem("boar_connected") === "1") {
+      } else {
         setAccount(accs[0]);
       }
     };
+    const onChain = () => {
+      // re-read accounts on chain change
+      eth.request({ method: "eth_accounts" }).then((a: string[]) => a?.[0] && setAccount(a[0])).catch(() => {});
+    };
     eth.on?.("accountsChanged", onAccounts);
-    return () => eth.removeListener?.("accountsChanged", onAccounts);
+    eth.on?.("chainChanged", onChain);
+    return () => {
+      eth.removeListener?.("accountsChanged", onAccounts);
+      eth.removeListener?.("chainChanged", onChain);
+    };
   }, [eth]);
 
   const connect = useCallback(async () => {
@@ -46,22 +55,28 @@ const BoarConnectButton = () => {
     }
     setBusy(true);
     try {
-      const accs: string[] = await eth.request({ method: "eth_requestAccounts" });
+      // Add the chain first (idempotent — wallets ignore if it already exists)
+      try {
+        await eth.request({ method: "wallet_addEthereumChain", params: [BOAR_CHAIN] });
+      } catch (addErr: any) {
+        // 4001 = user rejected; rethrow. Other errors (already added) are fine.
+        if (addErr?.code === 4001) throw addErr;
+      }
+      // Switch to Boar chain
       try {
         await eth.request({
           method: "wallet_switchEthereumChain",
           params: [{ chainId: BOAR_CHAIN.chainId }],
         });
-      } catch (err: any) {
-        if (err?.code === 4902 || /Unrecognized chain|not added/i.test(err?.message ?? "")) {
-          await eth.request({ method: "wallet_addEthereumChain", params: [BOAR_CHAIN] });
-        } else {
-          throw err;
-        }
+      } catch (switchErr: any) {
+        if (switchErr?.code === 4001) throw switchErr;
+        // ignore other switch errors and continue to request accounts
       }
+      const accs: string[] = await eth.request({ method: "eth_requestAccounts" });
+      if (!accs?.[0]) throw new Error("No account returned from wallet");
       setAccount(accs[0]);
       localStorage.setItem("boar_connected", "1");
-      toast.success("Connected to Mezo Mainnet via Boar RPC");
+      toast.success(`Connected ${accs[0].slice(0, 6)}…${accs[0].slice(-4)} via Boar RPC`);
     } catch (e: any) {
       toast.error(e?.message ?? "Failed to connect via Boar");
     } finally {
