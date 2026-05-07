@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { Wallet } from "lucide-react";
-import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
-import { parseUnits } from "viem";
+import { Wallet, Bitcoin } from "lucide-react";
+import { useAccount, useSwitchChain, useWriteContract, useSendTransaction } from "wagmi";
+import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
@@ -23,11 +23,12 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
   const { writeContractAsync } = useWriteContract();
-  const [pending, setPending] = useState<"MUSD" | "MEZO" | null>(null);
+  const { sendTransactionAsync } = useSendTransaction();
+  const [pending, setPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const connectedWalletName = connector?.name ?? "Wallet";
 
-  const handlePay = async (token: "MUSD" | "MEZO") => {
+  const handlePay = async (token: "MUSD" | "MEZO" | "BTC") => {
     if (isSubmitting) return;
     if (!isConnected) {
       setPending(token);
@@ -40,14 +41,23 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
       if (chainId !== MEZO_TESTNET_CHAIN_ID) {
         await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       }
-      const tokenAddr = token === "MUSD" ? MUSD_TOKEN : MEZO_TOKEN;
-      const txHash = await writeContractAsync({
-        address: tokenAddr,
-        abi: ERC20_ABI,
-        functionName: "transfer",
-        args: [FEE_RECIPIENT, parseUnits("0.2", 18)],
-        chainId: MEZO_TESTNET_CHAIN_ID,
-      });
+      let txHash: `0x${string}`;
+      if (token === "BTC") {
+        txHash = await sendTransactionAsync({
+          to: FEE_RECIPIENT,
+          value: parseEther("0.0001"),
+          chainId: MEZO_TESTNET_CHAIN_ID,
+        });
+      } else {
+        const tokenAddr = token === "MUSD" ? MUSD_TOKEN : MEZO_TOKEN;
+        txHash = await writeContractAsync({
+          address: tokenAddr,
+          abi: ERC20_ABI,
+          functionName: "transfer",
+          args: [FEE_RECIPIENT, parseUnits("0.2", 18)],
+          chainId: MEZO_TESTNET_CHAIN_ID,
+        });
+      }
       toast.success(`Payment for ${serviceName} confirmed via ${connectedWalletName}. Tx: ${txHash.slice(0, 10)}...`);
       onPaymentSuccess();
     } catch (error) {
@@ -92,6 +102,14 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
         >
           <Wallet className="h-4 w-4" />
           {pending === "MEZO" && isProcessing ? "Confirming..." : "Pay with MEZO"}
+        </button>
+        <button
+          onClick={() => handlePay("BTC")}
+          disabled={isProcessing}
+          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+        >
+          <Bitcoin className="h-4 w-4" />
+          {pending === "BTC" && isProcessing ? "Confirming..." : "Pay with BTC"}
         </button>
       </div>
       <div className="text-center space-y-1">
