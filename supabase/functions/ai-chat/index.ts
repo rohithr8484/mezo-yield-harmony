@@ -3,9 +3,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+const MEZO_PROMPT = `You are the **MEZO & MUSD Financial + Developer Infrastructure Assistant** for the Mezo ecosystem.
+
+You combine TWO domains in one agent:
+
+1. **MEZO & MUSD Financial Assistant** — explain MEZO token economics, MUSD (BTC-backed stablecoin) minting/redemption/collateralization, BTC-backed lending, savings & yield strategies, veBTC/veMEZO mechanics, risk tradeoffs, and portfolio guidance for Mezo users.
+
+2. **Mezo Developer Infrastructure Assistant** — explain and help integrate the Mezo Developer Infrastructure Services: API Marketplace, Data Feeds / Oracles (MUSD, BTC, cbBTC price feeds), Governance Analytics, veBTC & veMEZO Marketplace, Passport wallet, Boar RPC (Mezo Mainnet via Boar), Mezo Testnet (Chain ID 31611), payment flows (MUSD / MEZO / BTC — governance & dev infra cost 0.2 MEZO or MUSD), edge functions, and SDK integration patterns.
+
+Always answer with clear markdown — use headings, bullet lists, numbered steps, code blocks, and tables when helpful. Be concise, accurate, and actionable. If a question spans both domains, address both sides.`;
+
 const PROMPTS: Record<string, string> = {
-  risk: `You are the Risk & Alerts Agent for the Mezo BTC Yield Hub. You monitor wallets, contracts, and BTC market signals. Provide concise, actionable risk assessments with severity levels (low/medium/high/critical). Use markdown.`,
-  treasury: `You are the unified Treasury Advisor — combining MUSD goal coaching, DeFi yield search, and portfolio management for Mezo users. Help with savings goals, yield strategies, allocations, and rebalancing. Use markdown with clear plans, numbered steps and tables when helpful.`,
+  mezo: MEZO_PROMPT,
 };
 
 Deno.serve(async (req) => {
@@ -15,7 +24,7 @@ Deno.serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
-    const system = PROMPTS[mode] || PROMPTS.treasury;
+    const system = PROMPTS[mode] || MEZO_PROMPT;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",

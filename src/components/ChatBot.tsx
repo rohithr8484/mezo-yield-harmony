@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { MessageCircle, X, Send, Loader2, ShieldAlert, Wallet, Link2, Sparkles } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, Coins, Link2, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-type Mode = "boar" | "risk" | "treasury";
+type Mode = "boar" | "mezo";
 type Msg = { role: "user" | "assistant"; content: string };
 
 const MODES: { id: Mode; label: string; icon: React.ComponentType<{ className?: string }>; greet: string; prompts: string[] }[] = [
@@ -21,23 +21,16 @@ const MODES: { id: Mode; label: string; icon: React.ComponentType<{ className?: 
     ],
   },
   {
-    id: "risk",
-    label: "Risk & Alerts",
-    icon: ShieldAlert,
-    greet: "👋 I'm your **Risk Agent**. I monitor wallets, contracts, and market signals. Want me to scan something?",
-    prompts: ["Scan my connected wallet", "Latest BTC market risks", "Audit a contract address", "Show critical alerts"],
-  },
-  {
-    id: "treasury",
-    label: "Treasury Advisor",
-    icon: Wallet,
+    id: "mezo",
+    label: "MEZO / MUSD & Dev Infra",
+    icon: Coins,
     greet:
-      "💼 I'm your unified **Treasury Advisor** — combining MUSD goal coaching, DeFi yield search, and portfolio management. Tell me your goal, holdings, or risk appetite and I'll build a plan, find yields, and analyze allocations.",
+      "💡 I'm your **MEZO & MUSD Financial + Developer Infra Assistant**. Ask me about MEZO/MUSD economics, BTC-backed yield, lending, savings strategies — *and* the Mezo Developer Infrastructure stack: API Marketplace, Data Feeds / Oracles, Governance Analytics, veBTC/veMEZO Marketplace, Passport, Boar RPC, payment flows (MUSD / MEZO / BTC), edge functions, and integration patterns.",
     prompts: [
-      "Save 1,000 MUSD in 90 days",
-      "Best low-risk MUSD yield right now",
-      "Analyze my allocation & suggest a rebalance",
-      "Build a 90-day plan: DCA + yield + hedge",
+      "Explain MUSD: how it's minted, backed and redeemed",
+      "Best way to earn yield on MUSD with low risk",
+      "How do I integrate the Data Feeds / Oracles?",
+      "Walk me through the Governance Analytics API & payment flow",
     ],
   },
 ];
@@ -45,7 +38,7 @@ const MODES: { id: Mode; label: string; icon: React.ComponentType<{ className?: 
 const ChatBot = () => {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>("boar");
-  const [messages, setMessages] = useState<Record<Mode, Msg[]>>({ boar: [], risk: [], treasury: [] });
+  const [messages, setMessages] = useState<Record<Mode, Msg[]>>({ boar: [], mezo: [] });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
