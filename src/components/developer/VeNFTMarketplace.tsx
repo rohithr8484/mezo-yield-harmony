@@ -122,14 +122,6 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
 };
 
 const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; onBuy: () => void }) => {
-  if (token.empty) {
-    return (
-      <div className="rounded-2xl bg-secondary/30 border border-dashed border-border p-6 flex flex-col items-center justify-center min-h-[260px] opacity-60">
-        <span className="font-display font-bold text-foreground text-lg">ID <span className="text-muted-foreground">#{token.id}</span></span>
-        <span className="text-xs uppercase tracking-wide text-muted-foreground mt-2">Empty</span>
-      </div>
-    );
-  }
   return (
     <div className={`rounded-2xl bg-card border p-6 shadow-card hover:shadow-card-hover transition-all ${owned ? "border-emerald-500/40 ring-1 ring-emerald-500/20" : "border-border"}`}>
       <div className="flex justify-between items-start mb-4">
