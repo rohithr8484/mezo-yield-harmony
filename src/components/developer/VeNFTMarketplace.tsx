@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TrendingDown, Lock, Zap, Calendar, Tag, ShieldCheck, ChevronRight, X, Wallet } from "lucide-react";
+import { TrendingDown, Lock, Zap, Calendar, Tag, ShieldCheck, ChevronRight, X, Wallet, Sparkles, Copy } from "lucide-react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -31,7 +31,83 @@ const positions: VePosition[] = [
   { id: 4421, type: "veBTC", seller: "0x21A4...77BB", intrinsicValue: 0.62, votingPower: 0.58, lockEndsDays: 540, lockEndsDate: "Sep 30, 2027", listingPrice: 0.32, discount: 36.5 },
 ];
 
-const PurchaseModal = ({ position, onClose }: { position: VePosition; onClose: () => void }) => {
+interface AcquiredToken {
+  id: number;
+  owner?: string;
+  balance?: number;
+  empty?: boolean;
+}
+
+const ACQUIRED_TOKENS: AcquiredToken[] = [
+  { id: 25, owner: "0x27343E0410acd8Cf711d079C57811fe8c0666DF2", balance: 13 },
+  { id: 26, owner: "0x6e80164ea60673D64d5d6228beb684a1274Bb017", balance: 61 },
+  { id: 27, owner: "0x6e80164ea60673D64d5d6228beb684a1274Bb017", balance: 61 },
+  { id: 28, owner: "0x6eA4409ec503b0D5431dCE7E241dF35c511c0768", balance: 1 },
+  { id: 29, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
+  { id: 30, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
+  { id: 31, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
+  { id: 32, empty: true },
+  { id: 33, empty: true },
+  { id: 34, empty: true },
+  { id: 35, empty: true },
+  { id: 36, owner: "0x6e80164ea60673D64d5d6228beb684a1274Bb017", balance: 61 },
+];
+
+const AcquiredTokensPanel = () => {
+  const shorten = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+  return (
+    <div className="rounded-2xl bg-gradient-to-br from-bitcoin/5 via-card to-primary/5 border border-bitcoin/30 p-6 shadow-card-hover animate-fade-in">
+      <div className="flex items-center gap-2 mb-1">
+        <Sparkles className="h-5 w-5 text-bitcoin animate-pulse" />
+        <h3 className="font-display font-bold text-foreground text-lg">Acquired veMEZO Tokens</h3>
+      </div>
+      <p className="text-xs text-muted-foreground mb-5">
+        On-chain veMEZO inventory delivered to your account after settlement.
+      </p>
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {ACQUIRED_TOKENS.map((t) => (
+          <div
+            key={t.id}
+            className={`rounded-xl border p-4 transition-all hover:scale-[1.02] ${
+              t.empty
+                ? "bg-secondary/30 border-dashed border-border opacity-60"
+                : "bg-card border-border hover:border-bitcoin/40 hover:shadow-card"
+            }`}
+          >
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-display font-bold text-foreground">
+                ID <span className="text-bitcoin">#{t.id}</span>
+              </span>
+              {t.empty ? (
+                <span className="text-[10px] uppercase tracking-wide text-muted-foreground">Empty</span>
+              ) : (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold">
+                  veMEZO {t.balance}
+                </span>
+              )}
+            </div>
+            {!t.empty && (
+              <>
+                <p className="text-[10px] text-muted-foreground uppercase mb-0.5">Owner</p>
+                <button
+                  onClick={() => navigator.clipboard.writeText(t.owner!)}
+                  className="font-mono text-xs text-foreground hover:text-bitcoin transition flex items-center gap-1 group"
+                  title="Copy address"
+                >
+                  {shorten(t.owner!)}
+                  <Copy className="h-3 w-3 opacity-0 group-hover:opacity-100 transition" />
+                </button>
+                <p className="text-[10px] text-muted-foreground mt-2 italic">Extra NFT data unavailable</p>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const PurchaseModal = ({ position, onClose, onPurchased }: { position: VePosition; onClose: () => void; onPurchased: () => void }) => {
   const { isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync } = useSwitchChain();
@@ -73,6 +149,7 @@ const PurchaseModal = ({ position, onClose }: { position: VePosition; onClose: (
         chainId: MEZO_TESTNET_CHAIN_ID,
       });
       toast.success(`Purchased ve${position.type.slice(2)} #${position.id}. Tx: ${tx.slice(0, 10)}...`);
+      onPurchased();
       onClose();
     } catch (e) {
       toast.error("Purchase cancelled or failed");
@@ -186,6 +263,7 @@ const PositionCard = ({ position, onBuy }: { position: VePosition; onBuy: () => 
 export const VeNFTMarketplace = () => {
   const [selected, setSelected] = useState<VePosition | null>(null);
   const [filter, setFilter] = useState<"all" | "veMEZO" | "veBTC">("all");
+  const [showAcquired, setShowAcquired] = useState(false);
 
   const filtered = filter === "all" ? positions : positions.filter((p) => p.type === filter);
 
@@ -204,7 +282,15 @@ export const VeNFTMarketplace = () => {
         {filtered.map((p) => <PositionCard key={p.id} position={p} onBuy={() => setSelected(p)} />)}
       </div>
 
-      {selected && <PurchaseModal position={selected} onClose={() => setSelected(null)} />}
+      {showAcquired && <AcquiredTokensPanel />}
+
+      {selected && (
+        <PurchaseModal
+          position={selected}
+          onClose={() => setSelected(null)}
+          onPurchased={() => setShowAcquired(true)}
+        />
+      )}
     </div>
   );
 };
