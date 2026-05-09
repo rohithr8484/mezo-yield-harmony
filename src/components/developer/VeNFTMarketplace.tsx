@@ -25,10 +25,6 @@ const TOKENS: VeToken[] = [
   { id: 29, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
   { id: 30, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
   { id: 31, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
-  { id: 32, empty: true },
-  { id: 33, empty: true },
-  { id: 34, empty: true },
-  { id: 35, empty: true },
   { id: 36, owner: "0x6e80164ea60673D64d5d6228beb684a1274Bb017", balance: 61 },
 ];
 
