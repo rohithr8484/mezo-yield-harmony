@@ -15,7 +15,6 @@ interface VeToken {
   id: number;
   owner?: string;
   balance?: number;
-  empty?: boolean;
 }
 
 const TOKENS: VeToken[] = [
@@ -26,10 +25,6 @@ const TOKENS: VeToken[] = [
   { id: 29, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
   { id: 30, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
   { id: 31, owner: "0x58C6A45AcFCc1fD0E5A103Cab2caE00b0B188EC5", balance: 57 },
-  { id: 32, empty: true },
-  { id: 33, empty: true },
-  { id: 34, empty: true },
-  { id: 35, empty: true },
   { id: 36, owner: "0x6e80164ea60673D64d5d6228beb684a1274Bb017", balance: 61 },
 ];
 
@@ -127,14 +122,6 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
 };
 
 const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; onBuy: () => void }) => {
-  if (token.empty) {
-    return (
-      <div className="rounded-2xl bg-secondary/30 border border-dashed border-border p-6 flex flex-col items-center justify-center min-h-[260px] opacity-60">
-        <span className="font-display font-bold text-foreground text-lg">ID <span className="text-muted-foreground">#{token.id}</span></span>
-        <span className="text-xs uppercase tracking-wide text-muted-foreground mt-2">Empty</span>
-      </div>
-    );
-  }
   return (
     <div className={`rounded-2xl bg-card border p-6 shadow-card hover:shadow-card-hover transition-all ${owned ? "border-emerald-500/40 ring-1 ring-emerald-500/20" : "border-border"}`}>
       <div className="flex justify-between items-start mb-4">
