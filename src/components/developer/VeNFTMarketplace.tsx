@@ -149,6 +149,7 @@ const PurchaseModal = ({ position, onClose, onPurchased }: { position: VePositio
         chainId: MEZO_TESTNET_CHAIN_ID,
       });
       toast.success(`Purchased ve${position.type.slice(2)} #${position.id}. Tx: ${tx.slice(0, 10)}...`);
+      onPurchased();
       onClose();
     } catch (e) {
       toast.error("Purchase cancelled or failed");
