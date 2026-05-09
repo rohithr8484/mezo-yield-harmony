@@ -263,6 +263,7 @@ const PositionCard = ({ position, onBuy }: { position: VePosition; onBuy: () => 
 export const VeNFTMarketplace = () => {
   const [selected, setSelected] = useState<VePosition | null>(null);
   const [filter, setFilter] = useState<"all" | "veMEZO" | "veBTC">("all");
+  const [showAcquired, setShowAcquired] = useState(false);
 
   const filtered = filter === "all" ? positions : positions.filter((p) => p.type === filter);
 
@@ -281,7 +282,15 @@ export const VeNFTMarketplace = () => {
         {filtered.map((p) => <PositionCard key={p.id} position={p} onBuy={() => setSelected(p)} />)}
       </div>
 
-      {selected && <PurchaseModal position={selected} onClose={() => setSelected(null)} />}
+      {showAcquired && <AcquiredTokensPanel />}
+
+      {selected && (
+        <PurchaseModal
+          position={selected}
+          onClose={() => setSelected(null)}
+          onPurchased={() => setShowAcquired(true)}
+        />
+      )}
     </div>
   );
 };
