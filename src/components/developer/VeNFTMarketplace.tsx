@@ -15,7 +15,6 @@ interface VeToken {
   id: number;
   owner?: string;
   balance?: number;
-  empty?: boolean;
 }
 
 const TOKENS: VeToken[] = [
