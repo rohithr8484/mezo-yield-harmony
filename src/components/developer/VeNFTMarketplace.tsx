@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TrendingDown, Lock, Zap, Calendar, Tag, ShieldCheck, ChevronRight, X, Wallet } from "lucide-react";
+import { TrendingDown, Lock, Zap, Calendar, Tag, ShieldCheck, ChevronRight, X, Wallet, Sparkles, Copy } from "lucide-react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
