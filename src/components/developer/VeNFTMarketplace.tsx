@@ -107,7 +107,7 @@ const AcquiredTokensPanel = () => {
   );
 };
 
-const PurchaseModal = ({ position, onClose }: { position: VePosition; onClose: () => void }) => {
+const PurchaseModal = ({ position, onClose, onPurchased }: { position: VePosition; onClose: () => void; onPurchased: () => void }) => {
   const { isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync } = useSwitchChain();
