@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Lock, Zap, ShieldCheck, ChevronRight, X, Wallet, Copy } from "lucide-react";
+import { Lock, Zap, ShieldCheck, ChevronRight, X, Wallet, Copy, Sparkles, TrendingUp, Crown, CheckCircle2 } from "lucide-react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -13,8 +13,8 @@ const LISTING_PRICE = 0.2;
 
 interface VeToken {
   id: number;
-  owner?: string;
-  balance?: number;
+  owner: string;
+  balance: number;
 }
 
 const TOKENS: VeToken[] = [
@@ -29,6 +29,7 @@ const TOKENS: VeToken[] = [
 ];
 
 const shorten = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
+const tierFor = (b: number) => (b >= 50 ? { label: "Whale", cls: "from-amber-500 to-orange-500", icon: Crown } : b >= 10 ? { label: "Pro", cls: "from-fuchsia-500 to-pink-500", icon: TrendingUp } : { label: "Starter", cls: "from-sky-500 to-cyan-500", icon: Sparkles });
 
 const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClose: () => void; onPurchased: () => void }) => {
   const { isConnected, chainId, connector } = useAccount();
@@ -44,17 +45,14 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
     try {
       if (chainId !== MEZO_TESTNET_CHAIN_ID) await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       await writeContractAsync({
-        address: MUSD_TOKEN,
-        abi: ERC20_ABI,
-        functionName: "approve",
+        address: MUSD_TOKEN, abi: ERC20_ABI, functionName: "approve",
         args: [FEE_RECIPIENT, parseUnits(String(LISTING_PRICE), 18)],
         chainId: MEZO_TESTNET_CHAIN_ID,
       });
       toast.success(`Approved ${LISTING_PRICE} MUSD via ${connector?.name ?? "wallet"}`);
       setStep(2);
-    } catch {
-      toast.error("Approval cancelled or failed");
-    } finally { setSubmitting(false); }
+    } catch { toast.error("Approval cancelled or failed"); }
+    finally { setSubmitting(false); }
   };
 
   const handlePurchase = async () => {
@@ -63,57 +61,58 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
     try {
       if (chainId !== MEZO_TESTNET_CHAIN_ID) await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       const tx = await writeContractAsync({
-        address: MUSD_TOKEN,
-        abi: ERC20_ABI,
-        functionName: "transfer",
+        address: MUSD_TOKEN, abi: ERC20_ABI, functionName: "transfer",
         args: [FEE_RECIPIENT, parseUnits(String(LISTING_PRICE), 18)],
         chainId: MEZO_TESTNET_CHAIN_ID,
       });
       toast.success(`Purchased veMEZO #${token.id}. Tx: ${tx.slice(0, 10)}...`);
       onPurchased();
       onClose();
-    } catch {
-      toast.error("Purchase cancelled or failed");
-    } finally { setSubmitting(false); }
+    } catch { toast.error("Purchase cancelled or failed"); }
+    finally { setSubmitting(false); }
   };
 
+  const tier = tierFor(token.balance);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm p-4" onClick={onClose}>
-      <div className="bg-card border border-border rounded-2xl p-8 max-w-md w-full shadow-card-hover" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/85 backdrop-blur-md p-4 animate-fade-in" onClick={onClose}>
+      <div className="relative bg-card border border-border rounded-3xl p-8 max-w-md w-full shadow-2xl shadow-bitcoin/10" onClick={(e) => e.stopPropagation()}>
+        <div className={`absolute -top-px left-8 right-8 h-px bg-gradient-to-r ${tier.cls}`} />
         <div className="flex justify-between items-start mb-2">
           <div>
-            <h3 className="text-xl font-display font-bold text-foreground">
-              Buy veMEZO <span className="text-bitcoin">#{token.id}</span>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Vote-Escrowed Position</p>
+            <h3 className="text-2xl font-display font-bold text-foreground">
+              veMEZO <span className="text-gradient-animated">#{token.id}</span>
             </h3>
-            <p className="text-xs text-muted-foreground mt-1">Two steps: approve token spend, then purchase.</p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground"><X className="h-5 w-5" /></button>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-secondary transition"><X className="h-4 w-4" /></button>
         </div>
 
-        <div className="bg-secondary/40 rounded-xl p-4 my-5 space-y-2 text-sm">
-          <div className="flex justify-between"><span className="text-muted-foreground">You pay</span><span className="font-semibold text-foreground">{LISTING_PRICE} MUSD</span></div>
-          <div className="flex justify-between"><span className="text-muted-foreground">Owner veMEZO Balance</span><span className="font-semibold text-foreground">{token.balance}</span></div>
-          <div className="flex justify-between"><span className="text-muted-foreground">Owner</span><span className="font-mono text-xs text-foreground">{shorten(token.owner!)}</span></div>
+        <div className="bg-gradient-to-br from-secondary/60 to-secondary/20 border border-border/50 rounded-2xl p-5 my-5 space-y-3 text-sm">
+          <div className="flex justify-between items-center"><span className="text-muted-foreground">Price</span><span className="font-display text-lg font-bold text-foreground">{LISTING_PRICE} <span className="text-xs text-bitcoin">MUSD</span></span></div>
+          <div className="h-px bg-border/50" />
+          <div className="flex justify-between"><span className="text-muted-foreground">veMEZO Balance</span><span className="font-semibold text-foreground">{token.balance}</span></div>
+          <div className="flex justify-between"><span className="text-muted-foreground">Owner</span><span className="font-mono text-xs text-foreground">{shorten(token.owner)}</span></div>
         </div>
 
         <div className="flex items-center gap-2 mb-5">
-          <span className={`flex-1 text-center text-xs px-3 py-1.5 rounded-full ${step === 1 ? "bg-bitcoin/10 text-bitcoin font-semibold" : "bg-secondary text-muted-foreground"}`}>① Approve MUSD</span>
-          <div className="h-px w-4 bg-border" />
-          <span className={`flex-1 text-center text-xs px-3 py-1.5 rounded-full ${step === 2 ? "bg-bitcoin/10 text-bitcoin font-semibold" : "bg-secondary text-muted-foreground"}`}>② Purchase NFT</span>
+          <span className={`flex-1 text-center text-xs px-3 py-2 rounded-full transition ${step === 1 ? "bg-gradient-to-r from-bitcoin/20 to-amber-500/10 text-bitcoin font-semibold ring-1 ring-bitcoin/30" : "bg-secondary text-muted-foreground"}`}>{step > 1 ? <CheckCircle2 className="h-3 w-3 inline mr-1" /> : "①"} Approve</span>
+          <div className="h-px w-3 bg-border" />
+          <span className={`flex-1 text-center text-xs px-3 py-2 rounded-full transition ${step === 2 ? "bg-gradient-to-r from-bitcoin/20 to-amber-500/10 text-bitcoin font-semibold ring-1 ring-bitcoin/30" : "bg-secondary text-muted-foreground"}`}>② Purchase</span>
         </div>
 
         <div className="bg-bitcoin/5 border border-bitcoin/20 rounded-xl p-3 mb-5 flex gap-2">
           <ShieldCheck className="h-4 w-4 text-bitcoin flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-muted-foreground leading-relaxed">NFT transfers to you before payment is routed. If the seller moves the NFT before you buy, the transaction reverts automatically.</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">NFT transfers to you before payment is routed. Atomic settlement on-chain.</p>
         </div>
 
         <button
           onClick={step === 1 ? handleApprove : handlePurchase}
           disabled={submitting}
-          className="w-full px-5 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold hover:opacity-90 transition disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full px-5 py-3.5 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-bitcoin/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2"
         >
           <Wallet className="h-4 w-4" />
-          {submitting ? "Confirming..." : step === 1 ? "1. Approve MUSD" : "2. Purchase NFT"}
+          {submitting ? "Confirming..." : step === 1 ? "Approve MUSD" : "Complete Purchase"}
           <ChevronRight className="h-4 w-4" />
         </button>
       </div>
@@ -122,46 +121,59 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
 };
 
 const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; onBuy: () => void }) => {
+  const tier = tierFor(token.balance);
+  const TierIcon = tier.icon;
   return (
-    <div className={`rounded-2xl bg-card border p-6 shadow-card hover:shadow-card-hover transition-all ${owned ? "border-emerald-500/40 ring-1 ring-emerald-500/20" : "border-border"}`}>
-      <div className="flex justify-between items-start mb-4">
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 rounded-full bg-bitcoin animate-pulse" />
-          <h3 className="font-display font-bold text-foreground">ID <span className="text-bitcoin">#{token.id}</span></h3>
+    <div className={`group relative rounded-3xl bg-gradient-to-br from-card to-card/50 border p-6 transition-all duration-300 hover:-translate-y-1 ${owned ? "border-emerald-500/50 ring-2 ring-emerald-500/20 shadow-lg shadow-emerald-500/10" : "border-border hover:border-bitcoin/40 hover:shadow-2xl hover:shadow-bitcoin/10"}`}>
+      <div className={`absolute -top-px left-6 right-6 h-px bg-gradient-to-r ${tier.cls} opacity-60 group-hover:opacity-100 transition`} />
+      <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${tier.cls} opacity-0 group-hover:opacity-[0.03] transition pointer-events-none`} />
+
+      <div className="flex justify-between items-start mb-5">
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">veMEZO</p>
+          <h3 className="font-display text-2xl font-bold text-foreground">#{token.id}</h3>
         </div>
-        {owned && (
-          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold">OWNED</span>
-        )}
+        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r ${tier.cls} text-white text-[10px] font-bold uppercase tracking-wider shadow`}>
+          <TierIcon className="h-3 w-3" />{tier.label}
+        </span>
       </div>
 
-      <p className="text-[10px] text-muted-foreground uppercase mb-1">Owner</p>
-      <button
-        onClick={() => { navigator.clipboard.writeText(token.owner!); toast.success("Address copied"); }}
-        className="font-mono text-xs text-foreground hover:text-bitcoin transition flex items-center gap-1 group mb-4"
-      >
-        {shorten(token.owner!)}
-        <Copy className="h-3 w-3 opacity-0 group-hover:opacity-100 transition" />
-      </button>
-
-      <div className="grid grid-cols-2 gap-3 mb-3">
-        <div className="bg-secondary/40 rounded-lg p-3">
-          <p className="text-[10px] text-muted-foreground uppercase flex items-center gap-1 mb-1"><Zap className="h-3 w-3 text-bitcoin" />veMEZO Balance</p>
-          <p className="text-sm font-semibold text-foreground">{token.balance}</p>
+      <div className="bg-gradient-to-br from-secondary/60 to-secondary/20 rounded-2xl p-4 mb-4 border border-border/40">
+        <div className="flex items-end justify-between mb-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Locked Balance</p>
+            <p className="font-display text-3xl font-bold text-gradient-animated leading-none mt-1">{token.balance}</p>
+          </div>
+          <Zap className="h-5 w-5 text-bitcoin" />
         </div>
-        <div className="bg-secondary/40 rounded-lg p-3">
-          <p className="text-[10px] text-muted-foreground uppercase flex items-center gap-1 mb-1"><Lock className="h-3 w-3" />Price</p>
-          <p className="text-sm font-semibold text-foreground">{LISTING_PRICE} MUSD</p>
+        <div className="h-1 w-full rounded-full bg-secondary overflow-hidden">
+          <div className={`h-full bg-gradient-to-r ${tier.cls}`} style={{ width: `${Math.min(100, (token.balance / 70) * 100)}%` }} />
         </div>
       </div>
 
-      <p className="text-[10px] text-muted-foreground italic mb-4">Extra NFT data unavailable</p>
+      <div className="flex items-center justify-between mb-4 px-1">
+        <div>
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">Owner</p>
+          <button
+            onClick={() => { navigator.clipboard.writeText(token.owner); toast.success("Address copied"); }}
+            className="font-mono text-xs text-foreground hover:text-bitcoin transition flex items-center gap-1"
+          >
+            {shorten(token.owner)}
+            <Copy className="h-3 w-3 opacity-50" />
+          </button>
+        </div>
+        <div className="text-right">
+          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">Price</p>
+          <p className="font-display font-bold text-foreground">{LISTING_PRICE} <span className="text-[10px] text-bitcoin">MUSD</span></p>
+        </div>
+      </div>
 
       <button
         onClick={onBuy}
         disabled={owned}
-        className="w-full bg-foreground text-background font-semibold py-3 rounded-full hover:opacity-90 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        className={`w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 ${owned ? "bg-emerald-500/10 text-emerald-500 cursor-default" : "bg-foreground text-background hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-bitcoin/30"}`}
       >
-        {owned ? "Acquired" : <>Complete Purchase <ChevronRight className="h-4 w-4" /></>}
+        {owned ? <><CheckCircle2 className="h-4 w-4" /> Acquired</> : <>Complete Purchase <ChevronRight className="h-4 w-4" /></>}
       </button>
     </div>
   );
@@ -171,16 +183,28 @@ export const VeNFTMarketplace = () => {
   const [selected, setSelected] = useState<VeToken | null>(null);
   const [owned, setOwned] = useState<Record<number, boolean>>({});
 
+  const totalLocked = TOKENS.reduce((s, t) => s + t.balance, 0);
+  const ownedCount = Object.values(owned).filter(Boolean).length;
+
   return (
-    <div className="space-y-6">
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { label: "Listed", value: TOKENS.length },
+          { label: "Total veMEZO", value: totalLocked },
+          { label: "Floor", value: `${LISTING_PRICE} MUSD` },
+          { label: "Acquired", value: ownedCount },
+        ].map((s) => (
+          <div key={s.label} className="rounded-2xl border border-border bg-card/50 backdrop-blur p-4">
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{s.label}</p>
+            <p className="font-display text-xl font-bold text-foreground">{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {TOKENS.map((t) => (
-          <TokenCard
-            key={t.id}
-            token={t}
-            owned={!!owned[t.id]}
-            onBuy={() => setSelected(t)}
-          />
+          <TokenCard key={t.id} token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} />
         ))}
       </div>
 
