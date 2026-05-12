@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Lock, Zap, ShieldCheck, ChevronRight, X, Wallet, Copy, Sparkles, TrendingUp, Crown, CheckCircle2 } from "lucide-react";
+import { ethers } from "ethers";
+import { Lock, Zap, ShieldCheck, ChevronRight, X, Wallet, Copy, Sparkles, TrendingUp, Crown, CheckCircle2, Loader2 } from "lucide-react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -186,6 +187,54 @@ export const VeNFTMarketplace = () => {
   const totalLocked = TOKENS.reduce((s, t) => s + t.balance, 0);
   const ownedCount = Object.values(owned).filter(Boolean).length;
 
+  const [locking, setLocking] = useState(false);
+
+  const handleLock = async () => {
+    const MEZO = "0x7B7c000000000000000000000000000000000001";
+    const VEMEZO = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
+    const LOCK_AMOUNT = "2";
+    const WEEK = 7 * 24 * 60 * 60;
+    const LOCK_DURATION = 52 * WEEK;
+
+    const eth = (window as any).ethereum;
+    if (!eth) {
+      toast.error("Install MetaMask or a Web3 wallet");
+      return;
+    }
+    setLocking(true);
+    try {
+      const provider = new ethers.BrowserProvider(eth);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+      const mezo = new ethers.Contract(
+        MEZO,
+        ["function approve(address spender,uint256 amount) external returns (bool)", "function decimals() external view returns(uint8)"],
+        signer
+      );
+      const decimals = await mezo.decimals();
+      const parsedAmount = ethers.parseUnits(LOCK_AMOUNT, decimals);
+
+      toast.info("Approving MEZO…");
+      const approveTx = await mezo.approve(VEMEZO, parsedAmount);
+      await approveTx.wait();
+
+      const veMEZO = new ethers.Contract(
+        VEMEZO,
+        ["function createLock(uint256 _value,uint256 _lockDuration) external returns(uint256)"],
+        signer
+      );
+      toast.info("Creating lock…");
+      const tx = await veMEZO.createLock(parsedAmount, LOCK_DURATION);
+      await tx.wait();
+      toast.success(`Lock created! Tx: ${tx.hash.slice(0, 10)}…`);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(err?.shortMessage || err?.message || "Transaction failed");
+    } finally {
+      setLocking(false);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -201,6 +250,28 @@ export const VeNFTMarketplace = () => {
           </div>
         ))}
       </div>
+
+      <div className="rounded-3xl border border-border bg-gradient-to-br from-card to-card/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-500 to-pink-500 flex items-center justify-center shadow-lg shadow-bitcoin/20">
+            <Lock className="h-5 w-5 text-white" />
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Create New Position</p>
+            <h3 className="font-display text-xl font-bold text-foreground">Lock 2 MEZO for 52 weeks</h3>
+            <p className="text-xs text-muted-foreground mt-1">Mint your own veMEZO position directly on-chain.</p>
+          </div>
+        </div>
+        <button
+          onClick={handleLock}
+          disabled={locking}
+          className="px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-bitcoin/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
+        >
+          {locking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+          {locking ? "Locking…" : "Lock veMEZO"}
+        </button>
+      </div>
+
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {TOKENS.map((t) => (
