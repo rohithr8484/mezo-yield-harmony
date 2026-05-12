@@ -229,8 +229,12 @@ export const VeNFTMarketplace = () => {
       );
       toast.info("Creating lock…");
       const tx = await veMEZO.createLock(parsedAmount, LOCK_DURATION);
-      await tx.wait();
-      toast.success(`Lock created! Tx: ${tx.hash.slice(0, 10)}…`);
+      const receipt = await tx.wait();
+      const owner = await signer.getAddress();
+      const newId = (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
+      setMinted((prev) => [...prev, { id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash }]);
+      setOwned((prev) => ({ ...prev, [newId]: true }));
+      toast.success(`Lock created! veMEZO #${newId} • ${tx.hash.slice(0, 10)}…`);
     } catch (err: any) {
       console.error(err);
       toast.error(err?.shortMessage || err?.message || "Transaction failed");
