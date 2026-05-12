@@ -180,12 +180,16 @@ const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; on
   );
 };
 
+interface MintedToken extends VeToken { txHash: string; }
+
 export const VeNFTMarketplace = () => {
   const [selected, setSelected] = useState<VeToken | null>(null);
   const [owned, setOwned] = useState<Record<number, boolean>>({});
+  const [minted, setMinted] = useState<MintedToken[]>([]);
 
-  const totalLocked = TOKENS.reduce((s, t) => s + t.balance, 0);
-  const ownedCount = Object.values(owned).filter(Boolean).length;
+  const allTokens = [...TOKENS, ...minted];
+  const totalLocked = allTokens.reduce((s, t) => s + t.balance, 0);
+  const ownedCount = Object.values(owned).filter(Boolean).length + minted.length;
 
   const [locking, setLocking] = useState(false);
 
@@ -225,8 +229,12 @@ export const VeNFTMarketplace = () => {
       );
       toast.info("Creating lock…");
       const tx = await veMEZO.createLock(parsedAmount, LOCK_DURATION);
-      await tx.wait();
-      toast.success(`Lock created! Tx: ${tx.hash.slice(0, 10)}…`);
+      const receipt = await tx.wait();
+      const owner = await signer.getAddress();
+      const newId = (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
+      setMinted((prev) => [...prev, { id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash }]);
+      setOwned((prev) => ({ ...prev, [newId]: true }));
+      toast.success(`Lock created! veMEZO #${newId} • ${tx.hash.slice(0, 10)}…`);
     } catch (err: any) {
       console.error(err);
       toast.error(err?.shortMessage || err?.message || "Transaction failed");
@@ -272,6 +280,30 @@ export const VeNFTMarketplace = () => {
         </button>
       </div>
 
+
+      {minted.length > 0 && (
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <Sparkles className="h-4 w-4 text-bitcoin" />
+            <h3 className="font-display text-sm uppercase tracking-widest text-muted-foreground">Your Locked Positions</h3>
+          </div>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {minted.map((t) => (
+              <div key={t.id} className="space-y-2">
+                <TokenCard token={t} owned onBuy={() => {}} />
+                <a
+                  href={`https://explorer.test.mezo.org/tx/${t.txHash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition px-2 truncate"
+                >
+                  Tx: {t.txHash}
+                </a>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {TOKENS.map((t) => (
