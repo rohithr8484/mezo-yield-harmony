@@ -180,12 +180,16 @@ const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; on
   );
 };
 
+interface MintedToken extends VeToken { txHash: string; }
+
 export const VeNFTMarketplace = () => {
   const [selected, setSelected] = useState<VeToken | null>(null);
   const [owned, setOwned] = useState<Record<number, boolean>>({});
+  const [minted, setMinted] = useState<MintedToken[]>([]);
 
-  const totalLocked = TOKENS.reduce((s, t) => s + t.balance, 0);
-  const ownedCount = Object.values(owned).filter(Boolean).length;
+  const allTokens = [...TOKENS, ...minted];
+  const totalLocked = allTokens.reduce((s, t) => s + t.balance, 0);
+  const ownedCount = Object.values(owned).filter(Boolean).length + minted.length;
 
   const [locking, setLocking] = useState(false);
 
