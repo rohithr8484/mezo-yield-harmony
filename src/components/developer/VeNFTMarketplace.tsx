@@ -291,14 +291,19 @@ export const VeNFTMarketplace = () => {
             {minted.map((t) => (
               <div key={t.id} className="space-y-2">
                 <TokenCard token={t} owned onBuy={() => {}} />
-                <a
-                  href={`https://explorer.test.mezo.org/tx/${t.txHash}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="block text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition px-2 truncate"
-                >
-                  Tx: {t.txHash}
-                </a>
+                <div className="px-2 space-y-1">
+                  <p className="text-[10px] font-mono text-foreground">
+                    <span className="text-muted-foreground">ID#</span> {t.id}
+                  </p>
+                  <a
+                    href={`https://explorer.test.mezo.org/tx/${t.txHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
+                  >
+                    Tx: {t.txHash}
+                  </a>
+                </div>
               </div>
             ))}
           </div>
