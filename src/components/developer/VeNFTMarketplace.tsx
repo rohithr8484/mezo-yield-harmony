@@ -300,6 +300,53 @@ export const VeNFTMarketplace = () => {
   const ownedCount = Object.values(owned).filter(Boolean).length;
 
   const [locking, setLocking] = useState(false);
+  const [withdrawingId, setWithdrawingId] = useState<number | null>(null);
+
+  const handleWithdraw = async (tokenId: number) => {
+    const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
+    if (!eth) {
+      toast.error("Install MetaMask or a Web3 wallet");
+      return;
+    }
+    setWithdrawingId(tokenId);
+    try {
+      const provider = new ethers.BrowserProvider(eth);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+      const veMEZO = new ethers.Contract(
+        VEMEZO_TOKEN,
+        [
+          "function withdraw(uint256 _tokenId) external",
+          "function locked(uint256) view returns(uint256 amount,uint256 end)",
+        ],
+        signer,
+      );
+      const lock = await veMEZO.locked(tokenId);
+      const lockEnd = Number(lock.end);
+      const now = Math.floor(Date.now() / 1000);
+      if (lockEnd > 0 && now < lockEnd) {
+        const daysLeft = Math.ceil((lockEnd - now) / 86400);
+        toast.error(`Lock still active — ${daysLeft} day(s) remaining`);
+        return;
+      }
+      toast.info(`Withdrawing veMEZO #${tokenId}…`);
+      const tx = await veMEZO.withdraw(tokenId);
+      await tx.wait();
+      toast.success(`Withdrawn veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+      setMinted((prev) => prev.filter((t) => t.id !== tokenId));
+      setOwned((prev) => {
+        const next = { ...prev };
+        delete next[tokenId];
+        return next;
+      });
+    } catch (err: unknown) {
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Withdraw failed";
+      toast.error(message);
+    } finally {
+      setWithdrawingId(null);
+    }
+  };
 
   const handleLock = async () => {
     const LOCK_AMOUNT = "2";
