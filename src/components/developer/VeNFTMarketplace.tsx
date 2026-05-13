@@ -327,8 +327,21 @@ export const VeNFTMarketplace = () => {
         return;
       }
       if (onChainOwner !== me) {
-        toast.error(`Connected wallet is not the owner of veMEZO #${tokenId}. Owner: ${onChainOwner?.slice(0, 6)}…${onChainOwner?.slice(-4)}`);
-        return;
+        // ERC-721 approval model: allow owner, single-token approved address, or operator
+        let approved = false;
+        try {
+          const [singleApproved, operatorApproved] = await Promise.all([
+            veMEZO.getApproved(tokenId).then((a: string) => a.toLowerCase()).catch(() => ethers.ZeroAddress),
+            veMEZO.isApprovedForAll(onChainOwner, me).catch(() => false),
+          ]);
+          approved = singleApproved === me || operatorApproved === true;
+        } catch {
+          approved = false;
+        }
+        if (!approved) {
+          toast.error(`Not authorized for veMEZO #${tokenId}. Owner: ${onChainOwner?.slice(0, 6)}…${onChainOwner?.slice(-4)}. Ask the owner to approve your address.`);
+          return;
+        }
       }
 
       // Preflight 2 — lock must be expired
