@@ -169,7 +169,7 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
   );
 };
 
-const TokenCard = ({ token, owned, onWithdraw, withdrawing }: { token: VeToken; owned: boolean; onWithdraw: (id: number) => void; withdrawing: boolean }) => {
+const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing }: { token: VeToken; owned: boolean; onBuy: () => void; onWithdraw: () => void; withdrawing: boolean }) => {
   const tier = tierFor(token.balance);
   const TierIcon = tier.icon;
   return (
