@@ -21,6 +21,7 @@ interface VeToken {
 interface MintedToken extends VeToken { txHash: string; }
 
 const LOCKED_POSITIONS_STORAGE_KEY = "vemezo_locked_positions";
+const OWNED_POSITIONS_STORAGE_KEY = "vemezo_owned_positions";
 
 const TOKENS: VeToken[] = [
   { id: 25, owner: "0x27343E0410acd8Cf711d079C57811fe8c0666DF2", balance: 13 },
@@ -52,6 +53,21 @@ const loadLockedPositions = (): MintedToken[] => {
     );
   } catch {
     return [];
+  }
+};
+
+const loadOwnedPositions = (): Record<number, boolean> => {
+  if (typeof window === "undefined") return {};
+
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(OWNED_POSITIONS_STORAGE_KEY) ?? "{}");
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+
+    return Object.fromEntries(
+      Object.entries(parsed).filter(([id, value]) => Number.isFinite(Number(id)) && typeof value === "boolean"),
+    ) as Record<number, boolean>;
+  } catch {
+    return {};
   }
 };
 
@@ -205,16 +221,20 @@ const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; on
 
 export const VeNFTMarketplace = () => {
   const [selected, setSelected] = useState<VeToken | null>(null);
-  const [owned, setOwned] = useState<Record<number, boolean>>({});
+  const [owned, setOwned] = useState<Record<number, boolean>>(loadOwnedPositions);
   const [minted, setMinted] = useState<MintedToken[]>(loadLockedPositions);
 
   useEffect(() => {
     window.localStorage.setItem(LOCKED_POSITIONS_STORAGE_KEY, JSON.stringify(minted));
   }, [minted]);
 
+  useEffect(() => {
+    window.localStorage.setItem(OWNED_POSITIONS_STORAGE_KEY, JSON.stringify(owned));
+  }, [owned]);
+
   const allTokens = [...TOKENS, ...minted];
   const totalLocked = allTokens.reduce((s, t) => s + t.balance, 0);
-  const ownedCount = Object.values(owned).filter(Boolean).length + minted.length;
+  const ownedCount = Object.values(owned).filter(Boolean).length;
 
   const [locking, setLocking] = useState(false);
 
