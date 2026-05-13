@@ -311,6 +311,8 @@ export const VeNFTMarketplace = () => {
           "function withdraw(uint256 _tokenId) external",
           "function locked(uint256) view returns(uint256 amount,uint256 end)",
           "function ownerOf(uint256 tokenId) view returns(address)",
+          "function getApproved(uint256 tokenId) view returns(address)",
+          "function isApprovedForAll(address owner, address operator) view returns(bool)",
         ],
         signer,
       );
