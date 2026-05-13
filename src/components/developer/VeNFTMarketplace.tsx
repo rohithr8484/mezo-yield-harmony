@@ -229,6 +229,7 @@ const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; on
 };
 
 export const VeNFTMarketplace = () => {
+  const { address, isConnected } = useAccount();
   const [selected, setSelected] = useState<VeToken | null>(null);
   const [owned, setOwned] = useState<Record<number, boolean>>(loadOwnedPositions);
   const [minted, setMinted] = useState<MintedToken[]>(loadLockedPositions);
@@ -240,6 +241,51 @@ export const VeNFTMarketplace = () => {
   useEffect(() => {
     window.localStorage.setItem(OWNED_POSITIONS_STORAGE_KEY, JSON.stringify(owned));
   }, [owned]);
+
+  useEffect(() => {
+    if (!address) return;
+
+    let cancelled = false;
+    const restoreOnChainPositions = async () => {
+      try {
+        const provider = new ethers.JsonRpcProvider(MEZO_TESTNET_RPC);
+        const veMEZO = new ethers.Contract(
+          VEMEZO_TOKEN,
+          [
+            "function balanceOf(address owner) view returns (uint256)",
+            "function tokenOfOwnerByIndex(address owner,uint256 index) view returns (uint256)",
+            "function ownerOf(uint256 tokenId) view returns (address)",
+          ],
+          provider,
+        );
+        const balance = Number(await veMEZO.balanceOf(address));
+        const restored = await Promise.all(
+          Array.from({ length: balance }, async (_, index) => {
+            const id = Number(await veMEZO.tokenOfOwnerByIndex(address, index));
+            return { id, owner: address, balance: 2, source: "chain" as const };
+          }),
+        );
+
+        if (!cancelled && restored.length > 0) {
+          setMinted((prev) => mergeLockedPositions(prev, restored));
+        }
+      } catch {
+        if (!cancelled) {
+          setMinted((prev) =>
+            mergeLockedPositions(
+              prev,
+              prev.filter((token) => token.owner.toLowerCase() === address.toLowerCase()),
+            ),
+          );
+        }
+      }
+    };
+
+    restoreOnChainPositions();
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
 
   const allTokens = [...TOKENS, ...minted];
   const totalLocked = allTokens.reduce((s, t) => s + t.balance, 0);
