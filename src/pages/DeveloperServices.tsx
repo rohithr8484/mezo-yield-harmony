@@ -16,7 +16,14 @@ const dataFeeds = [
 ];
 
 const DeveloperServices = () => {
-  const [paidServices, setPaidServices] = useState<Record<string, boolean>>({});
+  const [paidServices, setPaidServices] = useState<Record<string, boolean>>(() => {
+    try {
+      const stored = window.localStorage.getItem("developer_paid_services");
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -26,6 +33,10 @@ const DeveloperServices = () => {
       setTimeout(() => navigate("/governance"), 600);
     }
   };
+
+  useEffect(() => {
+    window.localStorage.setItem("developer_paid_services", JSON.stringify(paidServices));
+  }, [paidServices]);
 
   useEffect(() => {
     if (location.hash) {
