@@ -8,7 +8,10 @@ import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
+const MEZO_TESTNET_RPC = "https://rpc.test.mezo.org";
 const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
+const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001";
+const VEMEZO_TOKEN = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
 const FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const LISTING_PRICE = 0.2;
 
@@ -18,7 +21,7 @@ interface VeToken {
   balance: number;
 }
 
-interface MintedToken extends VeToken { txHash: string; }
+interface MintedToken extends VeToken { txHash?: string; source?: "local" | "chain"; }
 
 const LOCKED_POSITIONS_STORAGE_KEY = "vemezo_locked_positions";
 const OWNED_POSITIONS_STORAGE_KEY = "vemezo_owned_positions";
@@ -49,11 +52,17 @@ const loadLockedPositions = (): MintedToken[] => {
         typeof item?.id === "number" &&
         typeof item?.owner === "string" &&
         typeof item?.balance === "number" &&
-        typeof item?.txHash === "string",
+        (typeof item?.txHash === "string" || typeof item?.txHash === "undefined"),
     );
   } catch {
     return [];
   }
+};
+
+const mergeLockedPositions = (current: MintedToken[], incoming: MintedToken[]) => {
+  const byId = new Map<number, MintedToken>();
+  [...current, ...incoming].forEach((token) => byId.set(token.id, { ...byId.get(token.id), ...token }));
+  return [...byId.values()].sort((a, b) => b.id - a.id);
 };
 
 const loadOwnedPositions = (): Record<number, boolean> => {
@@ -220,6 +229,7 @@ const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; on
 };
 
 export const VeNFTMarketplace = () => {
+  const { address, isConnected } = useAccount();
   const [selected, setSelected] = useState<VeToken | null>(null);
   const [owned, setOwned] = useState<Record<number, boolean>>(loadOwnedPositions);
   const [minted, setMinted] = useState<MintedToken[]>(loadLockedPositions);
@@ -232,6 +242,51 @@ export const VeNFTMarketplace = () => {
     window.localStorage.setItem(OWNED_POSITIONS_STORAGE_KEY, JSON.stringify(owned));
   }, [owned]);
 
+  useEffect(() => {
+    if (!address) return;
+
+    let cancelled = false;
+    const restoreOnChainPositions = async () => {
+      try {
+        const provider = new ethers.JsonRpcProvider(MEZO_TESTNET_RPC);
+        const veMEZO = new ethers.Contract(
+          VEMEZO_TOKEN,
+          [
+            "function balanceOf(address owner) view returns (uint256)",
+            "function tokenOfOwnerByIndex(address owner,uint256 index) view returns (uint256)",
+            "function ownerOf(uint256 tokenId) view returns (address)",
+          ],
+          provider,
+        );
+        const balance = Number(await veMEZO.balanceOf(address));
+        const restored = await Promise.all(
+          Array.from({ length: balance }, async (_, index) => {
+            const id = Number(await veMEZO.tokenOfOwnerByIndex(address, index));
+            return { id, owner: address, balance: 2, source: "chain" as const };
+          }),
+        );
+
+        if (!cancelled && restored.length > 0) {
+          setMinted((prev) => mergeLockedPositions(prev, restored));
+        }
+      } catch {
+        if (!cancelled) {
+          setMinted((prev) =>
+            mergeLockedPositions(
+              prev,
+              prev.filter((token) => token.owner.toLowerCase() === address.toLowerCase()),
+            ),
+          );
+        }
+      }
+    };
+
+    restoreOnChainPositions();
+    return () => {
+      cancelled = true;
+    };
+  }, [address]);
+
   const allTokens = [...TOKENS, ...minted];
   const totalLocked = allTokens.reduce((s, t) => s + t.balance, 0);
   const ownedCount = Object.values(owned).filter(Boolean).length;
@@ -239,8 +294,6 @@ export const VeNFTMarketplace = () => {
   const [locking, setLocking] = useState(false);
 
   const handleLock = async () => {
-    const MEZO = "0x7B7c000000000000000000000000000000000001";
-    const VEMEZO = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
     const LOCK_AMOUNT = "2";
     const WEEK = 7 * 24 * 60 * 60;
     const LOCK_DURATION = 52 * WEEK;
@@ -256,7 +309,7 @@ export const VeNFTMarketplace = () => {
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
       const mezo = new ethers.Contract(
-        MEZO,
+        MEZO_TOKEN,
         ["function approve(address spender,uint256 amount) external returns (bool)", "function decimals() external view returns(uint8)"],
         signer
       );
@@ -264,20 +317,28 @@ export const VeNFTMarketplace = () => {
       const parsedAmount = ethers.parseUnits(LOCK_AMOUNT, decimals);
 
       toast.info("Approving MEZO…");
-      const approveTx = await mezo.approve(VEMEZO, parsedAmount);
+      const approveTx = await mezo.approve(VEMEZO_TOKEN, parsedAmount);
       await approveTx.wait();
 
       const veMEZO = new ethers.Contract(
-        VEMEZO,
-        ["function createLock(uint256 _value,uint256 _lockDuration) external returns(uint256)"],
+        VEMEZO_TOKEN,
+        [
+          "function createLock(uint256 _value,uint256 _lockDuration) external returns(uint256)",
+          "event Transfer(address indexed from,address indexed to,uint256 indexed tokenId)",
+        ],
         signer
       );
       toast.info("Creating lock…");
       const tx = await veMEZO.createLock(parsedAmount, LOCK_DURATION);
-      await tx.wait();
+      const receipt = await tx.wait();
       const owner = await signer.getAddress();
-      const newId = (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
-      setMinted((prev) => [...prev, { id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash }]);
+      const transferLog = receipt.logs
+        .map((log: ethers.Log) => {
+          try { return veMEZO.interface.parseLog(log); } catch { return null; }
+        })
+        .find((log) => log?.name === "Transfer" && log.args?.from === ethers.ZeroAddress);
+      const newId = transferLog ? Number(transferLog.args.tokenId) : (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
+      setMinted((prev) => mergeLockedPositions(prev, [{ id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash, source: "local" }]));
       toast.success(`Lock created! veMEZO #${newId} • ${tx.hash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
@@ -325,6 +386,42 @@ export const VeNFTMarketplace = () => {
         </button>
       </div>
 
+      <div className="rounded-3xl border border-bitcoin/30 bg-bitcoin/5 p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-bitcoin mb-1">Newly Locked Positions</p>
+            <h3 className="font-display text-2xl font-bold text-foreground">Your recent veMEZO locks</h3>
+          </div>
+          <p className="text-xs text-muted-foreground">{isConnected ? `${minted.length} restored` : "Connect wallet to restore on-chain locks"}</p>
+        </div>
+
+        {minted.length > 0 ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {minted.map((token) => (
+              <div key={`new-${token.id}`} className="space-y-2">
+                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} />
+                {token.txHash ? (
+                  <a
+                    href={`https://explorer.test.mezo.org/tx/${token.txHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block px-2 text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
+                    title={token.txHash}
+                  >
+                    Tx: {token.txHash.slice(0, 10)}…{token.txHash.slice(-8)}
+                  </a>
+                ) : (
+                  <p className="px-2 text-[10px] font-mono text-muted-foreground">Restored from wallet • ID #{token.id}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-border/60 bg-card/60 p-5 text-sm text-muted-foreground">
+            Newly locked veMEZO positions will appear here immediately after locking and after refresh.
+          </div>
+        )}
+      </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {allTokens.map((t) => {
