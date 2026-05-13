@@ -8,7 +8,10 @@ import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
+const MEZO_TESTNET_RPC = "https://rpc.test.mezo.org";
 const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
+const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001";
+const VEMEZO_TOKEN = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
 const FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const LISTING_PRICE = 0.2;
 
@@ -18,7 +21,7 @@ interface VeToken {
   balance: number;
 }
 
-interface MintedToken extends VeToken { txHash: string; }
+interface MintedToken extends VeToken { txHash?: string; source?: "local" | "chain"; }
 
 const LOCKED_POSITIONS_STORAGE_KEY = "vemezo_locked_positions";
 const OWNED_POSITIONS_STORAGE_KEY = "vemezo_owned_positions";
@@ -49,11 +52,17 @@ const loadLockedPositions = (): MintedToken[] => {
         typeof item?.id === "number" &&
         typeof item?.owner === "string" &&
         typeof item?.balance === "number" &&
-        typeof item?.txHash === "string",
+        (typeof item?.txHash === "string" || typeof item?.txHash === "undefined"),
     );
   } catch {
     return [];
   }
+};
+
+const mergeLockedPositions = (current: MintedToken[], incoming: MintedToken[]) => {
+  const byId = new Map<number, MintedToken>();
+  [...current, ...incoming].forEach((token) => byId.set(token.id, { ...byId.get(token.id), ...token }));
+  return [...byId.values()].sort((a, b) => b.id - a.id);
 };
 
 const loadOwnedPositions = (): Record<number, boolean> => {
