@@ -310,30 +310,52 @@ export const VeNFTMarketplace = () => {
         [
           "function withdraw(uint256 _tokenId) external",
           "function locked(uint256) view returns(uint256 amount,uint256 end)",
+          "function ownerOf(uint256 tokenId) view returns(address)",
         ],
         signer,
       );
-      const lock = await veMEZO.locked(tokenId);
-      const lockEnd = Number(lock.end);
-      const now = Math.floor(Date.now() / 1000);
-      if (lockEnd > 0 && now < lockEnd) {
-        const daysLeft = Math.ceil((lockEnd - now) / 86400);
-        toast.error(`Lock still active — ${daysLeft} day(s) remaining`);
+      const me = (await signer.getAddress()).toLowerCase();
+
+      // Preflight 1 — token must exist & caller must own it
+      let onChainOwner: string | null = null;
+      try {
+        onChainOwner = (await veMEZO.ownerOf(tokenId)).toLowerCase();
+      } catch {
+        toast.error(`veMEZO #${tokenId} does not exist on-chain. You can only withdraw positions minted from your wallet.`);
         return;
       }
+      if (onChainOwner !== me) {
+        toast.error(`Connected wallet is not the owner of veMEZO #${tokenId}. Owner: ${onChainOwner?.slice(0, 6)}…${onChainOwner?.slice(-4)}`);
+        return;
+      }
+
+      // Preflight 2 — lock must be expired
+      try {
+        const lock = await veMEZO.locked(tokenId);
+        const lockEnd = Number(lock.end);
+        const now = Math.floor(Date.now() / 1000);
+        if (lockEnd > 0 && now < lockEnd) {
+          const daysLeft = Math.ceil((lockEnd - now) / 86400);
+          toast.error(`Lock still active — ${daysLeft} day(s) remaining until withdrawal is allowed.`);
+          return;
+        }
+      } catch {
+        // contract may not expose locked(); fall through and let the tx revert with reason
+      }
+
       toast.info(`Withdrawing veMEZO #${tokenId}…`);
       const tx = await veMEZO.withdraw(tokenId);
       await tx.wait();
       toast.success(`Withdrawn veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
       setMinted((prev) => prev.filter((t) => t.id !== tokenId));
-      setOwned((prev) => {
-        const next = { ...prev };
-        delete next[tokenId];
-        return next;
-      });
+      setOwned((prev) => ({ ...prev, [tokenId]: true }));
     } catch (err: unknown) {
       console.error(err);
-      const message = err instanceof Error ? err.message : "Withdraw failed";
+      const e = err as { code?: string; shortMessage?: string; reason?: string; message?: string };
+      let message = e.shortMessage || e.reason || e.message || "Withdraw failed";
+      if (e.code === "CALL_EXCEPTION" && !e.reason) {
+        message = "Transaction reverted by contract. Most likely cause: lock has not expired yet, or the connected wallet is not the owner of this veMEZO position.";
+      }
       toast.error(message);
     } finally {
       setWithdrawingId(null);
