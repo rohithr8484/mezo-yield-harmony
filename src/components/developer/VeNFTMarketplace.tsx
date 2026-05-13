@@ -224,6 +224,14 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing }: { token: Ve
       >
         {owned ? <><CheckCircle2 className="h-4 w-4" /> Acquired</> : <>Complete Purchase <ChevronRight className="h-4 w-4" /></>}
       </button>
+
+      <button
+        onClick={onWithdraw}
+        disabled={withdrawing}
+        className="mt-2 w-full font-semibold py-2.5 rounded-full transition flex items-center justify-center gap-2 border border-border text-foreground hover:bg-secondary disabled:opacity-50"
+      >
+        {withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id}</>}
+      </button>
     </div>
   );
 };
