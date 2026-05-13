@@ -169,7 +169,7 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
   );
 };
 
-const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; onBuy: () => void }) => {
+const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing }: { token: VeToken; owned: boolean; onBuy: () => void; onWithdraw: () => void; withdrawing: boolean }) => {
   const tier = tierFor(token.balance);
   const TierIcon = tier.icon;
   return (
@@ -223,6 +223,14 @@ const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; on
         className={`w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 ${owned ? "bg-emerald-500/10 text-emerald-500 cursor-default" : "bg-foreground text-background hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-bitcoin/30"}`}
       >
         {owned ? <><CheckCircle2 className="h-4 w-4" /> Acquired</> : <>Complete Purchase <ChevronRight className="h-4 w-4" /></>}
+      </button>
+
+      <button
+        onClick={onWithdraw}
+        disabled={withdrawing}
+        className="mt-2 w-full font-semibold py-2.5 rounded-full transition flex items-center justify-center gap-2 border border-border text-foreground hover:bg-secondary disabled:opacity-50"
+      >
+        {withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id}</>}
       </button>
     </div>
   );
@@ -292,6 +300,53 @@ export const VeNFTMarketplace = () => {
   const ownedCount = Object.values(owned).filter(Boolean).length;
 
   const [locking, setLocking] = useState(false);
+  const [withdrawingId, setWithdrawingId] = useState<number | null>(null);
+
+  const handleWithdraw = async (tokenId: number) => {
+    const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
+    if (!eth) {
+      toast.error("Install MetaMask or a Web3 wallet");
+      return;
+    }
+    setWithdrawingId(tokenId);
+    try {
+      const provider = new ethers.BrowserProvider(eth);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+      const veMEZO = new ethers.Contract(
+        VEMEZO_TOKEN,
+        [
+          "function withdraw(uint256 _tokenId) external",
+          "function locked(uint256) view returns(uint256 amount,uint256 end)",
+        ],
+        signer,
+      );
+      const lock = await veMEZO.locked(tokenId);
+      const lockEnd = Number(lock.end);
+      const now = Math.floor(Date.now() / 1000);
+      if (lockEnd > 0 && now < lockEnd) {
+        const daysLeft = Math.ceil((lockEnd - now) / 86400);
+        toast.error(`Lock still active — ${daysLeft} day(s) remaining`);
+        return;
+      }
+      toast.info(`Withdrawing veMEZO #${tokenId}…`);
+      const tx = await veMEZO.withdraw(tokenId);
+      await tx.wait();
+      toast.success(`Withdrawn veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+      setMinted((prev) => prev.filter((t) => t.id !== tokenId));
+      setOwned((prev) => {
+        const next = { ...prev };
+        delete next[tokenId];
+        return next;
+      });
+    } catch (err: unknown) {
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Withdraw failed";
+      toast.error(message);
+    } finally {
+      setWithdrawingId(null);
+    }
+  };
 
   const handleLock = async () => {
     const LOCK_AMOUNT = "2";
@@ -399,7 +454,7 @@ export const VeNFTMarketplace = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {minted.map((token) => (
               <div key={`new-${token.id}`} className="space-y-2">
-                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} />
+                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} onWithdraw={() => handleWithdraw(token.id)} withdrawing={withdrawingId === token.id} />
                 {token.txHash ? (
                   <a
                     href={`https://explorer.test.mezo.org/tx/${token.txHash}`}
@@ -428,7 +483,7 @@ export const VeNFTMarketplace = () => {
           const mintedTx = minted.find((m) => m.id === t.id)?.txHash;
           return (
             <div key={t.id} className="space-y-2">
-              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} />
+              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} onWithdraw={() => handleWithdraw(t.id)} withdrawing={withdrawingId === t.id} />
               {mintedTx && (
                 <a
                   href={`https://explorer.test.mezo.org/tx/${mintedTx}`}
