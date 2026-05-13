@@ -386,6 +386,42 @@ export const VeNFTMarketplace = () => {
         </button>
       </div>
 
+      <div className="rounded-3xl border border-bitcoin/30 bg-bitcoin/5 p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-bitcoin mb-1">Newly Locked Positions</p>
+            <h3 className="font-display text-2xl font-bold text-foreground">Your recent veMEZO locks</h3>
+          </div>
+          <p className="text-xs text-muted-foreground">{isConnected ? `${minted.length} restored` : "Connect wallet to restore on-chain locks"}</p>
+        </div>
+
+        {minted.length > 0 ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {minted.map((token) => (
+              <div key={`new-${token.id}`} className="space-y-2">
+                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} />
+                {token.txHash ? (
+                  <a
+                    href={`https://explorer.test.mezo.org/tx/${token.txHash}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block px-2 text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
+                    title={token.txHash}
+                  >
+                    Tx: {token.txHash.slice(0, 10)}…{token.txHash.slice(-8)}
+                  </a>
+                ) : (
+                  <p className="px-2 text-[10px] font-mono text-muted-foreground">Restored from wallet • ID #{token.id}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-border/60 bg-card/60 p-5 text-sm text-muted-foreground">
+            Newly locked veMEZO positions will appear here immediately after locking and after refresh.
+          </div>
+        )}
+      </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {allTokens.map((t) => {
