@@ -218,19 +218,11 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing }: { token: Ve
       </div>
 
       <button
-        onClick={onBuy}
-        disabled={owned}
-        className={`w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 ${owned ? "bg-emerald-500/10 text-emerald-500 cursor-default" : "bg-foreground text-background hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-bitcoin/30"}`}
-      >
-        {owned ? <><CheckCircle2 className="h-4 w-4" /> Acquired</> : <>Complete Purchase <ChevronRight className="h-4 w-4" /></>}
-      </button>
-
-      <button
         onClick={onWithdraw}
-        disabled={withdrawing}
-        className="mt-2 w-full font-semibold py-2.5 rounded-full transition flex items-center justify-center gap-2 border border-border text-foreground hover:bg-secondary disabled:opacity-50"
+        disabled={withdrawing || owned}
+        className={`w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 ${owned ? "bg-emerald-500/10 text-emerald-500 cursor-default" : "bg-foreground text-background hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-bitcoin/30 disabled:opacity-50"}`}
       >
-        {withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id}</>}
+        {owned ? <><CheckCircle2 className="h-4 w-4" /> Withdrawn</> : withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id} <ChevronRight className="h-4 w-4" /></>}
       </button>
     </div>
   );
