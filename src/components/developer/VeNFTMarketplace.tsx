@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import { Lock, Zap, ShieldCheck, ChevronRight, X, Wallet, Copy, Sparkles, TrendingUp, Crown, CheckCircle2, Loader2 } from "lucide-react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
@@ -18,6 +18,10 @@ interface VeToken {
   balance: number;
 }
 
+interface MintedToken extends VeToken { txHash: string; }
+
+const LOCKED_POSITIONS_STORAGE_KEY = "vemezo_locked_positions";
+
 const TOKENS: VeToken[] = [
   { id: 25, owner: "0x27343E0410acd8Cf711d079C57811fe8c0666DF2", balance: 13 },
   { id: 26, owner: "0x6e80164ea60673D64d5d6228beb684a1274Bb017", balance: 61 },
@@ -31,6 +35,25 @@ const TOKENS: VeToken[] = [
 
 const shorten = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const tierFor = (b: number) => (b >= 50 ? { label: "Whale", cls: "from-amber-500 to-orange-500", icon: Crown } : b >= 10 ? { label: "Pro", cls: "from-fuchsia-500 to-pink-500", icon: TrendingUp } : { label: "Starter", cls: "from-sky-500 to-cyan-500", icon: Sparkles });
+
+const loadLockedPositions = (): MintedToken[] => {
+  if (typeof window === "undefined") return [];
+
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(LOCKED_POSITIONS_STORAGE_KEY) ?? "[]");
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed.filter(
+      (item): item is MintedToken =>
+        typeof item?.id === "number" &&
+        typeof item?.owner === "string" &&
+        typeof item?.balance === "number" &&
+        typeof item?.txHash === "string",
+    );
+  } catch {
+    return [];
+  }
+};
 
 const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClose: () => void; onPurchased: () => void }) => {
   const { isConnected, chainId, connector } = useAccount();
@@ -180,12 +203,14 @@ const TokenCard = ({ token, owned, onBuy }: { token: VeToken; owned: boolean; on
   );
 };
 
-interface MintedToken extends VeToken { txHash: string; }
-
 export const VeNFTMarketplace = () => {
   const [selected, setSelected] = useState<VeToken | null>(null);
   const [owned, setOwned] = useState<Record<number, boolean>>({});
-  const [minted, setMinted] = useState<MintedToken[]>([]);
+  const [minted, setMinted] = useState<MintedToken[]>(loadLockedPositions);
+
+  useEffect(() => {
+    window.localStorage.setItem(LOCKED_POSITIONS_STORAGE_KEY, JSON.stringify(minted));
+  }, [minted]);
 
   const allTokens = [...TOKENS, ...minted];
   const totalLocked = allTokens.reduce((s, t) => s + t.balance, 0);
@@ -233,7 +258,6 @@ export const VeNFTMarketplace = () => {
       const owner = await signer.getAddress();
       const newId = (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
       setMinted((prev) => [...prev, { id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash }]);
-      setOwned((prev) => ({ ...prev, [newId]: true }));
       toast.success(`Lock created! veMEZO #${newId} • ${tx.hash.slice(0, 10)}…`);
     } catch (err: any) {
       console.error(err);
