@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ethers } from "ethers";
+import { ethers, type Eip1193Provider } from "ethers";
 import { Lock, Zap, ShieldCheck, ChevronRight, X, Wallet, Copy, Sparkles, TrendingUp, Crown, CheckCircle2, Loader2 } from "lucide-react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
@@ -225,7 +225,7 @@ export const VeNFTMarketplace = () => {
     const WEEK = 7 * 24 * 60 * 60;
     const LOCK_DURATION = 52 * WEEK;
 
-    const eth = (window as any).ethereum;
+    const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
     if (!eth) {
       toast.error("Install MetaMask or a Web3 wallet");
       return;
@@ -254,14 +254,15 @@ export const VeNFTMarketplace = () => {
       );
       toast.info("Creating lock…");
       const tx = await veMEZO.createLock(parsedAmount, LOCK_DURATION);
-      const receipt = await tx.wait();
+      await tx.wait();
       const owner = await signer.getAddress();
       const newId = (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
       setMinted((prev) => [...prev, { id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash }]);
       toast.success(`Lock created! veMEZO #${newId} • ${tx.hash.slice(0, 10)}…`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err?.shortMessage || err?.message || "Transaction failed");
+      const message = err instanceof Error ? err.message : "Transaction failed";
+      toast.error(message);
     } finally {
       setLocking(false);
     }
