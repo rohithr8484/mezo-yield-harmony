@@ -310,41 +310,16 @@ export const VeNFTMarketplace = () => {
         [
           "function withdraw(uint256 _tokenId) external",
           "function locked(uint256) view returns(uint256 amount,uint256 end)",
-          "function ownerOf(uint256 tokenId) view returns(address)",
-          "function getApproved(uint256 tokenId) view returns(address)",
-          "function isApprovedForAll(address owner, address operator) view returns(bool)",
         ],
         signer,
       );
-      const me = (await signer.getAddress()).toLowerCase();
 
-      // Preflight 1 — token must exist & caller must own it
-      let onChainOwner: string | null = null;
-      try {
-        onChainOwner = (await veMEZO.ownerOf(tokenId)).toLowerCase();
-      } catch {
-        toast.error(`veMEZO #${tokenId} does not exist on-chain. You can only withdraw positions minted from your wallet.`);
-        return;
-      }
-      if (onChainOwner !== me) {
-        // ERC-721 approval model: allow owner, single-token approved address, or operator
-        let approved = false;
-        try {
-          const [singleApproved, operatorApproved] = await Promise.all([
-            veMEZO.getApproved(tokenId).then((a: string) => a.toLowerCase()).catch(() => ethers.ZeroAddress),
-            veMEZO.isApprovedForAll(onChainOwner, me).catch(() => false),
-          ]);
-          approved = singleApproved === me || operatorApproved === true;
-        } catch {
-          approved = false;
-        }
-        if (!approved) {
-          toast.error(`Not authorized for veMEZO #${tokenId}. Owner: ${onChainOwner?.slice(0, 6)}…${onChainOwner?.slice(-4)}. Ask the owner to approve your address.`);
-          return;
-        }
-      }
-
-      // Preflight 2 — lock must be expired
+      // Soft preflight — only block when the lock clearly hasn't expired.
+      // We intentionally skip the ownership/approval preflight: ownerOf() can
+      // return a stale or proxy address on some forks/RPCs, and the contract
+      // itself enforces ERC-721 authorization on withdraw(). Letting the tx
+      // attempt avoids false "Not authorized" errors when the wallet really
+      // does own (or is approved for) the token.
       try {
         const lock = await veMEZO.locked(tokenId);
         const lockEnd = Number(lock.end);
