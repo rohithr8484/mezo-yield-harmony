@@ -454,7 +454,7 @@ export const VeNFTMarketplace = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {minted.map((token) => (
               <div key={`new-${token.id}`} className="space-y-2">
-                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} />
+                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} onWithdraw={() => handleWithdraw(token.id)} withdrawing={withdrawingId === token.id} />
                 {token.txHash ? (
                   <a
                     href={`https://explorer.test.mezo.org/tx/${token.txHash}`}
