@@ -483,7 +483,7 @@ export const VeNFTMarketplace = () => {
           const mintedTx = minted.find((m) => m.id === t.id)?.txHash;
           return (
             <div key={t.id} className="space-y-2">
-              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} />
+              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} onWithdraw={() => handleWithdraw(t.id)} withdrawing={withdrawingId === t.id} />
               {mintedTx && (
                 <a
                   href={`https://explorer.test.mezo.org/tx/${mintedTx}`}
