@@ -281,39 +281,26 @@ export const VeNFTMarketplace = () => {
       </div>
 
 
-      {minted.length > 0 && (
-        <div>
-          <div className="flex items-center gap-2 mb-3">
-            <Sparkles className="h-4 w-4 text-bitcoin" />
-            <h3 className="font-display text-sm uppercase tracking-widest text-muted-foreground">Your Locked Positions</h3>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-            {minted.map((t) => (
-              <div key={t.id} className="space-y-2">
-                <TokenCard token={t} owned onBuy={() => {}} />
-                <div className="px-2 space-y-1">
-                  <p className="text-[10px] font-mono text-foreground">
-                    <span className="text-muted-foreground">ID#</span> {t.id}
-                  </p>
-                  <a
-                    href={`https://explorer.test.mezo.org/tx/${t.txHash}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
-                  >
-                    Tx: {t.txHash}
-                  </a>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {TOKENS.map((t) => (
-          <TokenCard key={t.id} token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} />
-        ))}
+        {allTokens.map((t) => {
+          const mintedTx = minted.find((m) => m.id === t.id)?.txHash;
+          return (
+            <div key={t.id} className="space-y-2">
+              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} />
+              {mintedTx && (
+                <a
+                  href={`https://explorer.test.mezo.org/tx/${mintedTx}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block px-2 text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
+                  title={mintedTx}
+                >
+                  Tx: {mintedTx.slice(0, 10)}…{mintedTx.slice(-8)}
+                </a>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       {selected && (
