@@ -294,8 +294,6 @@ export const VeNFTMarketplace = () => {
   const [locking, setLocking] = useState(false);
 
   const handleLock = async () => {
-    const MEZO = "0x7B7c000000000000000000000000000000000001";
-    const VEMEZO = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
     const LOCK_AMOUNT = "2";
     const WEEK = 7 * 24 * 60 * 60;
     const LOCK_DURATION = 52 * WEEK;
@@ -311,7 +309,7 @@ export const VeNFTMarketplace = () => {
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
       const mezo = new ethers.Contract(
-        MEZO,
+        MEZO_TOKEN,
         ["function approve(address spender,uint256 amount) external returns (bool)", "function decimals() external view returns(uint8)"],
         signer
       );
@@ -319,20 +317,28 @@ export const VeNFTMarketplace = () => {
       const parsedAmount = ethers.parseUnits(LOCK_AMOUNT, decimals);
 
       toast.info("Approving MEZO…");
-      const approveTx = await mezo.approve(VEMEZO, parsedAmount);
+      const approveTx = await mezo.approve(VEMEZO_TOKEN, parsedAmount);
       await approveTx.wait();
 
       const veMEZO = new ethers.Contract(
-        VEMEZO,
-        ["function createLock(uint256 _value,uint256 _lockDuration) external returns(uint256)"],
+        VEMEZO_TOKEN,
+        [
+          "function createLock(uint256 _value,uint256 _lockDuration) external returns(uint256)",
+          "event Transfer(address indexed from,address indexed to,uint256 indexed tokenId)",
+        ],
         signer
       );
       toast.info("Creating lock…");
       const tx = await veMEZO.createLock(parsedAmount, LOCK_DURATION);
-      await tx.wait();
+      const receipt = await tx.wait();
       const owner = await signer.getAddress();
-      const newId = (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
-      setMinted((prev) => [...prev, { id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash }]);
+      const transferLog = receipt.logs
+        .map((log: ethers.Log) => {
+          try { return veMEZO.interface.parseLog(log); } catch { return null; }
+        })
+        .find((log) => log?.name === "Transfer" && log.args?.from === ethers.ZeroAddress);
+      const newId = transferLog ? Number(transferLog.args.tokenId) : (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
+      setMinted((prev) => mergeLockedPositions(prev, [{ id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash, source: "local" }]));
       toast.success(`Lock created! veMEZO #${newId} • ${tx.hash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
