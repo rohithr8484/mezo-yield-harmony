@@ -631,7 +631,7 @@ export const VeNFTMarketplace = () => {
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {minted.map((token) => (
               <div key={`new-${token.id}`} className="space-y-2">
-                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} onWithdraw={() => handleWithdraw(token.id)} withdrawing={withdrawingId === token.id} onVote={() => handleVote(token.id)} voting={votingId === token.id} />
+                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} onWithdraw={() => handleWithdraw(token.id)} withdrawing={withdrawingId === token.id} onBoost={() => handleBoost(token.id)} boosting={boostingId === token.id} onVote={() => handleVote(token.id)} voting={votingId === token.id} />
                 {token.txHash ? (
                   <a
                     href={`https://explorer.test.mezo.org/tx/${token.txHash}`}
@@ -660,7 +660,7 @@ export const VeNFTMarketplace = () => {
           const mintedTx = minted.find((m) => m.id === t.id)?.txHash;
           return (
             <div key={t.id} className="space-y-2">
-              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} onWithdraw={() => handleWithdraw(t.id)} withdrawing={withdrawingId === t.id} onVote={() => handleVote(t.id)} voting={votingId === t.id} />
+              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} onWithdraw={() => handleWithdraw(t.id)} withdrawing={withdrawingId === t.id} onBoost={() => handleBoost(t.id)} boosting={boostingId === t.id} onVote={() => handleVote(t.id)} voting={votingId === t.id} />
               {mintedTx && (
                 <a
                   href={`https://explorer.test.mezo.org/tx/${mintedTx}`}
