@@ -348,13 +348,9 @@ export const VeNFTMarketplace = () => {
         signer,
       );
 
-      try {
-        await booster.pokeBoosts.staticCall([tokenId]);
-      } catch (simErr: unknown) {
-        const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
-        toast.error(`Boost would revert: ${reason}`);
-        return;
-      }
+      // No staticCall preflight — Mezo RPC may revert eth_call in conditions
+      // that the real transaction handles fine. Let the wallet submit and the
+      // chain decide.
 
       toast.info(`Boosting veMEZO #${tokenId}…`);
       const tx = await booster.pokeBoosts([tokenId]);
