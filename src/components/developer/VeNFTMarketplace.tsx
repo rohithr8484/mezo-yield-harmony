@@ -8,7 +8,9 @@ import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
+const MEZO_TESTNET_CHAIN_HEX = `0x${MEZO_TESTNET_CHAIN_ID.toString(16)}`;
 const MEZO_TESTNET_RPC = "https://rpc.test.mezo.org";
+const MEZO_TESTNET_EXPLORER = "https://explorer.test.mezo.org";
 const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
 const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001";
 const VEMEZO_TOKEN = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
@@ -41,6 +43,52 @@ const TOKENS: VeToken[] = [
 
 const shorten = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
 const tierFor = (b: number) => (b >= 50 ? { label: "Whale", cls: "from-amber-500 to-orange-500", icon: Crown } : b >= 10 ? { label: "Pro", cls: "from-fuchsia-500 to-pink-500", icon: TrendingUp } : { label: "Starter", cls: "from-sky-500 to-cyan-500", icon: Sparkles });
+
+const getWalletMessage = (err: unknown, fallback: string) => {
+  const error = err as { shortMessage?: string; reason?: string; message?: string; error?: { message?: string } };
+  const message = error.shortMessage || error.reason || error.error?.message || error.message || fallback;
+  if (message.includes("could not coalesce error") || message.includes("RPC endpoint returned too many errors")) {
+    return "Mezo RPC is temporarily busy. If your wallet did not open, retry in a minute.";
+  }
+  return message;
+};
+
+const connectMezoWallet = async (eth: Eip1193Provider) => {
+  const accounts = await eth.request({ method: "eth_requestAccounts" });
+  const from = Array.isArray(accounts) && typeof accounts[0] === "string" ? accounts[0] : undefined;
+  if (!from) throw new Error("Wallet account unavailable");
+
+  const currentChain = await eth.request({ method: "eth_chainId" }).catch(() => undefined);
+  if (typeof currentChain === "string" && currentChain.toLowerCase() !== MEZO_TESTNET_CHAIN_HEX) {
+    try {
+      await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: MEZO_TESTNET_CHAIN_HEX }] });
+    } catch (switchErr) {
+      const code = (switchErr as { code?: number | string })?.code;
+      if (code !== 4902 && code !== "4902") throw switchErr;
+      await eth.request({
+        method: "wallet_addEthereumChain",
+        params: [
+          {
+            chainId: MEZO_TESTNET_CHAIN_HEX,
+            chainName: "Mezo Testnet",
+            nativeCurrency: { name: "Bitcoin", symbol: "BTC", decimals: 18 },
+            rpcUrls: [MEZO_TESTNET_RPC],
+            blockExplorerUrls: [MEZO_TESTNET_EXPLORER],
+          },
+        ],
+      });
+      await eth.request({ method: "wallet_switchEthereumChain", params: [{ chainId: MEZO_TESTNET_CHAIN_HEX }] });
+    }
+  }
+
+  return from;
+};
+
+const sendWalletTransaction = async (eth: Eip1193Provider, from: string, to: string, data: string) => {
+  const hash = await eth.request({ method: "eth_sendTransaction", params: [{ from, to, data }] });
+  if (typeof hash !== "string") throw new Error("Wallet did not return a transaction hash");
+  return hash;
+};
 
 const loadLockedPositions = (): MintedToken[] => {
   if (typeof window === "undefined") return [];
@@ -322,44 +370,14 @@ export const VeNFTMarketplace = () => {
     }
     setBoostingId(tokenId);
     try {
-      const provider = new ethers.BrowserProvider(eth);
-      await provider.send("eth_requestAccounts", []);
-      const signer = await provider.getSigner();
-      const me = (await signer.getAddress()).toLowerCase();
-
-      const veMEZO = new ethers.Contract(
-        VEMEZO_TOKEN,
-        ["function ownerOf(uint256) view returns(address)"],
-        signer,
-      );
-      try {
-        const owner: string = await veMEZO.ownerOf(tokenId);
-        if (owner.toLowerCase() !== me) {
-          toast.error(`You do not own veMEZO #${tokenId}`);
-          return;
-        }
-      } catch {
-        // ownerOf may fail on some forks; let the contract enforce
-      }
-
-      const booster = new ethers.Contract(
-        BOOST_CONTRACT,
-        ["function pokeBoosts(uint256[] boostableTokenIds) external"],
-        signer,
-      );
-
-      // No staticCall preflight — Mezo RPC may revert eth_call in conditions
-      // that the real transaction handles fine. Let the wallet submit and the
-      // chain decide.
-
+      const from = await connectMezoWallet(eth);
+      const data = new ethers.Interface(["function pokeBoosts(uint256[] boostableTokenIds) external"]).encodeFunctionData("pokeBoosts", [[tokenId]]);
       toast.info(`Boosting veMEZO #${tokenId}…`);
-      const tx = await booster.pokeBoosts([tokenId]);
-      await tx.wait();
-      toast.success(`Boosted veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+      const txHash = await sendWalletTransaction(eth, from, BOOST_CONTRACT, data);
+      toast.success(`Boost submitted for veMEZO #${tokenId} • ${txHash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
-      const e = err as { shortMessage?: string; reason?: string; message?: string };
-      toast.error(e.shortMessage || e.reason || e.message || "Boost failed");
+      toast.error(getWalletMessage(err, "Boost failed"));
     } finally {
       setBoostingId(null);
     }
@@ -386,46 +404,16 @@ export const VeNFTMarketplace = () => {
 
     setVotingId(tokenId);
     try {
-      const provider = new ethers.BrowserProvider(eth);
-      await provider.send("eth_requestAccounts", []);
-      const signer = await provider.getSigner();
-      const me = (await signer.getAddress()).toLowerCase();
-
-      const veMEZO = new ethers.Contract(
-        VEMEZO_TOKEN,
-        ["function ownerOf(uint256) view returns(address)"],
-        signer,
-      );
-      try {
-        const owner: string = await veMEZO.ownerOf(tokenId);
-        if (owner.toLowerCase() !== me) {
-          toast.error(`You do not own veMEZO #${tokenId}`);
-          return;
-        }
-      } catch {
-        // ownership check may fail; let contract enforce
-      }
-
-      const voter = new ethers.Contract(
-        VOTER_CONTRACT,
-        ["function vote(uint256 _tokenId, address[] _poolVote, uint256[] _weights) external"],
-        signer,
-      );
-
+      const from = await connectMezoWallet(eth);
       const poolVote = [poolAddress];
       const weights = [BigInt(weight)];
-
-      // Skip staticCall preflight — false reverts on Mezo RPC were blocking
-      // valid transactions. Let the wallet submit and the chain enforce.
-
+      const data = new ethers.Interface(["function vote(uint256 _tokenId, address[] _poolVote, uint256[] _weights) external"]).encodeFunctionData("vote", [tokenId, poolVote, weights]);
       toast.info(`Submitting vote for veMEZO #${tokenId}…`);
-      const tx = await voter.vote(tokenId, poolVote, weights);
-      await tx.wait();
-      toast.success(`Vote submitted for veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+      const txHash = await sendWalletTransaction(eth, from, VOTER_CONTRACT, data);
+      toast.success(`Vote submitted for veMEZO #${tokenId} • ${txHash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
-      const e = err as { shortMessage?: string; reason?: string; message?: string };
-      toast.error(e.shortMessage || e.reason || e.message || "Vote failed");
+      toast.error(getWalletMessage(err, "Vote failed"));
     } finally {
       setVotingId(null);
     }
