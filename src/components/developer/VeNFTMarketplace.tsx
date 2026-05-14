@@ -310,15 +310,16 @@ export const VeNFTMarketplace = () => {
 
   const [locking, setLocking] = useState(false);
   const [withdrawingId, setWithdrawingId] = useState<number | null>(null);
+  const [boostingId, setBoostingId] = useState<number | null>(null);
   const [votingId, setVotingId] = useState<number | null>(null);
 
-  const handleVote = async (tokenId: number) => {
+  const handleBoost = async (tokenId: number) => {
     const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
     if (!eth) {
       toast.error("Install MetaMask or a Web3 wallet");
       return;
     }
-    setVotingId(tokenId);
+    setBoostingId(tokenId);
     try {
       const provider = new ethers.BrowserProvider(eth);
       await provider.send("eth_requestAccounts", []);
@@ -350,14 +351,85 @@ export const VeNFTMarketplace = () => {
         await booster.pokeBoosts.staticCall([tokenId]);
       } catch (simErr: unknown) {
         const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
+        toast.error(`Boost would revert: ${reason}`);
+        return;
+      }
+
+      toast.info(`Boosting veMEZO #${tokenId}…`);
+      const tx = await booster.pokeBoosts([tokenId]);
+      await tx.wait();
+      toast.success(`Boosted veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+    } catch (err: unknown) {
+      console.error(err);
+      const e = err as { shortMessage?: string; reason?: string; message?: string };
+      toast.error(e.shortMessage || e.reason || e.message || "Boost failed");
+    } finally {
+      setBoostingId(null);
+    }
+  };
+
+  const handleVote = async (tokenId: number) => {
+    const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
+    if (!eth) {
+      toast.error("Install MetaMask or a Web3 wallet");
+      return;
+    }
+
+    const poolAddress = window.prompt(`Enter Pool Address to vote for with veMEZO #${tokenId}`);
+    if (!poolAddress || !ethers.isAddress(poolAddress)) {
+      toast.error("Invalid pool address");
+      return;
+    }
+    const weightStr = window.prompt("Enter Weight (e.g. 100)");
+    const weight = Number(weightStr);
+    if (!weight || weight <= 0) {
+      toast.error("Invalid weight");
+      return;
+    }
+
+    setVotingId(tokenId);
+    try {
+      const provider = new ethers.BrowserProvider(eth);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+      const me = (await signer.getAddress()).toLowerCase();
+
+      const veMEZO = new ethers.Contract(
+        VEMEZO_TOKEN,
+        ["function ownerOf(uint256) view returns(address)"],
+        signer,
+      );
+      try {
+        const owner: string = await veMEZO.ownerOf(tokenId);
+        if (owner.toLowerCase() !== me) {
+          toast.error(`You do not own veMEZO #${tokenId}`);
+          return;
+        }
+      } catch {
+        // ownership check may fail; let contract enforce
+      }
+
+      const voter = new ethers.Contract(
+        VOTER_CONTRACT,
+        ["function vote(uint256 _tokenId, address[] _poolVote, uint256[] _weights) external"],
+        signer,
+      );
+
+      const poolVote = [poolAddress];
+      const weights = [BigInt(weight)];
+
+      try {
+        await voter.vote.staticCall(tokenId, poolVote, weights);
+      } catch (simErr: unknown) {
+        const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
         toast.error(`Vote would revert: ${reason}`);
         return;
       }
 
-      toast.info(`Voting for veMEZO #${tokenId}…`);
-      const tx = await booster.pokeBoosts([tokenId]);
+      toast.info(`Submitting vote for veMEZO #${tokenId}…`);
+      const tx = await voter.vote(tokenId, poolVote, weights);
       await tx.wait();
-      toast.success(`Voted for veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+      toast.success(`Vote submitted for veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
       const e = err as { shortMessage?: string; reason?: string; message?: string };
