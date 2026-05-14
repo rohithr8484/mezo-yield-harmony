@@ -370,44 +370,14 @@ export const VeNFTMarketplace = () => {
     }
     setBoostingId(tokenId);
     try {
-      const provider = new ethers.BrowserProvider(eth);
-      await provider.send("eth_requestAccounts", []);
-      const signer = await provider.getSigner();
-      const me = (await signer.getAddress()).toLowerCase();
-
-      const veMEZO = new ethers.Contract(
-        VEMEZO_TOKEN,
-        ["function ownerOf(uint256) view returns(address)"],
-        signer,
-      );
-      try {
-        const owner: string = await veMEZO.ownerOf(tokenId);
-        if (owner.toLowerCase() !== me) {
-          toast.error(`You do not own veMEZO #${tokenId}`);
-          return;
-        }
-      } catch {
-        // ownerOf may fail on some forks; let the contract enforce
-      }
-
-      const booster = new ethers.Contract(
-        BOOST_CONTRACT,
-        ["function pokeBoosts(uint256[] boostableTokenIds) external"],
-        signer,
-      );
-
-      // No staticCall preflight — Mezo RPC may revert eth_call in conditions
-      // that the real transaction handles fine. Let the wallet submit and the
-      // chain decide.
-
+      const from = await connectMezoWallet(eth);
+      const data = new ethers.Interface(["function pokeBoosts(uint256[] boostableTokenIds) external"]).encodeFunctionData("pokeBoosts", [[tokenId]]);
       toast.info(`Boosting veMEZO #${tokenId}…`);
-      const tx = await booster.pokeBoosts([tokenId]);
-      await tx.wait();
-      toast.success(`Boosted veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+      const txHash = await sendWalletTransaction(eth, from, BOOST_CONTRACT, data);
+      toast.success(`Boost submitted for veMEZO #${tokenId} • ${txHash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
-      const e = err as { shortMessage?: string; reason?: string; message?: string };
-      toast.error(e.shortMessage || e.reason || e.message || "Boost failed");
+      toast.error(getWalletMessage(err, "Boost failed"));
     } finally {
       setBoostingId(null);
     }
@@ -434,46 +404,16 @@ export const VeNFTMarketplace = () => {
 
     setVotingId(tokenId);
     try {
-      const provider = new ethers.BrowserProvider(eth);
-      await provider.send("eth_requestAccounts", []);
-      const signer = await provider.getSigner();
-      const me = (await signer.getAddress()).toLowerCase();
-
-      const veMEZO = new ethers.Contract(
-        VEMEZO_TOKEN,
-        ["function ownerOf(uint256) view returns(address)"],
-        signer,
-      );
-      try {
-        const owner: string = await veMEZO.ownerOf(tokenId);
-        if (owner.toLowerCase() !== me) {
-          toast.error(`You do not own veMEZO #${tokenId}`);
-          return;
-        }
-      } catch {
-        // ownership check may fail; let contract enforce
-      }
-
-      const voter = new ethers.Contract(
-        VOTER_CONTRACT,
-        ["function vote(uint256 _tokenId, address[] _poolVote, uint256[] _weights) external"],
-        signer,
-      );
-
+      const from = await connectMezoWallet(eth);
       const poolVote = [poolAddress];
       const weights = [BigInt(weight)];
-
-      // Skip staticCall preflight — false reverts on Mezo RPC were blocking
-      // valid transactions. Let the wallet submit and the chain enforce.
-
+      const data = new ethers.Interface(["function vote(uint256 _tokenId, address[] _poolVote, uint256[] _weights) external"]).encodeFunctionData("vote", [tokenId, poolVote, weights]);
       toast.info(`Submitting vote for veMEZO #${tokenId}…`);
-      const tx = await voter.vote(tokenId, poolVote, weights);
-      await tx.wait();
-      toast.success(`Vote submitted for veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+      const txHash = await sendWalletTransaction(eth, from, VOTER_CONTRACT, data);
+      toast.success(`Vote submitted for veMEZO #${tokenId} • ${txHash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
-      const e = err as { shortMessage?: string; reason?: string; message?: string };
-      toast.error(e.shortMessage || e.reason || e.message || "Vote failed");
+      toast.error(getWalletMessage(err, "Vote failed"));
     } finally {
       setVotingId(null);
     }
