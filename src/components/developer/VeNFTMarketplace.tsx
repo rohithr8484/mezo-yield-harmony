@@ -295,16 +295,26 @@ export const VeNFTMarketplace = () => {
   const [withdrawingId, setWithdrawingId] = useState<number | null>(null);
 
   const handleWithdraw = async (tokenId: number) => {
-    const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
-    if (!eth) {
-      toast.error("Install MetaMask or a Web3 wallet");
-      return;
-    }
-    setWithdrawingId(tokenId);
     try {
+      const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
+      if (!eth) {
+        toast.error("Install MetaMask or a Web3 wallet");
+        return;
+      }
+      setWithdrawingId(tokenId);
+
+      // =====================================
+      // WALLET
+      // =====================================
       const provider = new ethers.BrowserProvider(eth);
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
+      const account = await signer.getAddress();
+      console.log("Wallet:", account);
+
+      // =====================================
+      // veMEZO CONTRACT
+      // =====================================
       const veMEZO = new ethers.Contract(
         VEMEZO_TOKEN,
         [
@@ -314,12 +324,9 @@ export const VeNFTMarketplace = () => {
         signer,
       );
 
-      // Soft preflight — only block when the lock clearly hasn't expired.
-      // We intentionally skip the ownership/approval preflight: ownerOf() can
-      // return a stale or proxy address on some forks/RPCs, and the contract
-      // itself enforces ERC-721 authorization on withdraw(). Letting the tx
-      // attempt avoids false "Not authorized" errors when the wallet really
-      // does own (or is approved for) the token.
+      // =====================================
+      // CONDITION CHECK — lock must be expired
+      // =====================================
       try {
         const lock = await veMEZO.locked(tokenId);
         const lockEnd = Number(lock.end);
@@ -333,10 +340,15 @@ export const VeNFTMarketplace = () => {
         // contract may not expose locked(); fall through and let the tx revert with reason
       }
 
-      toast.info(`Withdrawing veMEZO #${tokenId}…`);
+      // =====================================
+      // WITHDRAW (funds return to msg.sender = connected account)
+      // =====================================
+      toast.info(`Withdrawing veMEZO #${tokenId} to ${shorten(account)}…`);
       const tx = await veMEZO.withdraw(tokenId);
+      console.log("Withdraw TX:", tx.hash);
       await tx.wait();
-      toast.success(`Withdrawn veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+
+      toast.success(`Withdrawn veMEZO #${tokenId} → ${shorten(account)} • ${tx.hash.slice(0, 10)}…`);
       setMinted((prev) => prev.filter((t) => t.id !== tokenId));
       setOwned((prev) => ({ ...prev, [tokenId]: true }));
     } catch (err: unknown) {
@@ -344,7 +356,7 @@ export const VeNFTMarketplace = () => {
       const e = err as { code?: string; shortMessage?: string; reason?: string; message?: string };
       let message = e.shortMessage || e.reason || e.message || "Withdraw failed";
       if (e.code === "CALL_EXCEPTION" && !e.reason) {
-        message = "Transaction reverted by contract. Most likely cause: lock has not expired yet, or the connected wallet is not the owner of this veMEZO position.";
+        message = "Transaction reverted by contract. Most likely cause: lock has not expired yet, or the connected wallet is not authorized to withdraw this veMEZO position.";
       }
       toast.error(message);
     } finally {
