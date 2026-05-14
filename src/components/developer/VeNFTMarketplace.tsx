@@ -227,11 +227,18 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boos
           {owned ? <><CheckCircle2 className="h-4 w-4" /> Withdrawn</> : withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id} <ChevronRight className="h-4 w-4" /></>}
         </button>
         <button
+          onClick={onBoost}
+          disabled={boosting}
+          className="w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 border border-bitcoin/40 text-foreground hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-amber-500/30 disabled:opacity-50"
+        >
+          {boosting ? <><Loader2 className="h-4 w-4 animate-spin" /> Boosting…</> : <><Sparkles className="h-4 w-4" /> Boost #{token.id}</>}
+        </button>
+        <button
           onClick={onVote}
           disabled={voting}
-          className="w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 border border-bitcoin/40 text-foreground hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-pink-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-pink-500/30 disabled:opacity-50"
+          className="w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 border border-fuchsia-500/40 text-foreground hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-pink-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-pink-500/30 disabled:opacity-50"
         >
-          {voting ? <><Loader2 className="h-4 w-4 animate-spin" /> Voting…</> : <><Sparkles className="h-4 w-4" /> Vote #{token.id}</>}
+          {voting ? <><Loader2 className="h-4 w-4 animate-spin" /> Voting…</> : <><Vote className="h-4 w-4" /> Vote #{token.id}</>}
         </button>
       </div>
     </div>
