@@ -170,7 +170,7 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
   );
 };
 
-const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing }: { token: VeToken; owned: boolean; onBuy: () => void; onWithdraw: () => void; withdrawing: boolean }) => {
+const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onVote, voting }: { token: VeToken; owned: boolean; onBuy: () => void; onWithdraw: () => void; withdrawing: boolean; onVote: () => void; voting: boolean }) => {
   const tier = tierFor(token.balance);
   const TierIcon = tier.icon;
   return (
@@ -218,13 +218,22 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing }: { token: Ve
         </div>
       </div>
 
-      <button
-        onClick={onWithdraw}
-        disabled={withdrawing || owned}
-        className={`w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 ${owned ? "bg-emerald-500/10 text-emerald-500 cursor-default" : "bg-foreground text-background hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-bitcoin/30 disabled:opacity-50"}`}
-      >
-        {owned ? <><CheckCircle2 className="h-4 w-4" /> Withdrawn</> : withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id} <ChevronRight className="h-4 w-4" /></>}
-      </button>
+      <div className="space-y-2">
+        <button
+          onClick={onWithdraw}
+          disabled={withdrawing || owned}
+          className={`w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 ${owned ? "bg-emerald-500/10 text-emerald-500 cursor-default" : "bg-foreground text-background hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-bitcoin/30 disabled:opacity-50"}`}
+        >
+          {owned ? <><CheckCircle2 className="h-4 w-4" /> Withdrawn</> : withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id} <ChevronRight className="h-4 w-4" /></>}
+        </button>
+        <button
+          onClick={onVote}
+          disabled={voting}
+          className="w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 border border-bitcoin/40 text-foreground hover:bg-gradient-to-r hover:from-fuchsia-500 hover:to-pink-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-pink-500/30 disabled:opacity-50"
+        >
+          {voting ? <><Loader2 className="h-4 w-4 animate-spin" /> Voting…</> : <><Sparkles className="h-4 w-4" /> Vote #{token.id}</>}
+        </button>
+      </div>
     </div>
   );
 };
