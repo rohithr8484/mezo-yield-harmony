@@ -303,6 +303,62 @@ export const VeNFTMarketplace = () => {
 
   const [locking, setLocking] = useState(false);
   const [withdrawingId, setWithdrawingId] = useState<number | null>(null);
+  const [votingId, setVotingId] = useState<number | null>(null);
+
+  const handleVote = async (tokenId: number) => {
+    const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
+    if (!eth) {
+      toast.error("Install MetaMask or a Web3 wallet");
+      return;
+    }
+    setVotingId(tokenId);
+    try {
+      const provider = new ethers.BrowserProvider(eth);
+      await provider.send("eth_requestAccounts", []);
+      const signer = await provider.getSigner();
+      const me = (await signer.getAddress()).toLowerCase();
+
+      const veMEZO = new ethers.Contract(
+        VEMEZO_TOKEN,
+        ["function ownerOf(uint256) view returns(address)"],
+        signer,
+      );
+      try {
+        const owner: string = await veMEZO.ownerOf(tokenId);
+        if (owner.toLowerCase() !== me) {
+          toast.error(`You do not own veMEZO #${tokenId}`);
+          return;
+        }
+      } catch {
+        // ownerOf may fail on some forks; let the contract enforce
+      }
+
+      const booster = new ethers.Contract(
+        BOOST_CONTRACT,
+        ["function pokeBoosts(uint256[] boostableTokenIds) external"],
+        signer,
+      );
+
+      try {
+        await booster.pokeBoosts.staticCall([tokenId]);
+      } catch (simErr: unknown) {
+        const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
+        toast.error(`Vote would revert: ${reason}`);
+        return;
+      }
+
+      toast.info(`Voting for veMEZO #${tokenId}…`);
+      const tx = await booster.pokeBoosts([tokenId]);
+      await tx.wait();
+      toast.success(`Voted for veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
+    } catch (err: unknown) {
+      console.error(err);
+      const e = err as { shortMessage?: string; reason?: string; message?: string };
+      toast.error(e.shortMessage || e.reason || e.message || "Vote failed");
+    } finally {
+      setVotingId(null);
+    }
+  };
 
   const handleWithdraw = async (tokenId: number) => {
     const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
