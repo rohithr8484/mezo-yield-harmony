@@ -13,7 +13,7 @@ const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`
 const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001";
 const VEMEZO_TOKEN = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
 const BOOST_CONTRACT = "0x21d7bDF5a5929AD179F8cA0c9014A0B62ae6Bfd1";
-const VOTER_CONTRACT = "0xd16A5Df82120ED8D626a1a15232bFcE2366d6AA9";
+const VOTER_CONTRACT = "0x9A220b677234BB18273aC031bE6CA405a950cA2e";
 const FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const LISTING_PRICE = 0.2;
 
@@ -348,13 +348,9 @@ export const VeNFTMarketplace = () => {
         signer,
       );
 
-      try {
-        await booster.pokeBoosts.staticCall([tokenId]);
-      } catch (simErr: unknown) {
-        const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
-        toast.error(`Boost would revert: ${reason}`);
-        return;
-      }
+      // No staticCall preflight — Mezo RPC may revert eth_call in conditions
+      // that the real transaction handles fine. Let the wallet submit and the
+      // chain decide.
 
       toast.info(`Boosting veMEZO #${tokenId}…`);
       const tx = await booster.pokeBoosts([tokenId]);
@@ -419,13 +415,8 @@ export const VeNFTMarketplace = () => {
       const poolVote = [poolAddress];
       const weights = [BigInt(weight)];
 
-      try {
-        await voter.vote.staticCall(tokenId, poolVote, weights);
-      } catch (simErr: unknown) {
-        const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
-        toast.error(`Vote would revert: ${reason}`);
-        return;
-      }
+      // Skip staticCall preflight — false reverts on Mezo RPC were blocking
+      // valid transactions. Let the wallet submit and the chain enforce.
 
       toast.info(`Submitting vote for veMEZO #${tokenId}…`);
       const tx = await voter.vote(tokenId, poolVote, weights);
