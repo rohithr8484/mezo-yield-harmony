@@ -367,17 +367,33 @@ export const VeNFTMarketplace = () => {
       const provider = new ethers.BrowserProvider(eth);
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
+      const me = await signer.getAddress();
       const mezo = new ethers.Contract(
         MEZO_TOKEN,
-        ["function approve(address spender,uint256 amount) external returns (bool)", "function decimals() external view returns(uint8)"],
+        [
+          "function approve(address spender,uint256 amount) external returns (bool)",
+          "function allowance(address owner,address spender) external view returns (uint256)",
+          "function decimals() external view returns(uint8)",
+          "function balanceOf(address owner) external view returns(uint256)",
+        ],
         signer
       );
       const decimals = await mezo.decimals();
       const parsedAmount = ethers.parseUnits(LOCK_AMOUNT, decimals);
 
-      toast.info("Approving MEZO…");
-      const approveTx = await mezo.approve(VEMEZO_TOKEN, parsedAmount);
-      await approveTx.wait();
+      const balance: bigint = await mezo.balanceOf(me);
+      if (balance < parsedAmount) {
+        toast.error(`Insufficient MEZO balance. Need ${LOCK_AMOUNT} MEZO, have ${ethers.formatUnits(balance, decimals)}.`);
+        setLocking(false);
+        return;
+      }
+
+      const currentAllowance: bigint = await mezo.allowance(me, VEMEZO_TOKEN);
+      if (currentAllowance < parsedAmount) {
+        toast.info("Approving MEZO…");
+        const approveTx = await mezo.approve(VEMEZO_TOKEN, parsedAmount);
+        await approveTx.wait();
+      }
 
       const veMEZO = new ethers.Contract(
         VEMEZO_TOKEN,
@@ -387,6 +403,17 @@ export const VeNFTMarketplace = () => {
         ],
         signer
       );
+
+      // Preflight static call — surfaces the actual revert reason before the wallet prompt.
+      try {
+        await veMEZO.createLock.staticCall(parsedAmount, LOCK_DURATION);
+      } catch (simErr: unknown) {
+        const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
+        toast.error(`createLock would revert: ${reason}`);
+        setLocking(false);
+        return;
+      }
+
       toast.info("Creating lock…");
       const tx = await veMEZO.createLock(parsedAmount, LOCK_DURATION);
       const receipt = await tx.wait();
