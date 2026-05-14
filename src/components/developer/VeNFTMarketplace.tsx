@@ -320,12 +320,42 @@ export const VeNFTMarketplace = () => {
         [
           "function withdraw(uint256 _tokenId) external",
           "function locked(uint256) view returns(uint256 amount,uint256 end)",
+          "function ownerOf(uint256 tokenId) view returns(address)",
+          "function getApproved(uint256 tokenId) view returns(address)",
+          "function isApprovedForAll(address owner, address operator) view returns(bool)",
         ],
         signer,
       );
 
       // =====================================
-      // CONDITION CHECK — lock must be expired
+      // CHECK 1 — token must exist & caller must be owner/approved
+      // =====================================
+      let nftOwner: string;
+      try {
+        nftOwner = await veMEZO.ownerOf(tokenId);
+      } catch {
+        toast.error(`Token #${tokenId} does not exist on the veMEZO contract.`);
+        return;
+      }
+
+      const isOwner = nftOwner.toLowerCase() === account.toLowerCase();
+      let isAuthorized = isOwner;
+      if (!isOwner) {
+        try {
+          const approved: string = await veMEZO.getApproved(tokenId);
+          const operatorOk: boolean = await veMEZO.isApprovedForAll(nftOwner, account);
+          isAuthorized = approved.toLowerCase() === account.toLowerCase() || operatorOk;
+        } catch {
+          isAuthorized = false;
+        }
+      }
+      if (!isAuthorized) {
+        toast.error(`Not authorized for veMEZO #${tokenId}. Owner: ${shorten(nftOwner)}. Connect that wallet or get approval.`);
+        return;
+      }
+
+      // =====================================
+      // CHECK 2 — lock must be expired
       // =====================================
       try {
         const lock = await veMEZO.locked(tokenId);
@@ -333,7 +363,8 @@ export const VeNFTMarketplace = () => {
         const now = Math.floor(Date.now() / 1000);
         if (lockEnd > 0 && now < lockEnd) {
           const daysLeft = Math.ceil((lockEnd - now) / 86400);
-          toast.error(`Lock still active — ${daysLeft} day(s) remaining until withdrawal is allowed.`);
+          const unlockDate = new Date(lockEnd * 1000).toLocaleDateString();
+          toast.error(`Lock still active — ${daysLeft} day(s) remaining (unlocks ${unlockDate}).`);
           return;
         }
       } catch {
