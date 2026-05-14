@@ -295,91 +295,48 @@ export const VeNFTMarketplace = () => {
   const [withdrawingId, setWithdrawingId] = useState<number | null>(null);
 
   const handleWithdraw = async (tokenId: number) => {
+    const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
+    if (!eth) {
+      toast.error("Install MetaMask or a Web3 wallet");
+      return;
+    }
+    setWithdrawingId(tokenId);
     try {
-      const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
-      if (!eth) {
-        toast.error("Install MetaMask or a Web3 wallet");
-        return;
-      }
-      setWithdrawingId(tokenId);
-
-      // =====================================
-      // WALLET
-      // =====================================
       const provider = new ethers.BrowserProvider(eth);
       await provider.send("eth_requestAccounts", []);
       const signer = await provider.getSigner();
-      const account = await signer.getAddress();
-      console.log("Wallet:", account);
-
-      // =====================================
-      // veMEZO CONTRACT
-      // =====================================
       const veMEZO = new ethers.Contract(
         VEMEZO_TOKEN,
         [
           "function withdraw(uint256 _tokenId) external",
           "function locked(uint256) view returns(uint256 amount,uint256 end)",
-          "function ownerOf(uint256 tokenId) view returns(address)",
-          "function getApproved(uint256 tokenId) view returns(address)",
-          "function isApprovedForAll(address owner, address operator) view returns(bool)",
         ],
         signer,
       );
 
-      // =====================================
-      // CHECK 1 — token must exist & caller must be owner/approved
-      // =====================================
-      let nftOwner: string;
-      try {
-        nftOwner = await veMEZO.ownerOf(tokenId);
-      } catch {
-        toast.error(`Token #${tokenId} does not exist on the veMEZO contract.`);
-        return;
-      }
-
-      const isOwner = nftOwner.toLowerCase() === account.toLowerCase();
-      let isAuthorized = isOwner;
-      if (!isOwner) {
-        try {
-          const approved: string = await veMEZO.getApproved(tokenId);
-          const operatorOk: boolean = await veMEZO.isApprovedForAll(nftOwner, account);
-          isAuthorized = approved.toLowerCase() === account.toLowerCase() || operatorOk;
-        } catch {
-          isAuthorized = false;
-        }
-      }
-      if (!isAuthorized) {
-        toast.error(`Not authorized for veMEZO #${tokenId}. Owner: ${shorten(nftOwner)}. Connect that wallet or get approval.`);
-        return;
-      }
-
-      // =====================================
-      // CHECK 2 — lock must be expired
-      // =====================================
+      // Soft preflight — only block when the lock clearly hasn't expired.
+      // We intentionally skip the ownership/approval preflight: ownerOf() can
+      // return a stale or proxy address on some forks/RPCs, and the contract
+      // itself enforces ERC-721 authorization on withdraw(). Letting the tx
+      // attempt avoids false "Not authorized" errors when the wallet really
+      // does own (or is approved for) the token.
       try {
         const lock = await veMEZO.locked(tokenId);
         const lockEnd = Number(lock.end);
         const now = Math.floor(Date.now() / 1000);
         if (lockEnd > 0 && now < lockEnd) {
           const daysLeft = Math.ceil((lockEnd - now) / 86400);
-          const unlockDate = new Date(lockEnd * 1000).toLocaleDateString();
-          toast.error(`Lock still active — ${daysLeft} day(s) remaining (unlocks ${unlockDate}).`);
+          toast.error(`Lock still active — ${daysLeft} day(s) remaining until withdrawal is allowed.`);
           return;
         }
       } catch {
         // contract may not expose locked(); fall through and let the tx revert with reason
       }
 
-      // =====================================
-      // WITHDRAW (funds return to msg.sender = connected account)
-      // =====================================
-      toast.info(`Withdrawing veMEZO #${tokenId} to ${shorten(account)}…`);
+      toast.info(`Withdrawing veMEZO #${tokenId}…`);
       const tx = await veMEZO.withdraw(tokenId);
-      console.log("Withdraw TX:", tx.hash);
       await tx.wait();
-
-      toast.success(`Withdrawn veMEZO #${tokenId} → ${shorten(account)} • ${tx.hash.slice(0, 10)}…`);
+      toast.success(`Withdrawn veMEZO #${tokenId} • ${tx.hash.slice(0, 10)}…`);
       setMinted((prev) => prev.filter((t) => t.id !== tokenId));
       setOwned((prev) => ({ ...prev, [tokenId]: true }));
     } catch (err: unknown) {
@@ -387,7 +344,7 @@ export const VeNFTMarketplace = () => {
       const e = err as { code?: string; shortMessage?: string; reason?: string; message?: string };
       let message = e.shortMessage || e.reason || e.message || "Withdraw failed";
       if (e.code === "CALL_EXCEPTION" && !e.reason) {
-        message = "Transaction reverted by contract. Most likely cause: lock has not expired yet, or the connected wallet is not authorized to withdraw this veMEZO position.";
+        message = "Transaction reverted by contract. Most likely cause: lock has not expired yet, or the connected wallet is not the owner of this veMEZO position.";
       }
       toast.error(message);
     } finally {
