@@ -415,13 +415,8 @@ export const VeNFTMarketplace = () => {
       const poolVote = [poolAddress];
       const weights = [BigInt(weight)];
 
-      try {
-        await voter.vote.staticCall(tokenId, poolVote, weights);
-      } catch (simErr: unknown) {
-        const reason = simErr instanceof Error ? simErr.message : "Simulation failed";
-        toast.error(`Vote would revert: ${reason}`);
-        return;
-      }
+      // Skip staticCall preflight — false reverts on Mezo RPC were blocking
+      // valid transactions. Let the wallet submit and the chain enforce.
 
       toast.info(`Submitting vote for veMEZO #${tokenId}…`);
       const tx = await voter.vote(tokenId, poolVote, weights);
