@@ -47,32 +47,21 @@ const MOCK_ANALYSES: Record<string, AnalysisResult> = {
       "Model inference latency spikes during network congestion (p99 > 5s)",
       "Training data may contain biased DeFi protocol assessments",
       "Model outputs should not be used as sole basis for financial decisions",
+      "Indexer lag during chain reorganizations can serve stale data for up to 30 blocks",
+      "Large event logs (>10MB) may timeout during indexing — pagination recommended",
     ],
     hiddenFees: [
       "GPU compute costs scale non-linearly with batch size — 10x input ≠ 10x cost",
       "Embedding storage on-chain costs ~0.005 MEZO per KB",
       "Model retraining triggers additional compute charges",
+      "Historical backfill charges 0.001 MEZO per 1000 events indexed",
+      "Custom ABI decoding adds 20% processing overhead to indexing pipeline",
     ],
     attackVectors: [
       "Prompt injection could extract system instructions or cached context",
       "Adversarial inputs may cause model to produce hallucinated contract addresses",
       "Rate limiting bypass possible through parallel session creation",
-    ],
-  },
-  indexing: {
-    risks: [
-      "Indexer lag during chain reorganizations can serve stale data for up to 30 blocks",
-      "Large event logs (>10MB) may timeout during indexing — pagination recommended",
-      "Schema migrations on indexed data require full re-index (downtime: ~2h for 1M events)",
-    ],
-    hiddenFees: [
-      "Historical backfill charges 0.001 MEZO per 1000 events indexed",
-      "Real-time webhook delivery retries incur additional compute costs",
-      "Custom ABI decoding adds 20% processing overhead to indexing pipeline",
-    ],
-    attackVectors: [
       "Malicious contract emitting excessive events could inflate indexing costs (log bomb)",
-      "Unvalidated webhook endpoints could leak indexed data to unauthorized parties",
       "Index poisoning: crafted events can create misleading aggregated statistics",
     ],
   },
