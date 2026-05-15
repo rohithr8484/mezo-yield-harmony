@@ -1,4 +1,5 @@
-import { Vote, Users, BarChart3 } from "lucide-react";
+import { Vote, Users, BarChart3, Wallet, Bitcoin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const items = [
   {
@@ -19,15 +20,42 @@ const items = [
 ];
 
 const GovernanceSection = () => {
+  const navigate = useNavigate();
+  const goToGovernance = () => navigate("/governance");
+
   return (
     <section className="py-24" id="governance">
       <div className="container">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-center text-foreground mb-4">
           Governance
         </h2>
-        <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-16">
+        <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
           Shape the future of Bitcoin finance through decentralized governance.
         </p>
+
+        <div className="flex flex-wrap gap-4 justify-center mb-16">
+          <button
+            onClick={goToGovernance}
+            className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-card"
+          >
+            <Wallet className="h-4 w-4" />
+            Pay with MUSD
+          </button>
+          <button
+            onClick={goToGovernance}
+            className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-card"
+          >
+            <Wallet className="h-4 w-4" />
+            Pay with MEZO
+          </button>
+          <button
+            onClick={goToGovernance}
+            className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-card"
+          >
+            <Bitcoin className="h-4 w-4" />
+            Pay with BTC
+          </button>
+        </div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {items.map((item) => (
