@@ -67,12 +67,10 @@ const MOCK_ANALYSES: Record<string, AnalysisResult> = {
   },
 };
 
-type RunType = "contract" | "simulation" | "ai";
+type RunType = "contract";
 
 const runOptions = [
   { id: "contract" as RunType, label: "Upload Solidity Contract", icon: Upload, desc: "Upload .sol files for automated security analysis" },
-  { id: "simulation" as RunType, label: "Smart Contract Simulations", icon: Play, desc: "Simulate contract interactions on Mezo Testnet fork" },
-  { id: "ai" as RunType, label: "AI Models & Indexing Jobs", icon: Brain, desc: "Deploy AI inference models and index on-chain events for fast queries" },
 ];
 
 export const RunSection = () => {
