@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Vote, Users, BarChart3, Shield, Scale, Globe, ArrowDown, ArrowRight, CheckCircle, XCircle, MinusCircle, Lock, Coins, Gauge, FileText, Timer, Zap, Wallet, Search, ChevronDown, Plus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,7 +6,9 @@ import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { Link } from "react-router-dom";
-import { proposals, statusStyles, formatVotes, type ProposalStatus } from "@/lib/proposals";
+import { proposals as staticProposals, statusStyles, type Proposal } from "@/lib/proposals";
+
+const USER_PROPOSALS_KEY = "mezo.userProposals.v1";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 
@@ -26,9 +28,19 @@ const Governance = () => {
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [proposalForm, setProposalForm] = useState({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
   const { openConnectModal } = useConnectModal();
+  const [userProposals, setUserProposals] = useState<Proposal[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(USER_PROPOSALS_KEY);
+      if (raw) setUserProposals(JSON.parse(raw));
+    } catch {}
+  }, []);
+
+  const allProposals = useMemo(() => [...userProposals, ...staticProposals], [userProposals]);
 
   const filteredProposals = useMemo(() => {
-    return proposals.filter((p) => {
+    return allProposals.filter((p) => {
       const matchesSearch =
         !searchQuery ||
         p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -37,7 +49,7 @@ const Governance = () => {
       const matchesFilter = statusFilter === "all" || p.status === statusFilter;
       return matchesSearch && matchesFilter;
     });
-  }, [searchQuery, statusFilter]);
+  }, [searchQuery, statusFilter, allProposals]);
 
   const { data: musdSupply } = useReadContract({
     address: CONTRACTS.testnet.MUSD,
