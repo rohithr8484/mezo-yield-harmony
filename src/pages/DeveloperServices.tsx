@@ -188,6 +188,38 @@ const DeveloperServices = () => {
         </div>
       </section>
 
+      {/* Governance intro */}
+      <section className="py-16">
+        <div className="container">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-center text-foreground mb-4">
+            Governance
+          </h2>
+          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
+            Shape the future of Bitcoin finance through decentralized governance.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center">
+            <button
+              onClick={() => navigate("/governance")}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+            >
+              Pay with MUSD
+            </button>
+            <button
+              onClick={() => navigate("/governance")}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+            >
+              Pay with MEZO
+            </button>
+            <button
+              onClick={() => navigate("/governance")}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+            >
+              Pay with BTC
+            </button>
+          </div>
+        </div>
+      </section>
+
       {/* Governance Analytics Section */}
       <section className="py-20" id="governance-analytics">
         <div className="container">
