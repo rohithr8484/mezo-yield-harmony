@@ -254,24 +254,33 @@ const DeveloperServices = () => {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <button
-              onClick={() => navigate("/governance")}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+              onClick={() => handleGovPay("MUSD")}
+              disabled={!!govPending}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
             >
-              Pay with MUSD
+              <Wallet className="h-4 w-4" />
+              {govPending === "MUSD" ? "Confirming..." : "Pay with MUSD"}
             </button>
             <button
-              onClick={() => navigate("/governance")}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+              onClick={() => handleGovPay("MEZO")}
+              disabled={!!govPending}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
             >
-              Pay with MEZO
+              <Wallet className="h-4 w-4" />
+              {govPending === "MEZO" ? "Confirming..." : "Pay with MEZO"}
             </button>
             <button
-              onClick={() => navigate("/governance")}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+              onClick={() => handleGovPay("BTC")}
+              disabled={!!govPending}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
             >
-              Pay with BTC
+              <Bitcoin className="h-4 w-4" />
+              {govPending === "BTC" ? "Confirming..." : "Pay with BTC"}
             </button>
           </div>
+          <p className="text-center text-xs text-muted-foreground mt-4">
+            Pays 0.0001 of the selected token on Mezo Testnet (Chain ID 31611), then opens Governance.
+          </p>
         </div>
       </section>
 
