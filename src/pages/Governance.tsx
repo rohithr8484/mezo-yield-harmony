@@ -170,33 +170,6 @@ const Governance = () => {
                     <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{p.summary}</p>
                   </div>
 
-                  {/* Right: vote bars */}
-                  <div className="w-full lg:w-64 shrink-0 space-y-2.5">
-                    <div>
-                      <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-emerald-600">For&nbsp;&nbsp;{formatVotes(p.forVotes)}</span>
-                        <span className="text-muted-foreground text-xs font-mono">{p.forPct.toFixed(1)}%</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-border overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-700"
-                          style={{ width: `${p.forPct}%` }}
-                        />
-                      </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between text-sm mb-1">
-                        <span className="font-semibold text-destructive">Against&nbsp;&nbsp;{formatVotes(p.againstVotes)}</span>
-                        <span className="text-muted-foreground text-xs font-mono">{p.againstPct.toFixed(1)}%</span>
-                      </div>
-                      <div className="h-2 rounded-full bg-border overflow-hidden">
-                        <div
-                          className="h-full rounded-full bg-gradient-to-r from-destructive/80 to-destructive/60 transition-all duration-700"
-                          style={{ width: `${Math.max(p.againstPct, 1)}%` }}
-                        />
-                      </div>
-                    </div>
-                  </div>
                 </Link>
               ))}
             </div>
@@ -292,7 +265,29 @@ const Governance = () => {
                         toast.error("Title and summary are required");
                         return;
                       }
-                      toast.success(`Proposal "${proposalForm.title}" submitted successfully! It will appear after review.`);
+                      const nextId = `MIP-${String(1000 + userProposals.length + 1)}`;
+                      const newProposal: Proposal = {
+                        id: nextId,
+                        title: proposalForm.title.trim(),
+                        author: address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "anonymous",
+                        authorAvatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${address ?? "anon"}`,
+                        summary: proposalForm.summary.trim(),
+                        motivation: proposalForm.motivation.trim(),
+                        specification: proposalForm.specification.trim(),
+                        status: "Active",
+                        forVotes: 0, forPct: 0,
+                        againstVotes: 0, againstPct: 0,
+                        abstainVotes: 0, abstainPct: 0,
+                        token: "MEZO",
+                        quorum: 0, quorumRequired: 200000,
+                        differential: 0, differentialRequired: 80000,
+                        topVoters: [],
+                        discussions: [],
+                      };
+                      const next = [newProposal, ...userProposals];
+                      setUserProposals(next);
+                      try { localStorage.setItem(USER_PROPOSALS_KEY, JSON.stringify(next)); } catch {}
+                      toast.success(`Proposal "${newProposal.title}" submitted!`);
                       setProposalForm({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
                       setShowSubmitForm(false);
                     }}
