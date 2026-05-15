@@ -44,6 +44,51 @@ const DeveloperServices = () => {
     }
   };
 
+  const { isConnected, chainId, connector } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const { switchChainAsync } = useSwitchChain();
+  const { writeContractAsync } = useWriteContract();
+  const { sendTransactionAsync } = useSendTransaction();
+  const [govPending, setGovPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
+
+  const handleGovPay = async (token: "MUSD" | "MEZO" | "BTC") => {
+    if (govPending) return;
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    setGovPending(token);
+    try {
+      if (chainId !== GOV_CHAIN_ID) {
+        await switchChainAsync({ chainId: GOV_CHAIN_ID });
+      }
+      let txHash: `0x${string}`;
+      if (token === "BTC") {
+        txHash = await sendTransactionAsync({
+          to: GOV_RECIPIENT,
+          value: parseEther("0.0001"),
+          chainId: GOV_CHAIN_ID,
+        });
+      } else {
+        txHash = await writeContractAsync({
+          address: token === "MUSD" ? GOV_MUSD : GOV_MEZO,
+          abi: ERC20_ABI,
+          functionName: "transfer",
+          args: [GOV_RECIPIENT, parseUnits("0.0001", 18)],
+          chainId: GOV_CHAIN_ID,
+        });
+      }
+      toast.success(`Paid 0.0001 ${token} via ${connector?.name ?? "wallet"}. Tx: ${txHash.slice(0, 10)}...`);
+      setTimeout(() => navigate("/governance"), 600);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message.toLowerCase() : "";
+      const rejected = msg.includes("rejected") || msg.includes("denied") || msg.includes("cancelled");
+      toast.error(rejected ? "Payment cancelled." : "Payment failed. Please try again.");
+    } finally {
+      setGovPending(null);
+    }
+  };
+
   useEffect(() => {
     window.localStorage.setItem("developer_paid_services", JSON.stringify(paidServices));
   }, [paidServices]);
