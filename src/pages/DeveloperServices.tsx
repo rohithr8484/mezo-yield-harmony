@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Zap, Vote, Lock, Play } from "lucide-react";
+import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin } from "lucide-react";
+import { useAccount, useSwitchChain, useWriteContract, useSendTransaction } from "wagmi";
+import { parseUnits, parseEther } from "viem";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { toast } from "sonner";
+import { ERC20_ABI } from "@/lib/mezo";
 import PageLayout from "@/components/PageLayout";
+
+const GOV_CHAIN_ID = 31611;
+const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
+const GOV_MUSD = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
+const GOV_MEZO = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
 import { PaymentGate } from "@/components/developer/PaymentGate";
 import { TransactionLookup } from "@/components/developer/TransactionLookup";
 import { RunSection } from "@/components/developer/RunSection";
@@ -31,6 +41,51 @@ const DeveloperServices = () => {
     setPaidServices((prev) => ({ ...prev, [key]: true }));
     if (key === "governance") {
       setTimeout(() => navigate("/governance"), 600);
+    }
+  };
+
+  const { isConnected, chainId, connector } = useAccount();
+  const { openConnectModal } = useConnectModal();
+  const { switchChainAsync } = useSwitchChain();
+  const { writeContractAsync } = useWriteContract();
+  const { sendTransactionAsync } = useSendTransaction();
+  const [govPending, setGovPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
+
+  const handleGovPay = async (token: "MUSD" | "MEZO" | "BTC") => {
+    if (govPending) return;
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    setGovPending(token);
+    try {
+      if (chainId !== GOV_CHAIN_ID) {
+        await switchChainAsync({ chainId: GOV_CHAIN_ID });
+      }
+      let txHash: `0x${string}`;
+      if (token === "BTC") {
+        txHash = await sendTransactionAsync({
+          to: GOV_RECIPIENT,
+          value: parseEther("0.0001"),
+          chainId: GOV_CHAIN_ID,
+        });
+      } else {
+        txHash = await writeContractAsync({
+          address: token === "MUSD" ? GOV_MUSD : GOV_MEZO,
+          abi: ERC20_ABI,
+          functionName: "transfer",
+          args: [GOV_RECIPIENT, parseUnits("0.0001", 18)],
+          chainId: GOV_CHAIN_ID,
+        });
+      }
+      toast.success(`Paid 0.0001 ${token} via ${connector?.name ?? "wallet"}. Tx: ${txHash.slice(0, 10)}...`);
+      setTimeout(() => navigate("/governance"), 600);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message.toLowerCase() : "";
+      const rejected = msg.includes("rejected") || msg.includes("denied") || msg.includes("cancelled");
+      toast.error(rejected ? "Payment cancelled." : "Payment failed. Please try again.");
+    } finally {
+      setGovPending(null);
     }
   };
 
@@ -199,24 +254,33 @@ const DeveloperServices = () => {
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <button
-              onClick={() => navigate("/governance")}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+              onClick={() => handleGovPay("MUSD")}
+              disabled={!!govPending}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
             >
-              Pay with MUSD
+              <Wallet className="h-4 w-4" />
+              {govPending === "MUSD" ? "Confirming..." : "Pay with MUSD"}
             </button>
             <button
-              onClick={() => navigate("/governance")}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+              onClick={() => handleGovPay("MEZO")}
+              disabled={!!govPending}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
             >
-              Pay with MEZO
+              <Wallet className="h-4 w-4" />
+              {govPending === "MEZO" ? "Confirming..." : "Pay with MEZO"}
             </button>
             <button
-              onClick={() => navigate("/governance")}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity shadow-card"
+              onClick={() => handleGovPay("BTC")}
+              disabled={!!govPending}
+              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
             >
-              Pay with BTC
+              <Bitcoin className="h-4 w-4" />
+              {govPending === "BTC" ? "Confirming..." : "Pay with BTC"}
             </button>
           </div>
+          <p className="text-center text-xs text-muted-foreground mt-4">
+            Pays 0.0001 of the selected token on Mezo Testnet (Chain ID 31611), then opens Governance.
+          </p>
         </div>
       </section>
 
