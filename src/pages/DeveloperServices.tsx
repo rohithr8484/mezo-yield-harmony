@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Zap, Vote, Lock, Play } from "lucide-react";
+import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin } from "lucide-react";
+import { useAccount, useSwitchChain, useWriteContract, useSendTransaction } from "wagmi";
+import { parseUnits, parseEther } from "viem";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { toast } from "sonner";
+import { ERC20_ABI } from "@/lib/mezo";
 import PageLayout from "@/components/PageLayout";
+
+const GOV_CHAIN_ID = 31611;
+const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
+const GOV_MUSD = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
+const GOV_MEZO = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
 import { PaymentGate } from "@/components/developer/PaymentGate";
 import { TransactionLookup } from "@/components/developer/TransactionLookup";
 import { RunSection } from "@/components/developer/RunSection";
