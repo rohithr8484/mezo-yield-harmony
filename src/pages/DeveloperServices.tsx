@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin } from "lucide-react";
-import { useAccount, useSwitchChain, useWriteContract, useSendTransaction } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
-import { ERC20_ABI } from "@/lib/mezo";
 import { payWithMUSD } from "@/lib/musdPayment";
+import { payWithMEZO } from "@/lib/mezoPayment";
+import { payWithBTC } from "@/lib/btcPayment";
 import PageLayout from "@/components/PageLayout";
 
 const GOV_CHAIN_ID = 31611;
@@ -48,8 +49,6 @@ const DeveloperServices = () => {
   const { isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync } = useSwitchChain();
-  const { writeContractAsync } = useWriteContract();
-  const { sendTransactionAsync } = useSendTransaction();
   const [govPending, setGovPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
 
   const handleGovPay = async (token: "MUSD" | "MEZO" | "BTC") => {
@@ -65,22 +64,14 @@ const DeveloperServices = () => {
       }
       let txHash: `0x${string}`;
       if (token === "BTC") {
-        txHash = await sendTransactionAsync({
-          to: GOV_RECIPIENT,
-          value: parseEther("0.0001"),
-          chainId: GOV_CHAIN_ID,
-        });
+        const { stakeHash } = await payWithBTC(parseEther("0.0001"));
+        txHash = stakeHash as `0x${string}`;
       } else if (token === "MUSD") {
         const { stakeHash } = await payWithMUSD(parseUnits("0.0001", 18), "0.5");
         txHash = stakeHash as `0x${string}`;
       } else {
-        txHash = await writeContractAsync({
-          address: GOV_MEZO,
-          abi: ERC20_ABI,
-          functionName: "transfer",
-          args: [GOV_RECIPIENT, parseUnits("0.0001", 18)],
-          chainId: GOV_CHAIN_ID,
-        });
+        const { stakeHash } = await payWithMEZO(parseUnits("0.0001", 18));
+        txHash = stakeHash as `0x${string}`;
       }
       toast.success(`Paid 0.0001 ${token} via ${connector?.name ?? "wallet"}. Tx: ${txHash.slice(0, 10)}...`);
       setTimeout(() => navigate("/governance"), 600);

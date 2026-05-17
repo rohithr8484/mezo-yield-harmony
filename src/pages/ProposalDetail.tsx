@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ExternalLink, CheckCircle2, MessageSquare, Send } from "lucide-react";
-import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits } from "viem";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
 import { proposals, statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
-import { ERC20_ABI } from "@/lib/mezo";
 import { payWithMUSD } from "@/lib/musdPayment";
+import { payWithMEZO } from "@/lib/mezoPayment";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 
@@ -27,7 +27,6 @@ const ProposalDetail = () => {
   const { isConnected, address, chain, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitchingChain } = useSwitchChain();
-  const { writeContractAsync } = useWriteContract();
   const [newComment, setNewComment] = useState("");
   const [localDiscussions, setLocalDiscussions] = useState<Array<{ id: string; author: string; avatar: string; message: string; timestamp: string }>>([]);
   const [voted, setVoted] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
@@ -78,13 +77,8 @@ const ProposalDetail = () => {
         const { stakeHash } = await payWithMUSD(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS), "0.5");
         txHash = stakeHash;
       } else {
-        txHash = await writeContractAsync({
-          address: MEZO_TOKEN,
-          abi: ERC20_ABI,
-          functionName: "transfer",
-          args: [PROPOSAL_FEE_RECIPIENT, parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS)],
-          chainId: MEZO_TESTNET_CHAIN_ID,
-        });
+        const { stakeHash } = await payWithMEZO(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS));
+        txHash = stakeHash;
       }
 
       setVoted(selectedVote);
