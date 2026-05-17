@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Wallet, Bitcoin } from "lucide-react";
-import { useAccount, useSwitchChain, useWriteContract, useSendTransaction } from "wagmi";
+import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
-import { ERC20_ABI } from "@/lib/mezo";
 import { payWithMUSD } from "@/lib/musdPayment";
+import { payWithMEZO } from "@/lib/mezoPayment";
+import { payWithBTC } from "@/lib/btcPayment";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
@@ -23,8 +24,6 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
   const { isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
-  const { writeContractAsync } = useWriteContract();
-  const { sendTransactionAsync } = useSendTransaction();
   const [pending, setPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const connectedWalletName = connector?.name ?? "Wallet";
@@ -44,22 +43,14 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
       }
       let txHash: `0x${string}`;
       if (token === "BTC") {
-        txHash = await sendTransactionAsync({
-          to: FEE_RECIPIENT,
-          value: parseEther("0.0001"),
-          chainId: MEZO_TESTNET_CHAIN_ID,
-        });
+        const { stakeHash } = await payWithBTC(parseEther("0.0001"));
+        txHash = stakeHash as `0x${string}`;
       } else if (token === "MUSD") {
         const { stakeHash } = await payWithMUSD(parseUnits("0.2", 18), "0.5");
         txHash = stakeHash as `0x${string}`;
       } else {
-        txHash = await writeContractAsync({
-          address: MEZO_TOKEN,
-          abi: ERC20_ABI,
-          functionName: "transfer",
-          args: [FEE_RECIPIENT, parseUnits("0.2", 18)],
-          chainId: MEZO_TESTNET_CHAIN_ID,
-        });
+        const { stakeHash } = await payWithMEZO(parseUnits("0.2", 18));
+        txHash = stakeHash as `0x${string}`;
       }
       toast.success(`Payment for ${serviceName} confirmed via ${connectedWalletName}. Tx: ${txHash.slice(0, 10)}...`);
       onPaymentSuccess();
