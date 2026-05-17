@@ -6,6 +6,7 @@ import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
+import { payWithMUSD } from "@/lib/musdPayment";
 import PageLayout from "@/components/PageLayout";
 
 const GOV_CHAIN_ID = 31611;
@@ -69,9 +70,12 @@ const DeveloperServices = () => {
           value: parseEther("0.0001"),
           chainId: GOV_CHAIN_ID,
         });
+      } else if (token === "MUSD") {
+        const { stakeHash } = await payWithMUSD(parseUnits("0.0001", 18), "0.5");
+        txHash = stakeHash as `0x${string}`;
       } else {
         txHash = await writeContractAsync({
-          address: token === "MUSD" ? GOV_MUSD : GOV_MEZO,
+          address: GOV_MEZO,
           abi: ERC20_ABI,
           functionName: "transfer",
           args: [GOV_RECIPIENT, parseUnits("0.0001", 18)],
