@@ -8,6 +8,7 @@ import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
 import { proposals, statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
 import { ERC20_ABI } from "@/lib/mezo";
+import { payWithMUSD } from "@/lib/musdPayment";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 
@@ -72,14 +73,19 @@ const ProposalDetail = () => {
         await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       }
 
-      const tokenAddr = payToken === "MEZO" ? MEZO_TOKEN : MUSD_TOKEN;
-      const txHash = await writeContractAsync({
-        address: tokenAddr,
-        abi: ERC20_ABI,
-        functionName: "transfer",
-        args: [PROPOSAL_FEE_RECIPIENT, parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS)],
-        chainId: MEZO_TESTNET_CHAIN_ID,
-      });
+      let txHash: string;
+      if (payToken === "MUSD") {
+        const { stakeHash } = await payWithMUSD(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS), "0.5");
+        txHash = stakeHash;
+      } else {
+        txHash = await writeContractAsync({
+          address: MEZO_TOKEN,
+          abi: ERC20_ABI,
+          functionName: "transfer",
+          args: [PROPOSAL_FEE_RECIPIENT, parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS)],
+          chainId: MEZO_TESTNET_CHAIN_ID,
+        });
+      }
 
       setVoted(selectedVote);
       setSelectedVote(null);
