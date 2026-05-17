@@ -5,6 +5,7 @@ import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
+import { payWithMUSD } from "@/lib/musdPayment";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
@@ -48,10 +49,12 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
           value: parseEther("0.0001"),
           chainId: MEZO_TESTNET_CHAIN_ID,
         });
+      } else if (token === "MUSD") {
+        const { stakeHash } = await payWithMUSD(parseUnits("0.2", 18), "0.5");
+        txHash = stakeHash as `0x${string}`;
       } else {
-        const tokenAddr = token === "MUSD" ? MUSD_TOKEN : MEZO_TOKEN;
         txHash = await writeContractAsync({
-          address: tokenAddr,
+          address: MEZO_TOKEN,
           abi: ERC20_ABI,
           functionName: "transfer",
           args: [FEE_RECIPIENT, parseUnits("0.2", 18)],
