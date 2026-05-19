@@ -1,3 +1,5 @@
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
@@ -6,6 +8,7 @@ pragma solidity ^0.8.20;
  * @dev Read-only helper that returns batched voting receipts and turnout
  *      analytics for proposals on the Mezo governance system.
  */
+
 interface IGovernanceReceipts {
     enum VoteType { Yes, No, Abstain }
 
@@ -18,6 +21,8 @@ interface IGovernanceReceipts {
 
 contract VotingDataHelper {
     IGovernanceReceipts public immutable governance;
+    IERC20 public constant musdToken =
+    IERC20(0xbCAD6F09cb93a31a675B2E0156526B99CCdcF5Df);
 
     struct VoterReceipt {
         address voter;
@@ -89,4 +94,31 @@ contract VotingDataHelper {
             abstainShareBps: total == 0 ? 0 : (abstainVotes * BPS) / total
         });
     }
+
+
+   /**
+ * @dev Get contract MUSD balance
+ */
+	function getMUSDBalance() public view returns (uint256) {
+  	  return musdToken.balanceOf(address(this));
+	}
+
+
+/**
+ * @dev Fund contract with MUSD (owner only)
+ */
+
+function fundMarket(uint256 amount)
+    external
+{
+    require(
+        musdToken.transferFrom(
+            msg.sender,
+            address(this),
+            amount
+        ),
+        "Transfer failed"
+    );
+}
+
 }
