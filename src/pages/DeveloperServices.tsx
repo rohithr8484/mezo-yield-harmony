@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin } from "lucide-react";
+import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin, Sparkles, FileText } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -20,6 +20,9 @@ import { RunSection } from "@/components/developer/RunSection";
 import { GovernanceAnalytics } from "@/components/developer/GovernanceAnalytics";
 import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
 import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
+import { AIReviewAnalyzer } from "@/components/developer/AIReviewAnalyzer";
+import { AITextSummarizer } from "@/components/developer/AITextSummarizer";
+import { X402Banner } from "@/components/developer/X402Banner";
 
 const dataFeeds = [
   { name: "MUSD / USD", feedId: "0x0617a9b725011a126a2b9fd53563f4236501f32cf76d877644b943394606c6de" },
@@ -97,6 +100,7 @@ const DeveloperServices = () => {
 
   return (
     <PageLayout>
+      <X402Banner />
       {/* Hero */}
       <section className="relative py-20 md:py-28 overflow-hidden">
         <div className="absolute inset-0 -z-10">
@@ -127,6 +131,40 @@ const DeveloperServices = () => {
             Pay-per-use APIs — analytics, identity, governance data — all priced in MEZO.
           </p>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* AI Sentiment + Review Analyzer */}
+            <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
+                <Sparkles className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <h3 className="text-lg font-display font-semibold text-foreground mb-2">AI Sentiment + Review Analyzer</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+                Score sentiment, extract pros/cons, and summarize customer reviews using Lovable AI.
+              </p>
+              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
+                0.01 MEZO / analysis · Gas $0 via x402
+              </span>
+              <PaymentGate serviceName="AI Sentiment Analyzer" onPaymentSuccess={() => markPaid("ai-sentiment")} isPaid={!!paidServices["ai-sentiment"]}>
+                <AIReviewAnalyzer />
+              </PaymentGate>
+            </div>
+
+            {/* AI Text Summarization */}
+            <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
+                <FileText className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <h3 className="text-lg font-display font-semibold text-foreground mb-2">AI Text Summarization</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+                Condense long articles, docs, and threads into a concise summary with key bullet points.
+              </p>
+              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
+                0.01 MEZO / summary · Gas $0 via x402
+              </span>
+              <PaymentGate serviceName="AI Text Summarizer" onPaymentSuccess={() => markPaid("ai-summarize")} isPaid={!!paidServices["ai-summarize"]}>
+                <AITextSummarizer />
+              </PaymentGate>
+            </div>
+
             {/* On-chain Analytics API */}
             <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">

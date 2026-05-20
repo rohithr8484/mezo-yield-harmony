@@ -1,0 +1,24 @@
+{
+  "name": "mezo-x402-starter",
+  "version": "1.0.0",
+  "description": "Minimal x402 paywalled API on Mezo Testnet (mUSD).",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch 1-server.ts",
+    "x402": "tsx watch 2-server.ts"
+  },
+  "dependencies": {
+    "@x402/core": "file:~/gt/.cache/x402-tarballs/x402-core-2.9.0.tgz",
+    "@x402/evm": "file:~/gt/.cache/x402-tarballs/x402-evm-2.9.0.tgz",
+    "@x402/express": "file:~/gt/.cache/x402-tarballs/x402-express-2.9.0.tgz",
+    "@x402/paywall": "file:~/gt/.cache/x402-tarballs/x402-paywall-2.9.0.tgz",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.25",
+    "@types/node": "^22.14.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
