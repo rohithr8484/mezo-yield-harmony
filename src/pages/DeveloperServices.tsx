@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin } from "lucide-react";
+import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin, Sparkles, FileText } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -20,6 +20,9 @@ import { RunSection } from "@/components/developer/RunSection";
 import { GovernanceAnalytics } from "@/components/developer/GovernanceAnalytics";
 import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
 import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
+import { AIReviewAnalyzer } from "@/components/developer/AIReviewAnalyzer";
+import { AITextSummarizer } from "@/components/developer/AITextSummarizer";
+import { X402Banner } from "@/components/developer/X402Banner";
 
 const dataFeeds = [
   { name: "MUSD / USD", feedId: "0x0617a9b725011a126a2b9fd53563f4236501f32cf76d877644b943394606c6de" },
