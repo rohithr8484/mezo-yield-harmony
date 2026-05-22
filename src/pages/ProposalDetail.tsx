@@ -16,19 +16,15 @@ const MEZO_TESTNET_CHAIN_ID = 31611;
 const PROPOSAL_FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const VOTING_TOKEN_DECIMALS = 18;
 
-const CHART_COLORS = {
-  for: "hsl(142, 71%, 45%)",
-  against: "hsl(0, 84%, 60%)",
-  abstain: "hsl(215, 14%, 54%)",
-};
 
 const ProposalDetail = () => {
   const { id } = useParams<{ id: string }>();
   const { isConnected, address, chain, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitchingChain } = useSwitchChain();
-  const [newComment, setNewComment] = useState("");
-  const [localDiscussions, setLocalDiscussions] = useState<Array<{ id: string; author: string; avatar: string; message: string; timestamp: string }>>([]);
+  const [, setNewComment] = useState("");
+  const [, setLocalDiscussions] = useState<Array<{ id: string; author: string; avatar: string; message: string; timestamp: string }>>([]);
+
   const [voted, setVoted] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
   const [selectedVote, setSelectedVote] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
   const [pendingPayToken, setPendingPayToken] = useState<"MEZO" | "MUSD" | null>(null);
