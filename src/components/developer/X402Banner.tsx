@@ -40,6 +40,8 @@ export const X402Banner = () => {
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 3600);
       const nonce = BigInt(Math.floor(Date.now() / 1000)); // demo nonce
       const signature = await signTypedDataAsync({
+        account: address,
+
         domain: {
           name: "Mezo USD",
           version: "1",
