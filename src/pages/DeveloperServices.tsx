@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Play, Wallet, Bitcoin, Sparkles, FileText } from "lucide-react";
+import { Activity, Database, Lock, Play, Wallet, Bitcoin, Sparkles, FileText } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
