@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
@@ -22,8 +23,6 @@ const ProposalDetail = () => {
   const { isConnected, address, chain, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitchingChain } = useSwitchChain();
-  const [, setNewComment] = useState("");
-  const [, setLocalDiscussions] = useState<Array<{ id: string; author: string; avatar: string; message: string; timestamp: string }>>([]);
 
   const [voted, setVoted] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
   const [selectedVote, setSelectedVote] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
@@ -120,35 +119,9 @@ const ProposalDetail = () => {
     );
   }
 
-  const allDiscussions = [...proposal.discussions, ...localDiscussions];
   const quorumReached = proposal.quorum >= proposal.quorumRequired;
   const diffReached = proposal.differential >= proposal.differentialRequired;
 
-  const chartData = [
-    { name: "For", value: proposal.forVotes, color: CHART_COLORS.for },
-    { name: "Against", value: proposal.againstVotes, color: CHART_COLORS.against },
-    { name: "Abstain", value: proposal.abstainVotes, color: CHART_COLORS.abstain },
-  ].filter((d) => d.value > 0);
-
-  const handleComment = () => {
-    if (!newComment.trim()) return;
-    if (!isConnected) {
-      openConnectModal?.();
-      return;
-    }
-    setLocalDiscussions((prev) => [
-      ...prev,
-      {
-        id: `local-${Date.now()}`,
-        author: address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "anon",
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${address}`,
-        message: newComment,
-        timestamp: "Just now",
-      },
-    ]);
-    setNewComment("");
-    toast.success("Comment posted!");
-  };
 
   return (
     <PageLayout>
