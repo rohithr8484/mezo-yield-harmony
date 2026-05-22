@@ -198,55 +198,8 @@ const ProposalDetail = () => {
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-card border border-border shadow-card overflow-hidden">
-                <div className="bg-secondary/50 border-b border-border px-6 py-4 flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                  <h3 className="text-sm font-semibold text-foreground">Discussion ({allDiscussions.length})</h3>
-                </div>
-                <div className="p-6 space-y-4">
-                  {allDiscussions.map((d) => (
-                    <div key={d.id} className="flex gap-3">
-                      <img src={d.avatar} alt="" className="h-8 w-8 rounded-full shrink-0 mt-0.5" />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-sm font-semibold text-foreground">{d.author}</span>
-                          <span className="text-xs text-muted-foreground">{d.timestamp}</span>
-                        </div>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{d.message}</p>
-                      </div>
-                    </div>
-                  ))}
-                  {allDiscussions.length === 0 && (
-                    <p className="text-sm text-muted-foreground text-center py-4">No discussion yet. Be the first to comment!</p>
-                  )}
-                  <div className="flex gap-3 pt-4 border-t border-border">
-                    <div className="h-8 w-8 rounded-full bg-secondary shrink-0 flex items-center justify-center overflow-hidden">
-                      {isConnected && address ? (
-                        <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${address}`} alt="" className="h-8 w-8" />
-                      ) : (
-                        <span className="text-xs text-muted-foreground">?</span>
-                      )}
-                    </div>
-                    <div className="flex-1 flex gap-2">
-                      <input
-                        type="text"
-                        placeholder={isConnected ? "Add a comment..." : "Connect wallet to comment"}
-                        value={newComment}
-                        onChange={(e) => setNewComment(e.target.value)}
-                        onKeyDown={(e) => e.key === "Enter" && handleComment()}
-                        className="flex-1 px-3 py-2 rounded-lg border border-border bg-secondary/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                      />
-                      <button
-                        onClick={handleComment}
-                        className="px-3 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-                      >
-                        <Send className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
+
 
             <div className="space-y-6">
               <div className="rounded-2xl bg-card border border-border shadow-card p-6">
@@ -341,94 +294,6 @@ const ProposalDetail = () => {
                 </div>
               </div>
 
-              {/* Voting Results with Chart */}
-              <div className="rounded-2xl bg-card border border-border shadow-card p-6">
-                <h3 className="text-lg font-display font-bold text-foreground mb-5">Voting results</h3>
-
-                {/* Donut chart */}
-                <div className="h-40 mb-4">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={chartData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={65}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        {chartData.map((entry, index) => (
-                          <Cell key={index} fill={entry.color} stroke="transparent" />
-                        ))}
-                      </Pie>
-                      <Tooltip
-                        formatter={(value: number, name: string) => [`${formatVotes(value)} MEZO`, name]}
-                        contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: "12px" }}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-
-                {/* Legend */}
-                <div className="flex justify-center gap-4 mb-4 text-xs">
-                  <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-emerald-500" /> For</span>
-                  <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-destructive" /> Against</span>
-                  <span className="flex items-center gap-1"><span className="h-2.5 w-2.5 rounded-full bg-muted-foreground/40" /> Abstain</span>
-                </div>
-
-                {/* For bar */}
-                <div className="mb-4">
-                  <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-semibold text-foreground">For&nbsp;&nbsp;{formatVotes(proposal.forVotes)}&nbsp;MEZO</span>
-                    <span className="text-muted-foreground">{proposal.forPct.toFixed(2)}&nbsp;%</span>
-                  </div>
-                  <div className="h-2.5 rounded-full bg-border overflow-hidden">
-                    <div className="h-full rounded-full bg-emerald-500 transition-all duration-500" style={{ width: `${proposal.forPct}%` }} />
-                  </div>
-                </div>
-
-                {/* Against bar */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between text-sm mb-1.5">
-                    <span className="font-semibold text-foreground">Against&nbsp;&nbsp;{formatVotes(proposal.againstVotes)}&nbsp;MEZO</span>
-                    <span className="text-muted-foreground">{proposal.againstPct.toFixed(2)}&nbsp;%</span>
-                  </div>
-                  <div className="h-2.5 rounded-full bg-border overflow-hidden">
-                    <div className="h-full rounded-full bg-destructive/60 transition-all duration-500" style={{ width: `${Math.max(proposal.againstPct, 1)}%` }} />
-                  </div>
-                </div>
-
-                {/* Top voters */}
-                <div className="border-t border-border pt-4">
-                  <div className="flex items-center justify-between text-xs text-muted-foreground mb-3">
-                    <span>Top voters</span>
-                    <span>Votes</span>
-                  </div>
-                  <div className="space-y-2.5">
-                    {proposal.topVoters.map((voter) => (
-                      <div key={voter.address} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <img src={voter.avatar} alt="" className="h-6 w-6 rounded-full" />
-                          <a href="#" className="text-sm text-foreground hover:text-primary transition-colors flex items-center gap-1">
-                            {voter.displayName}
-                            <ExternalLink className="h-3 w-3 text-muted-foreground" />
-                          </a>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm">
-                          <span className={voter.vote === "FOR" ? "text-emerald-600 font-medium" : "text-destructive font-medium"}>
-                            {voter.vote === "FOR" ? "For" : "Against"}
-                          </span>
-                          <span className="text-foreground font-semibold">{formatVotes(voter.amount)}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <button className="w-full mt-4 py-2 text-center text-sm text-muted-foreground hover:text-foreground border border-border rounded-xl transition-colors">
-                    View all votes
-                  </button>
-                </div>
-              </div>
 
               {/* Proposal Info */}
               <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-3">
