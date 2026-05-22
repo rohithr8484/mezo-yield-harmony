@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Zap, Vote, Lock, Play, Wallet, Bitcoin, Sparkles, FileText } from "lucide-react";
+import { Activity, Database, Lock, Play, Wallet, Bitcoin, Sparkles, FileText } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -17,7 +17,7 @@ const GOV_MEZO = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
 import { PaymentGate } from "@/components/developer/PaymentGate";
 import { TransactionLookup } from "@/components/developer/TransactionLookup";
 import { RunSection } from "@/components/developer/RunSection";
-import { GovernanceAnalytics } from "@/components/developer/GovernanceAnalytics";
+
 import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
 import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
 import { AIReviewAnalyzer } from "@/components/developer/AIReviewAnalyzer";
@@ -317,27 +317,51 @@ const DeveloperServices = () => {
         </div>
       </section>
 
-      {/* Governance Analytics Section */}
-      <section className="py-20" id="governance-analytics">
+      {/* Contracts Used */}
+      <section className="py-20" id="contracts">
         <div className="container">
           <div className="text-center mb-4">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-              <Vote className="h-3 w-3" /> DAO Voting Data
+              <FileText className="h-3 w-3" /> On-chain References
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            Governance Analytics
+            Contracts Used
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            DAO voting data and analytics — proposal outcomes, participation rates, voter breakdown. Priced at 0.01 MEZO / query.
+            All Solidity contracts and on-chain addresses powering Governance, Marketplace and Payments on Mezo Testnet.
           </p>
-          <div className="max-w-4xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
-            <PaymentGate serviceName="Governance Analytics" onPaymentSuccess={() => markPaid("governance")} isPaid={!!paidServices["governance"]}>
-              <GovernanceAnalytics />
-            </PaymentGate>
+          <div className="max-w-4xl mx-auto space-y-4">
+            {[
+              { name: "VotingDataHelper.sol", path: "contracts/governance/VotingDataHelper.sol", desc: "Read-only batched voting receipts and proposal turnout analytics. Funds via MUSD." },
+              { name: "MarketplaceAdmin.sol", path: "contracts/MarketplaceAdmin.sol", desc: "veNFT marketplace admin: pause, whitelist, 48h-timelocked fee governance." },
+              { name: "MezoVeNFTAdapter", path: "scripts/deploy2.ts", desc: "Adapter bridging Mezo veNFT positions into the marketplace." },
+              { name: "PaymentRouter", path: "scripts/deploy2.ts", desc: "Routes MUSD payments between buyer, seller and protocol fee sinks." },
+              { name: "VeNFTMarketplace", path: "scripts/deploy2.ts", desc: "Escrowless P2P order book for veBTC / veMEZO positions." },
+              { name: "GovernanceDataHelper", path: "scripts/deploy.ts", desc: "Aggregated read helper for proposal metadata and voter snapshots." },
+              { name: "MezoLocks", path: "scripts/deploy.ts", desc: "Lock manager for veMEZO positions used in governance & boost." },
+            ].map((c) => (
+              <div key={c.name} className="rounded-xl bg-card border border-border p-5 shadow-card">
+                <div className="flex items-start justify-between gap-4 mb-1">
+                  <h3 className="text-sm font-bold text-foreground font-mono">{c.name}</h3>
+                  <span className="text-[10px] font-mono text-muted-foreground shrink-0">{c.path}</span>
+                </div>
+                <p className="text-xs text-muted-foreground">{c.desc}</p>
+              </div>
+            ))}
+            <div className="rounded-xl bg-secondary/50 border border-border p-5 mt-6">
+              <h3 className="text-sm font-bold text-foreground mb-3">Deployed token contracts (Mezo Testnet · Chain ID 31611)</h3>
+              <div className="text-xs font-mono text-muted-foreground space-y-1">
+                <div>MUSD &nbsp;→ <span className="text-foreground">0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3</span></div>
+                <div>MEZO &nbsp;→ <span className="text-foreground">0x7B7c000000000000000000000000000000000001</span></div>
+                <div>BTC &nbsp;&nbsp;→ <span className="text-foreground">0x7b7C000000000000000000000000000000000000</span></div>
+                <div>x402 Facilitator &nbsp;→ <span className="text-foreground">https://facilitator.test.mezo.org</span></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
     </PageLayout>
   );
 };
