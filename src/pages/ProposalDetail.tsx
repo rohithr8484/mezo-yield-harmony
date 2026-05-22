@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ExternalLink, CheckCircle2, MessageSquare, Send } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits } from "viem";
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+
 import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
 import { proposals, statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
