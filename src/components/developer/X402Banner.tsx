@@ -57,6 +57,7 @@ export const X402Banner = () => {
       const deadline = BigInt(Math.floor(Date.now() / 1000) + 300);
 
       const signature = await signTypedDataAsync({
+        account: address,
         domain: { name: "Permit2", chainId: MEZO_CHAIN_ID, verifyingContract: PERMIT2 },
         types: PERMIT_TYPES,
         primaryType: "PermitTransferFrom",
