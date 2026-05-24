@@ -18,9 +18,10 @@ interface PaymentGateProps {
   onPaymentSuccess: () => void;
   isPaid: boolean;
   children: React.ReactNode;
+  uniform?: boolean;
 }
 
-export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }: PaymentGateProps) => {
+export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, uniform = false }: PaymentGateProps) => {
   const { isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
