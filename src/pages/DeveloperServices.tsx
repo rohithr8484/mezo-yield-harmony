@@ -68,16 +68,16 @@ const DeveloperServices = () => {
       }
       let txHash: `0x${string}`;
       if (token === "BTC") {
-        const { stakeHash } = await payWithBTC(parseEther("0.0001"));
+        const { stakeHash } = await payWithBTC(parseEther("0.01"));
         txHash = stakeHash as `0x${string}`;
       } else if (token === "MUSD") {
-        const { stakeHash } = await payWithMUSD(parseUnits("0.0001", 18), "0.5");
+        const { stakeHash } = await payWithMUSD(parseUnits("0.01", 18), "0.5");
         txHash = stakeHash as `0x${string}`;
       } else {
-        const { stakeHash } = await payWithMEZO(parseUnits("0.0001", 18));
+        const { stakeHash } = await payWithMEZO(parseUnits("0.01", 18));
         txHash = stakeHash as `0x${string}`;
       }
-      toast.success(`Paid 0.0001 ${token} via ${connector?.name ?? "wallet"}. Tx: ${txHash.slice(0, 10)}...`);
+      toast.success(`Paid via ${connector?.name ?? "wallet"} in ${token}. Tx: ${txHash.slice(0, 10)}...`);
       setTimeout(() => navigate("/governance"), 600);
     } catch (error) {
       const msg = error instanceof Error ? error.message.toLowerCase() : "";
