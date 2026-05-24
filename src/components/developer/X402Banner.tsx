@@ -116,7 +116,7 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
       <button
         onClick={handleClick}
         disabled={busy}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60"
+        className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60 ${uniform ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-emerald-500 to-teal-500 text-xs font-bold px-4 py-2"}`}
       >
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
         {busy ? "Confirming in wallet…" : "Pay with x402"}
