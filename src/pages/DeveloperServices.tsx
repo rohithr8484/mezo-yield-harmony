@@ -259,6 +259,9 @@ const DeveloperServices = () => {
                   <p className="text-xs text-muted-foreground mb-1">Feed ID</p>
                   <p className="font-mono text-xs text-foreground break-all select-all">{feed.feedId}</p>
                 </div>
+                <div className="mb-4">
+                  <X402Banner />
+                </div>
                 <PaymentGate
                   serviceName={`${feed.name} Oracle`}
                   onPaymentSuccess={() => markPaid(`feed-${feed.name}`)}
