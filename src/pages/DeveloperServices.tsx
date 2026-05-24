@@ -10,7 +10,6 @@ import { payWithMEZO } from "@/lib/mezoPayment";
 import { payWithBTC } from "@/lib/btcPayment";
 import PageLayout from "@/components/PageLayout";
 
-
 const GOV_CHAIN_ID = 31611;
 const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const GOV_MUSD = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
@@ -103,10 +102,12 @@ const DeveloperServices = () => {
     <PageLayout>
       {/* Hero */}
       <section className="relative py-20 md:py-28 overflow-hidden">
-
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-primary/20 blur-3xl animate-blob" />
-          <div className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-bitcoin/20 blur-3xl animate-blob" style={{ animationDelay: "4s" }} />
+          <div
+            className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-bitcoin/20 blur-3xl animate-blob"
+            style={{ animationDelay: "4s" }}
+          />
         </div>
         <div className="container text-center">
           <span className="inline-block px-4 py-1.5 rounded-full glass-card text-sm font-medium text-muted-foreground mb-6 animate-fade-in">
@@ -116,7 +117,10 @@ const DeveloperServices = () => {
             <span className="text-foreground">Infrastructure for </span>
             <span className="text-gradient-animated italic">Bitcoin DeFi</span>
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
+          <p
+            className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up"
+            style={{ animationDelay: "0.15s" }}
+          >
             APIs, oracles, compute, and analytics — all priced in MEZO. Like AWS for Web3, powered by Bitcoin.
           </p>
         </div>
@@ -137,14 +141,20 @@ const DeveloperServices = () => {
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
                 <Sparkles className="h-6 w-6 text-primary-foreground" />
               </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">AI Sentiment + Review Analyzer</h3>
+              <h3 className="text-lg font-display font-semibold text-foreground mb-2">
+                AI Sentiment + Review Analyzer
+              </h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-3">
                 Score sentiment, extract pros/cons, and summarize customer reviews using Lovable AI.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
                 0.01 MEZO / analysis · Gas $0 via x402
               </span>
-              <PaymentGate serviceName="AI Sentiment Analyzer" onPaymentSuccess={() => markPaid("ai-sentiment")} isPaid={!!paidServices["ai-sentiment"]}>
+              <PaymentGate
+                serviceName="AI Sentiment Analyzer"
+                onPaymentSuccess={() => markPaid("ai-sentiment")}
+                isPaid={!!paidServices["ai-sentiment"]}
+              >
                 <AIReviewAnalyzer />
               </PaymentGate>
             </div>
@@ -161,24 +171,11 @@ const DeveloperServices = () => {
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
                 0.01 MEZO / summary · Gas $0 via x402
               </span>
-              <PaymentGate serviceName="AI Text Summarizer" onPaymentSuccess={() => markPaid("ai-summarize")} isPaid={!!paidServices["ai-summarize"]}>
-                <AITextSummarizer />
-              </PaymentGate>
-            </div>
-
-            {/* AI Smart Contract Auditor (new) */}
-            <div className="rounded-2xl bg-accent/10 border border-accent/30 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-accent to-bitcoin flex items-center justify-center mb-5">
-                <ShieldCheck className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">AI Smart Contract Auditor</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Paste a Solidity snippet — Lovable AI surfaces reentrancy, overflow, access-control and gas issues with severity scores.
-              </p>
-              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                0.02 MEZO / audit · Gas $0 via x402
-              </span>
-              <PaymentGate serviceName="AI Smart Contract Auditor" onPaymentSuccess={() => markPaid("ai-auditor")} isPaid={!!paidServices["ai-auditor"]}>
+              <PaymentGate
+                serviceName="AI Text Summarizer"
+                onPaymentSuccess={() => markPaid("ai-summarize")}
+                isPaid={!!paidServices["ai-summarize"]}
+              >
                 <AITextSummarizer />
               </PaymentGate>
             </div>
@@ -195,7 +192,11 @@ const DeveloperServices = () => {
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
                 0.005 MEZO / call
               </span>
-              <PaymentGate serviceName="On-chain Analytics" onPaymentSuccess={() => markPaid("analytics")} isPaid={!!paidServices["analytics"]}>
+              <PaymentGate
+                serviceName="On-chain Analytics"
+                onPaymentSuccess={() => markPaid("analytics")}
+                isPaid={!!paidServices["analytics"]}
+              >
                 <TransactionLookup title="On-chain Analytics" icon={Activity} />
               </PaymentGate>
             </div>
@@ -207,12 +208,17 @@ const DeveloperServices = () => {
               </div>
               <h3 className="text-lg font-display font-semibold text-foreground mb-2">Identity Verification API</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Verify wallet identity via on-chain attestations. Enter transaction hash to inspect verification records.
+                Verify wallet identity via on-chain attestations. Enter transaction hash to inspect verification
+                records.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
                 0.5 MEZO / check
               </span>
-              <PaymentGate serviceName="Identity Verification" onPaymentSuccess={() => markPaid("identity")} isPaid={!!paidServices["identity"]}>
+              <PaymentGate
+                serviceName="Identity Verification"
+                onPaymentSuccess={() => markPaid("identity")}
+                isPaid={!!paidServices["identity"]}
+              >
                 <TransactionLookup title="Identity Verification" icon={Database} />
               </PaymentGate>
             </div>
@@ -224,12 +230,17 @@ const DeveloperServices = () => {
               </div>
               <h3 className="text-lg font-display font-semibold text-foreground mb-2">Run</h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Upload contracts, run simulations, deploy AI models, and index data — AI explains risks and attack vectors.
+                Upload contracts, run simulations, deploy AI models, and index data — AI explains risks and attack
+                vectors.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
                 Pay-per-run · Gas $0 via x402
               </span>
-              <PaymentGate serviceName="Run Services" onPaymentSuccess={() => markPaid("run")} isPaid={!!paidServices["run"]}>
+              <PaymentGate
+                serviceName="Run Services"
+                onPaymentSuccess={() => markPaid("run")}
+                isPaid={!!paidServices["run"]}
+              >
                 <RunSection />
               </PaymentGate>
             </div>
@@ -248,7 +259,10 @@ const DeveloperServices = () => {
           </p>
           <div className="max-w-3xl mx-auto space-y-6">
             {dataFeeds.map((feed) => (
-              <div key={feed.name} className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <div
+                key={feed.name}
+                className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300"
+              >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
                     <Activity className="h-5 w-5 text-primary-foreground" />
@@ -288,10 +302,15 @@ const DeveloperServices = () => {
             veBTC & veMEZO Marketplace
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Buy already-locked veBTC and veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain settlement.
+            Buy already-locked veBTC and veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P,
+            on-chain settlement.
           </p>
           <div className="max-w-6xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
-            <PaymentGate serviceName="veNFT Marketplace" onPaymentSuccess={() => markPaid("venft")} isPaid={!!paidServices["venft"]}>
+            <PaymentGate
+              serviceName="veNFT Marketplace"
+              onPaymentSuccess={() => markPaid("venft")}
+              isPaid={!!paidServices["venft"]}
+            >
               <VeNFTMarketplace />
             </PaymentGate>
           </div>
@@ -338,10 +357,6 @@ const DeveloperServices = () => {
           </p>
         </div>
       </section>
-
-
-
-
     </PageLayout>
   );
 };
