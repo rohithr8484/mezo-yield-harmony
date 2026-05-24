@@ -1,4 +1,5 @@
 import { ArrowRight, TrendingUp, Shield, Coins, Zap } from "lucide-react";
+// Icon thumbnails intentionally removed per design.
 
 const features = [
   {
