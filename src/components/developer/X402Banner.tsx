@@ -112,14 +112,14 @@ export const X402Banner = () => {
   };
 
   return (
-    <div className="container pt-4 flex flex-col md:flex-row md:items-center gap-3">
+    <div className="flex flex-wrap items-center gap-3">
       <button
         onClick={handleClick}
         disabled={busy}
         className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60"
       >
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-        {busy ? "Confirming in wallet…" : "x402 Mezo · Pay-per-call $0.001 mUSD"}
+        {busy ? "Confirming in wallet…" : "Pay with x402"}
       </button>
       {txHash && (
         <a
