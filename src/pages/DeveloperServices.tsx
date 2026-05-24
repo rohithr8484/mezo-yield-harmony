@@ -145,10 +145,10 @@ const DeveloperServices = () => {
                 AI Sentiment + Review Analyzer
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Score sentiment, extract pros/cons, and summarize customer reviews using Lovable AI.
+                Score sentiment, extract pros/cons, and summarize customer reviews.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                0.01 MEZO / analysis · Gas $0 via x402
+                pay with MEZO / analysis
               </span>
               <PaymentGate
                 serviceName="AI Sentiment Analyzer"
@@ -169,7 +169,7 @@ const DeveloperServices = () => {
                 Condense long articles, docs, and threads into a concise summary with key bullet points.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                0.01 MEZO / summary · Gas $0 via x402
+                pay with MEZO / summary
               </span>
               <PaymentGate
                 serviceName="AI Text Summarizer"
