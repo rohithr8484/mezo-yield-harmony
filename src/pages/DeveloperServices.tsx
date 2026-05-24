@@ -334,7 +334,7 @@ const DeveloperServices = () => {
             </button>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-4">
-            Pays 0.0001 of the selected token on Mezo Testnet (Chain ID 31611), then opens Governance.
+            Settles on Mezo Testnet (Chain ID 31611), then opens Governance.
           </p>
         </div>
       </section>
