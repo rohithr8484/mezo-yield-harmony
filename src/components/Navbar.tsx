@@ -23,7 +23,7 @@ const Navbar = () => {
           <div className="h-8 w-8 rounded-lg bg-gradient-hero flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-sm font-display">M</span>
           </div>
-          <span className="text-xl font-bold font-display text-foreground">Mezo</span>
+          <span className="text-xl font-bold font-display text-foreground">Mezo Auth Dev</span>
           <span className="px-2 py-0.5 rounded-full bg-bitcoin/10 text-bitcoin text-[10px] font-bold uppercase tracking-wider">
             Testnet
           </span>
