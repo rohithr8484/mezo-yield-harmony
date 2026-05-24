@@ -148,7 +148,7 @@ const DeveloperServices = () => {
                 Score sentiment, extract pros/cons, and summarize customer reviews.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with MEZO / analysis
+                pay with MUSD/MEZO/BTC / analysis
               </span>
               <PaymentGate
                 serviceName="AI Sentiment Analyzer"
@@ -169,7 +169,7 @@ const DeveloperServices = () => {
                 Condense long articles, docs, and threads into a concise summary with key bullet points.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with MEZO / summary
+                pay with MUSD/MEZO/BTC / summary
               </span>
               <PaymentGate
                 serviceName="AI Text Summarizer"
@@ -190,7 +190,7 @@ const DeveloperServices = () => {
                 Enter any transaction hash to fetch full details — status, gas, token transfers, decoded input.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with MEZO / call
+                pay with MUSD/MEZO/BTC / call
               </span>
               <PaymentGate
                 serviceName="On-chain Analytics"
@@ -212,7 +212,7 @@ const DeveloperServices = () => {
                 records.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with MEZO / check
+                pay with MUSD/MEZO/BTC / check
               </span>
               <PaymentGate
                 serviceName="Identity Verification"
