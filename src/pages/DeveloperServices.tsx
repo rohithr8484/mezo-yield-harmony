@@ -131,9 +131,9 @@ const DeveloperServices = () => {
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Pay-per-use APIs — analytics, identity, governance data — all priced in MEZO.
           </p>
-          <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* AI Sentiment + Review Analyzer */}
-            <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+            <div className="rounded-2xl bg-primary/5 border border-primary/20 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
                 <Sparkles className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -150,8 +150,8 @@ const DeveloperServices = () => {
             </div>
 
             {/* AI Text Summarization */}
-            <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
+            <div className="rounded-2xl bg-bitcoin/5 border border-bitcoin/20 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-bitcoin to-primary flex items-center justify-center mb-5">
                 <FileText className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-display font-semibold text-foreground mb-2">AI Text Summarization</h3>
@@ -166,8 +166,25 @@ const DeveloperServices = () => {
               </PaymentGate>
             </div>
 
+            {/* AI Smart Contract Auditor (new) */}
+            <div className="rounded-2xl bg-accent/10 border border-accent/30 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-accent to-bitcoin flex items-center justify-center mb-5">
+                <ShieldCheck className="h-6 w-6 text-primary-foreground" />
+              </div>
+              <h3 className="text-lg font-display font-semibold text-foreground mb-2">AI Smart Contract Auditor</h3>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
+                Paste a Solidity snippet — Lovable AI surfaces reentrancy, overflow, access-control and gas issues with severity scores.
+              </p>
+              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
+                0.02 MEZO / audit · Gas $0 via x402
+              </span>
+              <PaymentGate serviceName="AI Smart Contract Auditor" onPaymentSuccess={() => markPaid("ai-auditor")} isPaid={!!paidServices["ai-auditor"]}>
+                <AITextSummarizer />
+              </PaymentGate>
+            </div>
+
             {/* On-chain Analytics API */}
-            <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+            <div className="rounded-2xl bg-secondary border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
                 <Activity className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -184,8 +201,8 @@ const DeveloperServices = () => {
             </div>
 
             {/* Identity Verification API */}
-            <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
+            <div className="rounded-2xl bg-primary/10 border border-primary/30 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-bitcoin flex items-center justify-center mb-5">
                 <Database className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-display font-semibold text-foreground mb-2">Identity Verification API</h3>
@@ -201,8 +218,8 @@ const DeveloperServices = () => {
             </div>
 
             {/* Run */}
-            <div className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
+            <div className="rounded-2xl bg-bitcoin/10 border border-bitcoin/30 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-bitcoin to-accent flex items-center justify-center mb-5">
                 <Play className="h-6 w-6 text-primary-foreground" />
               </div>
               <h3 className="text-lg font-display font-semibold text-foreground mb-2">Run</h3>
