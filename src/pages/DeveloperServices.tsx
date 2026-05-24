@@ -101,9 +101,9 @@ const DeveloperServices = () => {
 
   return (
     <PageLayout>
-      <X402Banner />
       {/* Hero */}
       <section className="relative py-20 md:py-28 overflow-hidden">
+
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-primary/20 blur-3xl animate-blob" />
           <div className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-bitcoin/20 blur-3xl animate-blob" style={{ animationDelay: "4s" }} />
