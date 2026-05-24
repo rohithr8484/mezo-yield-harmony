@@ -80,7 +80,7 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
 
       // 2) Settlement — submit an on-chain MUSD transfer so the user sees
       //    the tx in their wallet activity and on the Mezo explorer.
-      toast.info("Permit2 signed · settling $0.001 mUSD on-chain…");
+      toast.info("Permit2 signed · settling mUSD on-chain…");
       const hash = await writeContractAsync({
         address: MUSD,
         abi: erc20Abi,
