@@ -190,7 +190,7 @@ const DeveloperServices = () => {
                 Enter any transaction hash to fetch full details — status, gas, token transfers, decoded input.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay MEZO / call
+                pay with MEZO / call
               </span>
               <PaymentGate
                 serviceName="On-chain Analytics"
@@ -212,7 +212,7 @@ const DeveloperServices = () => {
                 records.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                0.5 MEZO / check
+                pay with MEZO / check
               </span>
               <PaymentGate
                 serviceName="Identity Verification"
