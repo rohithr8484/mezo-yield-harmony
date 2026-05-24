@@ -264,8 +264,8 @@ const DeveloperServices = () => {
                 </div>
                 <PaymentGate
                   serviceName={`${feed.name} Oracle`}
-                  onPaymentSuccess={() => markPaid(`feed-${feed.name}`)}
-                  isPaid={!!paidServices[`feed-${feed.name}`]}
+                  onPaymentSuccess={() => markPaid(`feed-v2-${feed.name}`)}
+                  isPaid={!!paidServices[`feed-v2-${feed.name}`]}
                   uniform
                 >
                   <PriceFeedChart feedName={feed.name} />
