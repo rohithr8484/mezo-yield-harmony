@@ -260,12 +260,13 @@ const DeveloperServices = () => {
                   <p className="font-mono text-xs text-foreground break-all select-all">{feed.feedId}</p>
                 </div>
                 <div className="mb-4">
-                  <X402Banner />
+                  <X402Banner uniform />
                 </div>
                 <PaymentGate
                   serviceName={`${feed.name} Oracle`}
                   onPaymentSuccess={() => markPaid(`feed-${feed.name}`)}
                   isPaid={!!paidServices[`feed-${feed.name}`]}
+                  uniform
                 >
                   <PriceFeedChart feedName={feed.name} />
                 </PaymentGate>
