@@ -9,7 +9,7 @@ import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
 import { payWithBTC } from "@/lib/btcPayment";
 import PageLayout from "@/components/PageLayout";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
 
 const GOV_CHAIN_ID = 31611;
 const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
