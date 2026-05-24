@@ -1,14 +1,7 @@
-import { ArrowRight, TrendingUp, Shield, Coins, Zap } from "lucide-react";
+import { ArrowRight, TrendingUp, Shield, Zap } from "lucide-react";
 // Icon thumbnails intentionally removed per design.
 
 const features = [
-  {
-    icon: Coins,
-    title: "Borrow with Bitcoin",
-    description: "Get a line of credit using your Bitcoin as collateral. Decentralized, flexible, and intuitive.",
-    cta: "Unlock credit",
-    gradient: "from-primary to-magenta",
-  },
   {
     icon: TrendingUp,
     title: "Grow your Bitcoin",
@@ -51,7 +44,7 @@ const FeaturesSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {features.map((feature, idx) => (
             <div
               key={feature.title}
