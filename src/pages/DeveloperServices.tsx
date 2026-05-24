@@ -357,8 +357,8 @@ const DeveloperServices = () => {
           <Accordion type="single" collapsible className="w-full space-y-3">
             {[
               {
-                q: "What is x402 and why does the banner cost $0.001 MUSD?",
-                a: "x402 is an open HTTP 402 payment protocol. The server replies 402 Payment Required with the price (here $0.001 MUSD on Mezo Testnet), your wallet signs/sends the payment, and the client retries with the X-PAYMENT header. The banner triggers a real MUSD transfer so you can see the transaction in MetaMask activity.",
+                q: "What is x402 and how does it work?",
+                a: "x402 is an open HTTP 402 payment protocol. The server replies 402 Payment Required with the price in MUSD on Mezo Testnet, your wallet signs a Permit2 authorization and sends the payment, and the client retries with the X-PAYMENT header. The banner triggers a real MUSD transfer so you can see the transaction in MetaMask activity.",
               },
               {
                 q: "Why do I need Mezo Testnet (Chain ID 31611)?",
@@ -366,7 +366,7 @@ const DeveloperServices = () => {
               },
               {
                 q: "Which tokens are accepted for paid services?",
-                a: "Marketplace APIs and oracle feeds are priced in MEZO. Governance access can be paid with MUSD, MEZO or BTC (0.0001 per unlock). The x402 demo specifically uses MUSD.",
+                a: "Marketplace APIs and oracle feeds are priced in MEZO. Governance access can be paid with MUSD, MEZO or BTC. The x402 demo specifically uses MUSD via Permit2.",
               },
               {
                 q: "Where can I see my transaction after paying?",
