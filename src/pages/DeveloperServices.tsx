@@ -227,7 +227,7 @@ const DeveloperServices = () => {
                 Upload contracts, run simulations, deploy AI models, and index data — AI explains risks and attack vectors.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                0.2 MEZO / run
+                Pay-per-run · Gas $0 via x402
               </span>
               <PaymentGate serviceName="Run Services" onPaymentSuccess={() => markPaid("run")} isPaid={!!paidServices["run"]}>
                 <RunSection />
