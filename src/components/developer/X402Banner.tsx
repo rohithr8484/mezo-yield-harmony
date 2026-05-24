@@ -32,7 +32,7 @@ const PERMIT_TYPES = {
   ],
 } as const;
 
-export const X402Banner = () => {
+export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
   const { isConnected, address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
