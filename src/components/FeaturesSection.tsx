@@ -3,13 +3,6 @@ import { ArrowRight, TrendingUp, Shield, Coins, Zap } from "lucide-react";
 
 const features = [
   {
-    icon: Coins,
-    title: "Borrow with Bitcoin",
-    description: "Get a line of credit using your Bitcoin as collateral. Decentralized, flexible, and intuitive.",
-    cta: "Unlock credit",
-    gradient: "from-primary to-magenta",
-  },
-  {
     icon: TrendingUp,
     title: "Grow your Bitcoin",
     description: "Grow your Bitcoin stack with vaults powered by expert-managed yield strategies. Simple and secure.",
