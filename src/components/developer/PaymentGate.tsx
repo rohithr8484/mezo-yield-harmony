@@ -18,9 +18,10 @@ interface PaymentGateProps {
   onPaymentSuccess: () => void;
   isPaid: boolean;
   children: React.ReactNode;
+  uniform?: boolean;
 }
 
-export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }: PaymentGateProps) => {
+export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, uniform = false }: PaymentGateProps) => {
   const { isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
@@ -78,13 +79,13 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
   return (
     <div className="mt-4 space-y-3">
       <p className="text-xs text-muted-foreground text-center">
-        Pay 0.2 tokens on Mezo Testnet to activate this service.
+        Pay on Mezo Testnet to activate this service.
       </p>
-      <div className="flex gap-3 justify-center">
+      <div className="flex gap-3 justify-center flex-wrap">
         <button
           onClick={() => handlePay("MUSD")}
           disabled={isProcessing}
-          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+          className={`px-5 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 ${uniform ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-amber-500 to-orange-500"}`}
         >
           <Wallet className="h-4 w-4" />
           {pending === "MUSD" && isProcessing ? "Confirming..." : "Pay with MUSD"}
@@ -92,7 +93,7 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
         <button
           onClick={() => handlePay("MEZO")}
           disabled={isProcessing}
-          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+          className={`px-5 py-2.5 rounded-full text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 ${uniform ? "bg-gradient-to-r from-primary to-accent text-white" : "bg-gradient-to-r from-primary to-accent text-primary-foreground"}`}
         >
           <Wallet className="h-4 w-4" />
           {pending === "MEZO" && isProcessing ? "Confirming..." : "Pay with MEZO"}
@@ -100,7 +101,7 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children }:
         <button
           onClick={() => handlePay("BTC")}
           disabled={isProcessing}
-          className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2"
+          className={`px-5 py-2.5 rounded-full text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center gap-2 ${uniform ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-bitcoin to-amber-600"}`}
         >
           <Bitcoin className="h-4 w-4" />
           {pending === "BTC" && isProcessing ? "Confirming..." : "Pay with BTC"}

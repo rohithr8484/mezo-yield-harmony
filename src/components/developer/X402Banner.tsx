@@ -16,7 +16,7 @@ const MUSD = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503" as `0x${string}`;
 const PERMIT2 = "0x000000000022D473030F116dDEE9F6B43aC78BA3" as `0x${string}`;
 const X402_PERMIT2_PROXY = "0x8dea1b08dc2e1D9b556450f736F19968F367A98d" as `0x${string}`;
 const X402_PAYEE = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
-const PRICE_ATOMIC = 1_000_000_000_000_000n; // $0.001 mUSD (18 decimals)
+const PRICE_ATOMIC = 200_000_000_000_000_000n; // 0.2 mUSD (18 decimals) — Permit2 spending cap
 const EXPLORER = "https://explorer.test.mezo.org/tx";
 
 const PERMIT_TYPES = {
@@ -32,7 +32,7 @@ const PERMIT_TYPES = {
   ],
 } as const;
 
-export const X402Banner = () => {
+export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
   const { isConnected, address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
@@ -80,7 +80,7 @@ export const X402Banner = () => {
 
       // 2) Settlement — submit an on-chain MUSD transfer so the user sees
       //    the tx in their wallet activity and on the Mezo explorer.
-      toast.info("Permit2 signed · settling $0.001 mUSD on-chain…");
+      toast.info("Permit2 signed · settling mUSD on-chain…");
       const hash = await writeContractAsync({
         address: MUSD,
         abi: erc20Abi,
@@ -116,7 +116,7 @@ export const X402Banner = () => {
       <button
         onClick={handleClick}
         disabled={busy}
-        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60"
+        className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60 ${uniform ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-emerald-500 to-teal-500 text-xs font-bold px-4 py-2"}`}
       >
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
         {busy ? "Confirming in wallet…" : "Pay with x402"}

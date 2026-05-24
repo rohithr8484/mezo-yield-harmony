@@ -68,16 +68,16 @@ const DeveloperServices = () => {
       }
       let txHash: `0x${string}`;
       if (token === "BTC") {
-        const { stakeHash } = await payWithBTC(parseEther("0.0001"));
+        const { stakeHash } = await payWithBTC(parseEther("0.01"));
         txHash = stakeHash as `0x${string}`;
       } else if (token === "MUSD") {
-        const { stakeHash } = await payWithMUSD(parseUnits("0.0001", 18), "0.5");
+        const { stakeHash } = await payWithMUSD(parseUnits("0.01", 18), "0.5");
         txHash = stakeHash as `0x${string}`;
       } else {
-        const { stakeHash } = await payWithMEZO(parseUnits("0.0001", 18));
+        const { stakeHash } = await payWithMEZO(parseUnits("0.01", 18));
         txHash = stakeHash as `0x${string}`;
       }
-      toast.success(`Paid 0.0001 ${token} via ${connector?.name ?? "wallet"}. Tx: ${txHash.slice(0, 10)}...`);
+      toast.success(`Paid via ${connector?.name ?? "wallet"} in ${token}. Tx: ${txHash.slice(0, 10)}...`);
       setTimeout(() => navigate("/governance"), 600);
     } catch (error) {
       const msg = error instanceof Error ? error.message.toLowerCase() : "";
@@ -227,7 +227,7 @@ const DeveloperServices = () => {
                 Upload contracts, run simulations, deploy AI models, and index data — AI explains risks and attack vectors.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                0.2 MEZO / run
+                Pay-per-run · Gas $0 via x402
               </span>
               <PaymentGate serviceName="Run Services" onPaymentSuccess={() => markPaid("run")} isPaid={!!paidServices["run"]}>
                 <RunSection />
@@ -260,12 +260,13 @@ const DeveloperServices = () => {
                   <p className="font-mono text-xs text-foreground break-all select-all">{feed.feedId}</p>
                 </div>
                 <div className="mb-4">
-                  <X402Banner />
+                  <X402Banner uniform />
                 </div>
                 <PaymentGate
                   serviceName={`${feed.name} Oracle`}
                   onPaymentSuccess={() => markPaid(`feed-${feed.name}`)}
                   isPaid={!!paidServices[`feed-${feed.name}`]}
+                  uniform
                 >
                   <PriceFeedChart feedName={feed.name} />
                 </PaymentGate>
@@ -333,55 +334,11 @@ const DeveloperServices = () => {
             </button>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-4">
-            Pays 0.0001 of the selected token on Mezo Testnet (Chain ID 31611), then opens Governance.
+            Settles on Mezo Testnet (Chain ID 31611), then opens Governance.
           </p>
         </div>
       </section>
 
-      {/* Contracts Used */}
-      <section className="py-20" id="contracts">
-        <div className="container">
-          <div className="text-center mb-4">
-            <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-              <FileText className="h-3 w-3" /> On-chain References
-            </span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            Contracts Used
-          </h2>
-          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            All Solidity contracts and on-chain addresses powering Governance, Marketplace and Payments on Mezo Testnet.
-          </p>
-          <div className="max-w-4xl mx-auto space-y-4">
-            {[
-              { name: "VotingDataHelper.sol", path: "contracts/governance/VotingDataHelper.sol", desc: "Read-only batched voting receipts and proposal turnout analytics. Funds via MUSD." },
-              { name: "MarketplaceAdmin.sol", path: "contracts/MarketplaceAdmin.sol", desc: "veNFT marketplace admin: pause, whitelist, 48h-timelocked fee governance." },
-              { name: "MezoVeNFTAdapter", path: "scripts/deploy2.ts", desc: "Adapter bridging Mezo veNFT positions into the marketplace." },
-              { name: "PaymentRouter", path: "scripts/deploy2.ts", desc: "Routes MUSD payments between buyer, seller and protocol fee sinks." },
-              { name: "VeNFTMarketplace", path: "scripts/deploy2.ts", desc: "Escrowless P2P order book for veBTC / veMEZO positions." },
-              { name: "GovernanceDataHelper", path: "scripts/deploy.ts", desc: "Aggregated read helper for proposal metadata and voter snapshots." },
-              { name: "MezoLocks", path: "scripts/deploy.ts", desc: "Lock manager for veMEZO positions used in governance & boost." },
-            ].map((c) => (
-              <div key={c.name} className="rounded-xl bg-card border border-border p-5 shadow-card">
-                <div className="flex items-start justify-between gap-4 mb-1">
-                  <h3 className="text-sm font-bold text-foreground font-mono">{c.name}</h3>
-                  <span className="text-[10px] font-mono text-muted-foreground shrink-0">{c.path}</span>
-                </div>
-                <p className="text-xs text-muted-foreground">{c.desc}</p>
-              </div>
-            ))}
-            <div className="rounded-xl bg-secondary/50 border border-border p-5 mt-6">
-              <h3 className="text-sm font-bold text-foreground mb-3">Deployed token contracts (Mezo Testnet · Chain ID 31611)</h3>
-              <div className="text-xs font-mono text-muted-foreground space-y-1">
-                <div>MUSD &nbsp;→ <span className="text-foreground">0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3</span></div>
-                <div>MEZO &nbsp;→ <span className="text-foreground">0x7B7c000000000000000000000000000000000001</span></div>
-                <div>BTC &nbsp;&nbsp;→ <span className="text-foreground">0x7b7C000000000000000000000000000000000000</span></div>
-                <div>x402 Facilitator &nbsp;→ <span className="text-foreground">https://facilitator.test.mezo.org</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* FAQ */}
       <section className="py-20 bg-secondary/50" id="faq">
@@ -400,8 +357,8 @@ const DeveloperServices = () => {
           <Accordion type="single" collapsible className="w-full space-y-3">
             {[
               {
-                q: "What is x402 and why does the banner cost $0.001 MUSD?",
-                a: "x402 is an open HTTP 402 payment protocol. The server replies 402 Payment Required with the price (here $0.001 MUSD on Mezo Testnet), your wallet signs/sends the payment, and the client retries with the X-PAYMENT header. The banner triggers a real MUSD transfer so you can see the transaction in MetaMask activity.",
+                q: "What is x402 and how does it work?",
+                a: "x402 is an open HTTP 402 payment protocol. The server replies 402 Payment Required with the price in MUSD on Mezo Testnet, your wallet signs a Permit2 authorization and sends the payment, and the client retries with the X-PAYMENT header. The banner triggers a real MUSD transfer so you can see the transaction in MetaMask activity.",
               },
               {
                 q: "Why do I need Mezo Testnet (Chain ID 31611)?",
@@ -409,7 +366,7 @@ const DeveloperServices = () => {
               },
               {
                 q: "Which tokens are accepted for paid services?",
-                a: "Marketplace APIs and oracle feeds are priced in MEZO. Governance access can be paid with MUSD, MEZO or BTC (0.0001 per unlock). The x402 demo specifically uses MUSD.",
+                a: "Marketplace APIs and oracle feeds are priced in MEZO. Governance access can be paid with MUSD, MEZO or BTC. The x402 demo specifically uses MUSD via Permit2.",
               },
               {
                 q: "Where can I see my transaction after paying?",
