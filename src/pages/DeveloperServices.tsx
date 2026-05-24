@@ -234,7 +234,7 @@ const DeveloperServices = () => {
                 vectors.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                Pay-per-run · Gas $0 via x402
+                Pay-per-run
               </span>
               <PaymentGate
                 serviceName="Run Services"
