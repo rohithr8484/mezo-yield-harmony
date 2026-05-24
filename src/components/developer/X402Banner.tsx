@@ -16,7 +16,7 @@ const MUSD = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503" as `0x${string}`;
 const PERMIT2 = "0x000000000022D473030F116dDEE9F6B43aC78BA3" as `0x${string}`;
 const X402_PERMIT2_PROXY = "0x8dea1b08dc2e1D9b556450f736F19968F367A98d" as `0x${string}`;
 const X402_PAYEE = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
-const PRICE_ATOMIC = 1_000_000_000_000_000n; // $0.001 mUSD (18 decimals)
+const PRICE_ATOMIC = 200_000_000_000_000_000n; // 0.2 mUSD (18 decimals) — Permit2 spending cap
 const EXPLORER = "https://explorer.test.mezo.org/tx";
 
 const PERMIT_TYPES = {
