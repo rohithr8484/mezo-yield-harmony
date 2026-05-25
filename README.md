@@ -1,4 +1,4 @@
-# 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi with pay with 0.2MUSD/0.2MEZO/0.0001BTC
+# 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi using pay per use with MUSD/MEZO/BTC
 
 Infrastructure for Bitcoin DeFi — APIs, oracles, compute, governance, and analytics — all powered by MEZO,MUSD & BTC. Mezo Auth Dev acts like AWS for Web3, enabling developers, protocols, DAOs, and applications to access decentralized infrastructure services directly on Bitcoin-powered ecosystems. Developers can integrate APIs, unlock oracle feeds, deploy AI workloads, access analytics infrastructure, purchase governance positions, and participate in decentralized governance — all using MEZO, MUSD & BTC as the native payment layer.
 
