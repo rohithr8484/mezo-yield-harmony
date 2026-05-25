@@ -51,7 +51,6 @@ Marketplace for trading and boosting locked veMEZO governance positions across t
 
 - Buy locked veMEZO positions
 - Lock veMEZO for governance power
-- Boost veMEZO rewards and incentives
 - Escrowless peer-to-peer settlement
 - Fully on-chain transactions
 
