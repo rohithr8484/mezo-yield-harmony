@@ -234,7 +234,7 @@ const DeveloperServices = () => {
                 vectors.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                Pay-per-run
+                Pay-per-run 0.2MUSD/0.2MEZO/0.0001BTC
               </span>
               <PaymentGate
                 serviceName="Run Services"
@@ -324,7 +324,8 @@ const DeveloperServices = () => {
             Governance
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
-            Shape the future of Bitcoin finance through decentralized governance.
+            Shape the future of Bitcoin finance through decentralized governance by pay per call
+            0.2MUSD/0.2MEZO/0.0001BTC
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
             <button
