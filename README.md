@@ -229,17 +229,50 @@ VITE_SUPABASE_URL=
 # 📁 Folder Structure
 
 ```bash
-src/
- ├── api-marketplace/
- ├── oracle-feeds/
- ├── governance/
- ├── analytics/
- ├── ai-runtime/
- ├── identity/
- ├── smart-contracts/
- ├── hooks/
- ├── components/
- └── utils/
+
+contracts
+governance
+GovernanceDataHelper.sol
+VotingDataHelper.sol
+MarketplaceAdmin.sol
+public
+favicon.ico
+placeholder.svg
+robots.txt
+scripts
+src
+assets
+components
+hooks
+integrations/supabase
+lib
+pages
+test
+App.css
+App.tsx
+index.css
+main.tsx
+polyfills.ts
+vite-env.d.ts
+starter
+supabase
+.env
+.gitignore
+README.md
+bun.lock
+bun.lockb
+components.json
+eslint.config.js
+index.html
+package-lock.json
+package.json
+postcss.config.js
+tailwind.config.ts
+tsconfig.app.json
+tsconfig.json
+tsconfig.node.json
+vite.config.ts
+vitest.config.ts
 ```
 
 ---
