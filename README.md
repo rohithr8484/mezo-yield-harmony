@@ -84,7 +84,7 @@ Shape the future of Bitcoin finance through decentralized governance systems.
 
 - **Solidity** — Smart contract development
 - **Wagmi** — Web3 React Hooks
-- **Viem** — Blockchain interaction layer
+- **@mezo-org/passport** - Web3 wallet integration
 - **Mezo SDK** — Native Mezo integration
 - **Pyth Network** — Oracle infrastructure
 - **Boar API** — Mezo infrastructure and analytics integration
