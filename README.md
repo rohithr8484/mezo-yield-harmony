@@ -218,57 +218,11 @@ http://localhost:5173
 
 # ⚙️ Environment Variables
 
-## 🌐 Mezo Configuration
+VITE_SUPABASE_PROJECT_ID=
 
-```bash
-MEZO_CHAIN_ID=
+VITE_SUPABASE_PUBLISHABLE_KEY=
 
-MEZO_RPC_HTTP=
-
-MEZO_RPC_WS=
-
-MEZO_BLOCK_EXPLORER=
-
-MEZO_BOAR_API_KEY=
-```
-
----
-
-## 🔮 Oracle Infrastructure
-
-```bash
-PYTH_HERMES_ENDPOINT=
-
-PYTH_CONTRACT_ADDRESS=
-
-PYTH_BTC_USD_FEED_ID=0xe62df6c8b4a85fe1a67db44dc12de5db330f7ac66b72dc658afedf0f4a415b43
-
-PYTH_MUSD_USD_FEED_ID=0x0617a9b725011a126a2b9fd53563f4236501f32cf76d877644b943394606c6de
-
-PYTH_CBBTC_USD_FEED_ID=0x2817d7bfe5c64b8ea956e9a26f573ef64e72e4d7891f2d6af9bcc93f7aff9a97
-```
-
----
-
-## 🤖 AI Infrastructure
-
-```bash
-OPENAI_API_KEY=
-
-AI_RUNTIME_ENDPOINT=
-
-COMPUTE_ENGINE_URL=
-```
-
----
-
-## 🔗 Wallet Infrastructure
-
-```bash
-WALLETCONNECT_PROJECT_ID=
-
-MEZO_PASSPORT_CLIENT_ID=
-```
+VITE_SUPABASE_URL=
 
 ---
 
