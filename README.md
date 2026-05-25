@@ -228,8 +228,7 @@ VITE_SUPABASE_URL=
 # 📁 Folder Structure
 
 ```bash
-
-<img width="172" height="797" alt="image" src="https://github.com/user-attachments/assets/73d6000d-298b-41fa-80d7-6595afc32fd0" />
+<img width="172" height="797" alt="image" src="https://github.com/user-attachments/assets/b5bd4463-56f2-414f-aec7-110e69139ef7" />
 
 ```
 
