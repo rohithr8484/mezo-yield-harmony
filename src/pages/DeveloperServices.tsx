@@ -303,7 +303,7 @@ const DeveloperServices = () => {
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Buy already-locked veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain
-            settlement.
+            settlement by pay of 0.2MUSD/0.2MEZO/0.0001BTC.
           </p>
           <div className="max-w-6xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
             <PaymentGate
