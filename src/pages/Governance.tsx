@@ -7,8 +7,8 @@ import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { Link } from "react-router-dom";
 import { proposals as staticProposals, statusStyles, type Proposal } from "@/lib/proposals";
+import { getUserProposals, saveUserProposal } from "@/lib/proposalStore";
 
-const USER_PROPOSALS_KEY = "mezo.userProposals.v1";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 
@@ -28,16 +28,26 @@ const Governance = () => {
   const [showSubmitForm, setShowSubmitForm] = useState(false);
   const [proposalForm, setProposalForm] = useState({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
   const { openConnectModal } = useConnectModal();
-  const [userProposals, setUserProposals] = useState<Proposal[]>([]);
+  const [userProposals, setUserProposals] = useState<Proposal[]>(() => getUserProposals());
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem(USER_PROPOSALS_KEY);
-      if (raw) setUserProposals(JSON.parse(raw));
-    } catch {}
+    const refresh = () => setUserProposals(getUserProposals());
+    refresh();
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "mezo.userProposals.v1") refresh();
+    };
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("focus", refresh);
+    window.addEventListener("mezo:proposals-updated", refresh);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", refresh);
+      window.removeEventListener("mezo:proposals-updated", refresh);
+    };
   }, []);
 
   const allProposals = useMemo(() => [...userProposals, ...staticProposals], [userProposals]);
+
 
   const filteredProposals = useMemo(() => {
     return allProposals.filter((p) => {
