@@ -237,6 +237,55 @@ VITE_SUPABASE_URL=
 | **AnalyticsIndexer** | On-chain analytics indexing |
 
 ---
+## **Smart Contracts**
+## **Governance Infrastructure**
+
+| Contract / Component | Address | Description |
+|---|---|---|
+| **GovernanceDataHelper** | `0xE58329AE4803E2aa9594912066A5cB087C68f88c` | Proposal summaries and governance analytics. |
+| **VotingDataHelper** | `0xD0AEc8C123add8aFBf64bdB58cB1adc6CC3f9D15` | Voting receipts and turnout tracking. |
+| **MarketplaceAdmin** | `0x1D462522A9f8fbea6c10122dce01E09432A64dBF` | Marketplace admin and fee controls. |
+| **MUSD Governance Treasury** | `0x000000000000000000000000000000000000dEaD` | Governance treasury and payments. |
+
+---
+
+## **Pay-per-Use Infrastructure (Mezo)**
+
+| Contract / Component | Address | Description |
+|---|---|---|
+| **Mezo Caller** | `0x7B7c000000000000000000000000000000000001` | Executes pay-per-use settlement flows. |
+| **MUSD** | `0xD88b46ef8444dAA8aa493d714b1124DE75CCa067` | Stablecoin for ecosystem payments. |
+| **MUSD Treasury** | `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` | Treasury reserve and liquidity manager. |
+
+---
+
+## **veMEZO Marketplace**
+
+| Contract / Component | Address | Description |
+|---|---|---|
+| **veMEZO Contract** | `0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b` | veMEZO staking and governance contract. |
+| **Boost Voter** | `0x21d7bDF5a5929AD179F8cA0c9014A0B62ae6Bfd1` | Voting boost and incentive manager. |
+
+---
+
+## **x402 Infrastructure (Mezo Testnet – Chain 31611)**
+
+| Contract / Component | Address | Description |
+|---|---|---|
+| **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Token approval and delegation contract. |
+| **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Permit2 integration proxy. |
+| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Testnet MUSD settlement token. |
+
+---
+
+## **x402 Wallet Roles & Funding Requirements**
+
+| Wallet | Purpose | Funding Needed |
+|---|---|---|
+| **Facilitator** | Executes `settle()` calls | Testnet BTC |
+| **Payee** | Receives MUSD payments | None |
+| **Client** | Signs Permit2 approvals | Testnet MUSD + BTC |
+---
 
 # 🤝 Contributing
 
@@ -266,4 +315,4 @@ From APIs and AI tooling to governance and decentralized compute — Mezo Auth D
 
 ## 🚀 Mezo Auth Dev
 
-**Powering the infrastructure layer for Bitcoin DeFi**
+**Powering the infrastructure layer for Bitcoin DeFi, Thanks to Mezo Hackthon mentors**
