@@ -163,8 +163,8 @@ MEZO powers the entire infrastructure economy.
 | **Identity Verification API** | Wallet verification infrastructure | Attestations + Web3 |
 | **Oracle Data Feeds** | Real-time market pricing infrastructure | Pyth + Mezo |
 | **Compute Runtime** | Smart contract simulation engine | AI + Solidity |
-| **veMEZO Marketplace** | Governance position marketplace | Smart Contracts |
-| **DAO Governance** | Proposal and voting infrastructure | Governance Protocols |
+| **veMEZO Marketplace** | Governance position marketplace | Solidity Smart Contracts |
+| **DAO Governance** | Proposal and voting infrastructure | Solidity + Javascript |
 
 ---
 
