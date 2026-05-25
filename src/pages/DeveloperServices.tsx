@@ -169,7 +169,7 @@ const DeveloperServices = () => {
                 Condense long articles, docs, and threads into a concise summary with key bullet points.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with MUSD/MEZO/BTC / summary
+                pay with 0.2MUSD/0.2MEZO/0.0001BTC / summary
               </span>
               <PaymentGate
                 serviceName="AI Text Summarizer"
