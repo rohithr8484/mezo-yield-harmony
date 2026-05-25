@@ -148,7 +148,7 @@ const DeveloperServices = () => {
                 Score sentiment, extract pros/cons, and summarize customer reviews.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with MUSD/MEZO/BTC / analysis
+                pay with 0.2MUSD/0.2MEZO/0.0001BTC / analysis
               </span>
               <PaymentGate
                 serviceName="AI Sentiment Analyzer"
