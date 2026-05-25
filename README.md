@@ -1,4 +1,4 @@
-# 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi
+# 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi with pay with 0.2MUSD/0.2MEZO/0.0001BTC
 
 Infrastructure for Bitcoin DeFi — APIs, oracles, compute, governance, and analytics — all powered by MEZO,MUSD & BTC. Mezo Auth Dev acts like AWS for Web3, enabling developers, protocols, DAOs, and applications to access decentralized infrastructure services directly on Bitcoin-powered ecosystems. Developers can integrate APIs, unlock oracle feeds, deploy AI workloads, access analytics infrastructure, purchase governance positions, and participate in decentralized governance — all using MEZO, MUSD & BTC as the native payment layer.
 
@@ -17,7 +17,7 @@ Infrastructure for Bitcoin DeFi — APIs, oracles, compute, governance, and anal
 
 ## 🔌 AI API Marketplace
 
-Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — all priced in MEZO.
+Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — all priced in MEZO/MUSD/BTC.
 
 ### Included APIs
 
@@ -31,7 +31,7 @@ Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — al
 
 ## 📡 Data Feeds & Oracle Infrastructure
 
-Real-time decentralized oracle infrastructure for Bitcoin DeFi applications.
+Real-time decentralized oracle infrastructure for Bitcoin DeFi applications -  all priced in MEZO/MUSD/BTC.
 
 ### Supported Feeds
 
@@ -45,7 +45,7 @@ Real-time decentralized oracle infrastructure for Bitcoin DeFi applications.
 
 ## 🪙 veMEZO Marketplace
 
-Marketplace for trading and boosting locked veMEZO governance positions across the Mezo ecosystem.
+Marketplace for trading and boosting locked veMEZO governance positions across the Mezo ecosystem -  all priced in MEZO/MUSD/BTC
 
 ### Marketplace Features
 
@@ -58,7 +58,7 @@ Marketplace for trading and boosting locked veMEZO governance positions across t
 
 ## 🏛 Governance Infrastructure
 
-Shape the future of Bitcoin finance through decentralized governance systems.
+Shape the future of Bitcoin finance through decentralized governance systems -  all priced in MEZO/MUSD/BTC
 
 ### Governance Features
 
