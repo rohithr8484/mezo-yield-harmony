@@ -118,7 +118,33 @@ const ProposalDetail = () => {
 
   const proposal = id ? findProposal(id) : undefined;
 
-  if (!proposal) {
+  const [tally, setTally] = useState<LiveTally | null>(
+    proposal ? computeLiveTally(proposal) : null
+  );
+
+  useEffect(() => {
+    if (!proposal) return;
+    const recompute = () => setTally(computeLiveTally(proposal));
+    recompute();
+    const onVotes = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (!detail || detail.proposalId === proposal.id) recompute();
+    };
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "mezo.proposalVotes.v1") recompute();
+    };
+    window.addEventListener("mezo:votes-updated", onVotes as EventListener);
+    window.addEventListener("storage", onStorage);
+    // Light polling so the "real-time" feel works even without explicit events
+    const interval = setInterval(recompute, 5000);
+    return () => {
+      window.removeEventListener("mezo:votes-updated", onVotes as EventListener);
+      window.removeEventListener("storage", onStorage);
+      clearInterval(interval);
+    };
+  }, [proposal?.id]);
+
+  if (!proposal || !tally) {
     return (
       <PageLayout>
         <div className="container py-20 text-center">
@@ -129,8 +155,9 @@ const ProposalDetail = () => {
     );
   }
 
-  const quorumReached = proposal.quorum >= proposal.quorumRequired;
-  const diffReached = proposal.differential >= proposal.differentialRequired;
+  const quorumReached = tally.quorum >= proposal.quorumRequired;
+  const diffReached = tally.differential >= proposal.differentialRequired;
+
 
 
   return (
