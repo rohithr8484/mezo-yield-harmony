@@ -121,14 +121,8 @@ Shape the future of Bitcoin finance through decentralized governance systems.
 
 # 🏗 Technical Architecture
 
-| **Layer** | **Description** |
-| --- | --- |
-| **API Marketplace** | Pay-per-use APIs for AI, governance, analytics, and identity |
-| **Oracle Network** | Real-time decentralized data feeds |
-| **Compute Runtime** | Smart contract simulation and AI execution |
-| **Analytics Layer** | Blockchain indexing and transaction intelligence |
-| **Governance Layer** | DAO voting and proposal infrastructure |
-| **Settlement Layer** | MEZO-powered payments and protocol settlement |
+<img width="926" height="630" alt="image" src="https://github.com/user-attachments/assets/26812a46-2b84-4400-af09-512fb0187e71" />
+
 
 ---
 
