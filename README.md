@@ -280,7 +280,7 @@ VITE_SUPABASE_URL=
 
 ---
 
-## **x402 Infrastructure (Mezo Testnet – Chain 31611)**
+## **x402 usage (Mezo Testnet – Chain 31611)**
 
 | Contract / Component | Address | Description |
 |---|---|---|
