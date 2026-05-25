@@ -53,9 +53,18 @@ export function addVote(proposalId: string, vote: VoteRecord) {
   map[proposalId] = list;
   try {
     localStorage.setItem(VOTES_KEY, JSON.stringify(map));
-    // Notify same-tab listeners (storage event only fires cross-tab)
     window.dispatchEvent(new CustomEvent("mezo:votes-updated", { detail: { proposalId } }));
   } catch {}
+}
+
+export function saveUserProposal(p: Proposal) {
+  const list = getUserProposals();
+  const next = [p, ...list];
+  try {
+    localStorage.setItem(USER_PROPOSALS_KEY, JSON.stringify(next));
+    window.dispatchEvent(new CustomEvent("mezo:proposals-updated"));
+  } catch {}
+  return next;
 }
 
 export interface LiveTally {
@@ -72,20 +81,18 @@ export interface LiveTally {
   lastVoteAt?: number;
 }
 
+
 /**
- * Compute live tally for a proposal: base totals + user votes,
- * with a tiny time-decay weighting so newer votes nudge the result
- * immediately (real-time feel) while older votes still count fully.
+ * Compute live tally from real user votes only (no fake/static base totals).
  */
 export function computeLiveTally(proposal: Proposal): LiveTally {
   const votes = getVotesFor(proposal.id);
-  let f = proposal.forVotes;
-  let a = proposal.againstVotes;
-  let ab = proposal.abstainVotes;
+  let f = 0;
+  let a = 0;
+  let ab = 0;
   let lastVoteAt: number | undefined;
 
   for (const v of votes) {
-    // weight defaults to 1 vote unit if not provided
     const w = Math.max(1, v.weight || 1);
     if (v.type === "FOR") f += w;
     else if (v.type === "AGAINST") a += w;
@@ -106,7 +113,8 @@ export function computeLiveTally(proposal: Proposal): LiveTally {
     abstainPct: pct(ab),
     quorum: total,
     differential: Math.abs(f - a),
-    voteCount: (proposal.topVoters?.length ?? 0) + votes.length,
+    voteCount: votes.length,
     lastVoteAt,
   };
 }
+
