@@ -1,9 +1,9 @@
 # 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi
 
 Infrastructure for Bitcoin DeFi — APIs, oracles, compute, governance, and analytics — all powered by MEZO.  
-Mezo Auth Dev acts like AWS for Web3, enabling developers, protocols, DAOs, and applications to access decentralized infrastructure services directly on Bitcoin-powered ecosystems.
+Mezo Auth Dev acts like AWS for Web3, enabling developers, protocols, DAOs, and applications to access decentralized infrastructure services directly on Bitcoin-powered ecosystems. Developers can integrate APIs, unlock oracle feeds, deploy AI workloads, access analytics infrastructure, purchase governance positions, and participate in decentralized governance — all using MEZO as the native payment layer.
 
-Developers can integrate APIs, unlock oracle feeds, deploy AI workloads, access analytics infrastructure, purchase governance positions, and participate in decentralized governance — all using MEZO as the native payment layer.
+<img width="1774" height="887" alt="image" src="https://github.com/user-attachments/assets/e243ff5f-179c-457b-be80-f655c0fce20c" />
 
 <p align="left">
   <img src="https://img.shields.io/badge/Bitcoin-orange?style=flat-square" />
