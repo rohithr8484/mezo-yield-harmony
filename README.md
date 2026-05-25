@@ -114,8 +114,7 @@ Shape the future of Bitcoin finance through decentralized governance systems.
 ## Wallet & Identity
 
 - **Mezo Passport** — Authentication infrastructure
-- **WalletConnect** — Wallet connectivity
-- **Sats Connect** — Bitcoin wallet integration
+- **Boar Wallet** — Wallet connectivity
 - **On-chain Attestations** — Identity verification
 
 ---
