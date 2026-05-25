@@ -196,10 +196,10 @@ Seamless onboarding and wallet infrastructure.
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/mezo-auth-dev.git
+git clone https://github.com/rohithr8484/mezo-yield-harmony.git
 
 # Enter project folder
-cd mezo-auth-dev
+cd src
 
 # Install dependencies
 npm install
