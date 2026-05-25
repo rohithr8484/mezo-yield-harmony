@@ -144,7 +144,6 @@ MEZO powers the entire infrastructure economy.
 - Pay for API access
 - Unlock oracle feeds
 - Lock veMEZO positions
-- Boost veMEZO rewards
 - Execute compute workloads
 - Participate in DAO governance
 
