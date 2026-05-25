@@ -301,6 +301,39 @@ const ProposalDetail = () => {
               </div>
 
 
+              {/* Live Results */}
+              <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-display font-bold text-foreground">Live results</h3>
+                  <span className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold uppercase tracking-wide">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Realtime
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground -mt-2">
+                  {tally.voteCount} {tally.voteCount === 1 ? "vote" : "votes"} counted
+                  {tally.lastVoteAt && ` · last vote ${formatRelative(tally.lastVoteAt)}`}
+                </p>
+
+                {[
+                  { label: "For", value: tally.forVotes, pct: tally.forPct, color: "bg-emerald-500" },
+                  { label: "Against", value: tally.againstVotes, pct: tally.againstPct, color: "bg-destructive" },
+                  { label: "Abstain", value: tally.abstainVotes, pct: tally.abstainPct, color: "bg-muted-foreground" },
+                ].map((row) => (
+                  <div key={row.label} className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">{row.label}</span>
+                      <span className="font-medium text-foreground">
+                        {formatVotes(row.value)} <span className="text-muted-foreground">({row.pct.toFixed(1)}%)</span>
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-secondary overflow-hidden">
+                      <div className={`h-full ${row.color} transition-all duration-500`} style={{ width: `${row.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               {/* Proposal Info */}
               <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-3">
                 <div className="flex items-center justify-between text-sm">
@@ -317,8 +350,8 @@ const ProposalDetail = () => {
                   </span>
                 </div>
                 <div className="text-xs text-right text-muted-foreground">
-                  <div className="font-medium text-foreground">{formatVotes(proposal.quorum)}</div>
-                  <div>{formatVotes(proposal.quorumRequired)}</div>
+                  <div className="font-medium text-foreground">{formatVotes(tally.quorum)}</div>
+                  <div>of {formatVotes(proposal.quorumRequired)} required</div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Differential</span>
@@ -328,8 +361,8 @@ const ProposalDetail = () => {
                   </span>
                 </div>
                 <div className="text-xs text-right text-muted-foreground">
-                  <div className="font-medium text-foreground">{formatVotes(proposal.differential)}</div>
-                  <div>{formatVotes(proposal.differentialRequired)}</div>
+                  <div className="font-medium text-foreground">{formatVotes(tally.differential)}</div>
+                  <div>of {formatVotes(proposal.differentialRequired)} required</div>
                 </div>
 
                 {/* Contract addresses */}
@@ -341,6 +374,7 @@ const ProposalDetail = () => {
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
