@@ -107,7 +107,7 @@ const ProposalDetail = () => {
     }
   }, [isConnected, pendingPayToken, selectedVote, isProcessingPayment, connectedWalletName, chain?.name]);
 
-  const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
+  const proposal = id ? findProposal(id) : undefined;
 
   if (!proposal) {
     return (
