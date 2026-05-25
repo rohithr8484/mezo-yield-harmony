@@ -212,7 +212,7 @@ const DeveloperServices = () => {
                 records.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with MUSD/MEZO/BTC / check
+                pay with 0.2MUSD/0.2MEZO/0.0001BTC / check
               </span>
               <PaymentGate
                 serviceName="Identity Verification"
