@@ -294,9 +294,9 @@ const Governance = () => {
                         topVoters: [],
                         discussions: [],
                       };
-                      const next = [newProposal, ...userProposals];
+                      const next = saveUserProposal(newProposal);
                       setUserProposals(next);
-                      try { localStorage.setItem(USER_PROPOSALS_KEY, JSON.stringify(next)); } catch {}
+
                       toast.success(`Proposal "${newProposal.title}" submitted!`);
                       setProposalForm({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
                       setShowSubmitForm(false);
