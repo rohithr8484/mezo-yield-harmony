@@ -229,49 +229,8 @@ VITE_SUPABASE_URL=
 
 ```bash
 
-contracts
-governance
-GovernanceDataHelper.sol
-VotingDataHelper.sol
-MarketplaceAdmin.sol
-public
-favicon.ico
-placeholder.svg
-robots.txt
-scripts
-src
-assets
-components
-hooks
-integrations/supabase
-lib
-pages
-test
-App.css
-App.tsx
-index.css
-main.tsx
-polyfills.ts
-vite-env.d.ts
-starter
-supabase
-.env
-.gitignore
-README.md
-bun.lock
-bun.lockb
-components.json
-eslint.config.js
-index.html
-package-lock.json
-package.json
-postcss.config.js
-tailwind.config.ts
-tsconfig.app.json
-tsconfig.json
-tsconfig.node.json
-vite.config.ts
-vitest.config.ts
+<img width="172" height="797" alt="image" src="https://github.com/user-attachments/assets/73d6000d-298b-41fa-80d7-6595afc32fd0" />
+
 ```
 
 ---
