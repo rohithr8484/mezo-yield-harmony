@@ -255,7 +255,7 @@ const DeveloperServices = () => {
             Data Feeds / Oracles
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Real-time price feeds with charts. Pay to unlock live data and graphs by 0.2MUSD/0.2MEZO/0.0001BTC
+            Real-time price feeds with charts. Pay to unlock live data and graphs by pay of 0.2MUSD/0.2MEZO/0.0001BTC
           </p>
           <div className="max-w-3xl mx-auto space-y-6">
             {dataFeeds.map((feed) => (
