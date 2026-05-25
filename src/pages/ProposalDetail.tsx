@@ -77,6 +77,15 @@ const ProposalDetail = () => {
         txHash = stakeHash;
       }
 
+      if (proposal) {
+        addVote(proposal.id, {
+          voter: address ?? "anonymous",
+          type: selectedVote,
+          weight: 1,
+          ts: Date.now(),
+          txHash,
+        });
+      }
       setVoted(selectedVote);
       setSelectedVote(null);
       toast.success(
