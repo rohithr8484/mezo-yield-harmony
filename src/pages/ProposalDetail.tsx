@@ -7,7 +7,8 @@ import { parseUnits } from "viem";
 
 import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
-import { proposals, statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
+import { statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
+import { findProposal, addVote, computeLiveTally, type LiveTally } from "@/lib/proposalStore";
 import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
