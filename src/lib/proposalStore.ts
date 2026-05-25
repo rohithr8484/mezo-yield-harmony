@@ -53,9 +53,18 @@ export function addVote(proposalId: string, vote: VoteRecord) {
   map[proposalId] = list;
   try {
     localStorage.setItem(VOTES_KEY, JSON.stringify(map));
-    // Notify same-tab listeners (storage event only fires cross-tab)
     window.dispatchEvent(new CustomEvent("mezo:votes-updated", { detail: { proposalId } }));
   } catch {}
+}
+
+export function saveUserProposal(p: Proposal) {
+  const list = getUserProposals();
+  const next = [p, ...list];
+  try {
+    localStorage.setItem(USER_PROPOSALS_KEY, JSON.stringify(next));
+    window.dispatchEvent(new CustomEvent("mezo:proposals-updated"));
+  } catch {}
+  return next;
 }
 
 export interface LiveTally {
@@ -71,6 +80,7 @@ export interface LiveTally {
   voteCount: number;
   lastVoteAt?: number;
 }
+
 
 /**
  * Compute live tally for a proposal: base totals + user votes,
