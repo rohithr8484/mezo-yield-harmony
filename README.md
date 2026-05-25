@@ -15,9 +15,9 @@ Infrastructure for Bitcoin DeFi — APIs, oracles, compute, governance, and anal
 
 # ✨ Features
 
-## 🔌 API Marketplace
+## 🔌 AI API Marketplace
 
-Decentralized pay-per-use APIs for analytics, AI, governance, and identity infrastructure — all priced in MEZO.
+Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — all priced in MEZO.
 
 ### Included APIs
 
