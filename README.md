@@ -180,6 +180,33 @@ Seamless onboarding and wallet infrastructure.
 
 ---
 
+## Mezo Network Configuration
+
+Connect your wallet to Mezo Testnet (RPC: https://rpc.test.mezo.org, chain ID 31611).
+
+Get BTC + MEZO from faucet ( https://faucet.test.mezo.org/ )
+
+Open Mezo website (testnet)
+
+Deposit testnet BTC as collateral
+
+Borrow → Mint MUSD
+
+MUSD appears in your wallet
+
+- **Network:** Mezo Testnet    **Chain ID:** `31611`
+
+
+**Native Currency:** MUSD 
+
+
+
+**Explorer:**
+
+https://explorer.mezo.org
+
+---
+
 # 🚀 Quick Start
 
 ## Installation
