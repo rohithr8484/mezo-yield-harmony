@@ -227,10 +227,8 @@ VITE_SUPABASE_URL=
 
 # 📁 Folder Structure
 
-```
 <img width="172" height="797" alt="image" src="https://github.com/user-attachments/assets/b5bd4463-56f2-414f-aec7-110e69139ef7" />
 
-```
 
 ---
 
