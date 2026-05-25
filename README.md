@@ -327,4 +327,4 @@ From APIs and AI tooling to governance and decentralized compute — Mezo Auth D
 
 ## 🚀 Mezo Auth Dev
 
-**Powering the infrastructure layer for Bitcoin DeFi, Thanks to Mezo Hackthon mentors**
+**Powering the infrastructure layer for Bitcoin DeFi, Thanks to Mezo Hackathon mentors**
