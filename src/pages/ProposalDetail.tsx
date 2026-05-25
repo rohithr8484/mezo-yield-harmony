@@ -7,7 +7,19 @@ import { parseUnits } from "viem";
 
 import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
-import { proposals, statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
+import { statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
+import { findProposal, addVote, computeLiveTally, type LiveTally } from "@/lib/proposalStore";
+
+function formatRelative(ts: number): string {
+  const diff = Math.max(0, Date.now() - ts);
+  const s = Math.floor(diff / 1000);
+  if (s < 60) return `${s}s ago`;
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return `${Math.floor(h / 24)}d ago`;
+}
 import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -76,6 +88,15 @@ const ProposalDetail = () => {
         txHash = stakeHash;
       }
 
+      if (proposal) {
+        addVote(proposal.id, {
+          voter: address ?? "anonymous",
+          type: selectedVote,
+          weight: 1,
+          ts: Date.now(),
+          txHash,
+        });
+      }
       setVoted(selectedVote);
       setSelectedVote(null);
       toast.success(
@@ -106,9 +127,35 @@ const ProposalDetail = () => {
     }
   }, [isConnected, pendingPayToken, selectedVote, isProcessingPayment, connectedWalletName, chain?.name]);
 
-  const proposal = proposals.find((p) => p.id.toLowerCase() === id?.toLowerCase());
+  const proposal = id ? findProposal(id) : undefined;
 
-  if (!proposal) {
+  const [tally, setTally] = useState<LiveTally | null>(
+    proposal ? computeLiveTally(proposal) : null
+  );
+
+  useEffect(() => {
+    if (!proposal) return;
+    const recompute = () => setTally(computeLiveTally(proposal));
+    recompute();
+    const onVotes = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (!detail || detail.proposalId === proposal.id) recompute();
+    };
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === "mezo.proposalVotes.v1") recompute();
+    };
+    window.addEventListener("mezo:votes-updated", onVotes as EventListener);
+    window.addEventListener("storage", onStorage);
+    // Light polling so the "real-time" feel works even without explicit events
+    const interval = setInterval(recompute, 5000);
+    return () => {
+      window.removeEventListener("mezo:votes-updated", onVotes as EventListener);
+      window.removeEventListener("storage", onStorage);
+      clearInterval(interval);
+    };
+  }, [proposal?.id]);
+
+  if (!proposal || !tally) {
     return (
       <PageLayout>
         <div className="container py-20 text-center">
@@ -119,8 +166,9 @@ const ProposalDetail = () => {
     );
   }
 
-  const quorumReached = proposal.quorum >= proposal.quorumRequired;
-  const diffReached = proposal.differential >= proposal.differentialRequired;
+  const quorumReached = tally.quorum >= proposal.quorumRequired;
+  const diffReached = tally.differential >= proposal.differentialRequired;
+
 
 
   return (
@@ -264,6 +312,39 @@ const ProposalDetail = () => {
               </div>
 
 
+              {/* Live Results */}
+              <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-display font-bold text-foreground">Live results</h3>
+                  <span className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold uppercase tracking-wide">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                    Realtime
+                  </span>
+                </div>
+                <p className="text-xs text-muted-foreground -mt-2">
+                  {tally.voteCount} {tally.voteCount === 1 ? "vote" : "votes"} counted
+                  {tally.lastVoteAt && ` · last vote ${formatRelative(tally.lastVoteAt)}`}
+                </p>
+
+                {[
+                  { label: "For", value: tally.forVotes, pct: tally.forPct, color: "bg-emerald-500" },
+                  { label: "Against", value: tally.againstVotes, pct: tally.againstPct, color: "bg-destructive" },
+                  { label: "Abstain", value: tally.abstainVotes, pct: tally.abstainPct, color: "bg-muted-foreground" },
+                ].map((row) => (
+                  <div key={row.label} className="space-y-1">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">{row.label}</span>
+                      <span className="font-medium text-foreground">
+                        {formatVotes(row.value)} <span className="text-muted-foreground">({row.pct.toFixed(1)}%)</span>
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-secondary overflow-hidden">
+                      <div className={`h-full ${row.color} transition-all duration-500`} style={{ width: `${row.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               {/* Proposal Info */}
               <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-3">
                 <div className="flex items-center justify-between text-sm">
@@ -280,8 +361,8 @@ const ProposalDetail = () => {
                   </span>
                 </div>
                 <div className="text-xs text-right text-muted-foreground">
-                  <div className="font-medium text-foreground">{formatVotes(proposal.quorum)}</div>
-                  <div>{formatVotes(proposal.quorumRequired)}</div>
+                  <div className="font-medium text-foreground">{formatVotes(tally.quorum)}</div>
+                  <div>of {formatVotes(proposal.quorumRequired)} required</div>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">Differential</span>
@@ -291,8 +372,8 @@ const ProposalDetail = () => {
                   </span>
                 </div>
                 <div className="text-xs text-right text-muted-foreground">
-                  <div className="font-medium text-foreground">{formatVotes(proposal.differential)}</div>
-                  <div>{formatVotes(proposal.differentialRequired)}</div>
+                  <div className="font-medium text-foreground">{formatVotes(tally.differential)}</div>
+                  <div>of {formatVotes(proposal.differentialRequired)} required</div>
                 </div>
 
                 {/* Contract addresses */}
@@ -304,6 +385,7 @@ const ProposalDetail = () => {
                   </div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
