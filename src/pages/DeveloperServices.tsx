@@ -299,11 +299,11 @@ const DeveloperServices = () => {
             </span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            veBTC & veMEZO Marketplace
+            veMEZO Marketplace
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Buy already-locked veBTC and veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P,
-            on-chain settlement.
+            Buy already-locked veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain
+            settlement.
           </p>
           <div className="max-w-6xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
             <PaymentGate
