@@ -224,20 +224,7 @@ VITE_SUPABASE_URL=
 
 
 ---
-
-# 🚀 Smart Contract Modules
-
-| **Contract** | **Purpose** |
-| --- | --- |
-| **OracleFeedManager** | Oracle price feed management |
-| **GovernanceMarketplace** | veMEZO marketplace |
-| **APIBillingManager** | MEZO API payments |
-| **ComputeRuntime** | Simulation execution |
-| **IdentityRegistry** | Wallet verification storage |
-| **AnalyticsIndexer** | On-chain analytics indexing |
-
----
-## **Smart Contracts**
+## **Smart Contracts Modules**
 ## **Governance Infrastructure**
 
 | Contract / Component | Address | Description |
