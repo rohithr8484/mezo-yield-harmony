@@ -89,7 +89,7 @@ const Governance = () => {
             <span className="text-gradient italic">Proposals</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
-            Vote on MUSD, Mezo, veMezo gauges. Formal proposal and voting mechanisms powered by Governor Bravo. Fee: 0.2 MEZO or MUSD per vote.
+            Vote on MUSD, Mezo, veMezo gauges. Each user gets 4 free Governance entries before paid voting.
           </p>
 
           {isConnected && (
@@ -424,7 +424,7 @@ const Governance = () => {
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Community Voting</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Every token holder can cast their vote on active proposals. Fee: 0.2 MEZO or MUSD per vote.
+            Every token holder can cast votes on active proposals with 4 free entries per user.
           </p>
           <div className="max-w-md mx-auto">
             <div className="rounded-2xl bg-card border border-border p-8 shadow-card">
