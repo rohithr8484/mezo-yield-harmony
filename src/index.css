@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Manrope:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,59 +6,59 @@
 
 @layer base {
   :root {
-    --background: 340 30% 97%;
-    --foreground: 340 10% 10%;
+    --background: 210 40% 98%;
+    --foreground: 244 40% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 340 10% 10%;
+    --card-foreground: 244 40% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 340 10% 10%;
+    --popover-foreground: 244 40% 12%;
 
-    --primary: 340 80% 55%;
+    --primary: 245 58% 51%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 340 20% 94%;
-    --secondary-foreground: 340 10% 15%;
+    --secondary: 244 25% 94%;
+    --secondary-foreground: 244 35% 18%;
 
-    --muted: 340 15% 93%;
-    --muted-foreground: 340 8% 45%;
+    --muted: 244 18% 93%;
+    --muted-foreground: 244 12% 42%;
 
-    --accent: 30 90% 55%;
+    --accent: 175 70% 35%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 340 15% 90%;
-    --input: 340 15% 90%;
-    --ring: 340 80% 55%;
+    --border: 244 20% 90%;
+    --input: 244 20% 90%;
+    --ring: 245 58% 51%;
 
     --radius: 0.75rem;
 
-    --magenta: 330 85% 45%;
+    --magenta: 260 55% 55%;
     --magenta-foreground: 0 0% 100%;
-    --bitcoin: 30 90% 55%;
-    --bitcoin-foreground: 0 0% 100%;
+    --bitcoin: 38 92% 50%;
+    --bitcoin-foreground: 244 40% 12%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(340 80% 55%), hsl(330 85% 45%));
-    --gradient-banner: linear-gradient(90deg, hsl(340 80% 55%), hsl(330 85% 45%), hsl(0 85% 50%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(340 30% 97%));
+    --gradient-hero: linear-gradient(135deg, hsl(245 58% 51%), hsl(175 70% 35%));
+    --gradient-banner: linear-gradient(90deg, hsl(245 58% 51%), hsl(260 55% 55%), hsl(175 70% 35%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(210 40% 98%));
 
-    --shadow-card: 0 4px 24px -4px hsl(340 80% 55% / 0.1);
-    --shadow-hover: 0 8px 32px -4px hsl(340 80% 55% / 0.2);
+    --shadow-card: 0 4px 24px -4px hsl(245 58% 51% / 0.15);
+    --shadow-hover: 0 8px 32px -4px hsl(245 58% 51% / 0.25);
 
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'Inter', sans-serif;
+    --font-display: 'Sora', sans-serif;
+    --font-body: 'Manrope', sans-serif;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 210 40% 98%;
+    --sidebar-foreground: 244 40% 12%;
+    --sidebar-primary: 245 58% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 244 18% 93%;
+    --sidebar-accent-foreground: 244 35% 18%;
+    --sidebar-border: 244 20% 90%;
+    --sidebar-ring: 245 58% 51%;
   }
 }
 
@@ -85,7 +85,7 @@
 
   .text-gradient-animated {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--bitcoin)), hsl(var(--magenta)), hsl(var(--primary)));
+    background-image: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--magenta)), hsl(var(--accent)), hsl(var(--primary)));
     background-size: 300% 100%;
     animation: gradient-shift 8s ease infinite;
   }
