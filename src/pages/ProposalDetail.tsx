@@ -28,6 +28,7 @@ import { toast } from "sonner";
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const PROPOSAL_FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const VOTING_TOKEN_DECIMALS = 18;
+const FREE_GOVERNANCE_VOTES = 4;
 
 
 const ProposalDetail = () => {
@@ -40,10 +41,13 @@ const ProposalDetail = () => {
   const [selectedVote, setSelectedVote] = useState<"FOR" | "AGAINST" | "ABSTAIN" | null>(null);
   const [pendingPayToken, setPendingPayToken] = useState<"MEZO" | "MUSD" | null>(null);
   const [isSubmittingVote, setIsSubmittingVote] = useState(false);
+  const [freeVotesUsed, setFreeVotesUsed] = useState(0);
 
   const isProcessingPayment = isSubmittingVote || isSwitchingChain;
   const connectedWalletName = connector?.name ?? "Wallet";
   const shortAddress = address ? `${address.slice(0, 6)}...${address.slice(-4)}` : "Not connected";
+  const governanceFreeKey = `governance_free_votes_v1:${address?.toLowerCase() ?? "guest"}`;
+  const freeVotesRemaining = Math.max(0, FREE_GOVERNANCE_VOTES - freeVotesUsed);
 
   const handleSelectVote = (voteType: "FOR" | "AGAINST" | "ABSTAIN") => {
     if (isProcessingPayment) return;
@@ -118,6 +122,39 @@ const ProposalDetail = () => {
     }
   };
 
+  const handleFreeVote = () => {
+    if (!selectedVote || isProcessingPayment) return;
+
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+
+    if (freeVotesRemaining <= 0) {
+      toast.error("Free Governance votes used. Please pay to continue.");
+      return;
+    }
+
+    if (proposal) {
+      addVote(proposal.id, {
+        voter: address ?? "anonymous",
+        type: selectedVote,
+        weight: 1,
+        ts: Date.now(),
+      });
+    }
+    const nextUsed = freeVotesUsed + 1;
+    setFreeVotesUsed(nextUsed);
+    try {
+      window.localStorage.setItem(governanceFreeKey, String(nextUsed));
+    } catch {
+      // Keep the vote visible for this session even if browser storage is unavailable.
+    }
+    setVoted(selectedVote);
+    setSelectedVote(null);
+    toast.success(`${selectedVote} vote recorded with a free Governance entry. ${FREE_GOVERNANCE_VOTES - nextUsed} left.`);
+  };
+
   useEffect(() => {
     if (isConnected && pendingPayToken && selectedVote && !isProcessingPayment) {
       toast.info(
@@ -126,6 +163,15 @@ const ProposalDetail = () => {
       setPendingPayToken(null);
     }
   }, [isConnected, pendingPayToken, selectedVote, isProcessingPayment, connectedWalletName, chain?.name]);
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(governanceFreeKey);
+      setFreeVotesUsed(stored ? Math.min(Number(stored) || 0, FREE_GOVERNANCE_VOTES) : 0);
+    } catch {
+      setFreeVotesUsed(0);
+    }
+  }, [governanceFreeKey]);
 
   const proposal = id ? findProposal(id) : undefined;
 
@@ -225,7 +271,7 @@ const ProposalDetail = () => {
                   {proposal.status === "Active" ? "Voting is live 🟢" : "Voting is closed 🔴"}
                 </p>
                 <p className="text-xs text-muted-foreground mb-4">
-                  Fee: {VOTING_FEE} MEZO or MUSD per vote
+                  4 free Governance entries per user, then {VOTING_FEE} MEZO or MUSD per vote
                 </p>
                 <div className="space-y-3">
                   {proposal.status === "Active" && (
@@ -279,8 +325,15 @@ const ProposalDetail = () => {
                       {selectedVote && (
                         <div className="space-y-2 pt-2">
                           <p className="text-xs text-muted-foreground text-center">
-                            Open a wallet transfer request on Mezo Testnet to pay {VOTING_FEE} and cast your vote.
+                            Use a free entry or open a wallet transfer request on Mezo Testnet to cast your vote.
                           </p>
+                          <button
+                            onClick={handleFreeVote}
+                            disabled={isProcessingPayment || freeVotesRemaining <= 0}
+                            className="w-full px-3 py-2.5 rounded-xl bg-secondary border border-border text-sm font-semibold text-secondary-foreground hover:bg-secondary/80 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                          >
+                            Use free vote ({freeVotesRemaining} left)
+                          </button>
                           <div className="grid grid-cols-2 gap-2">
                             <button
                               onClick={() => handlePayAndVote("MUSD")}
