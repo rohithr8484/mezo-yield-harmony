@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Zap, Loader2, CheckCircle2, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   useAccount,
   useSignTypedData,
@@ -41,6 +42,8 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
   const publicClient = usePublicClient({ chainId: MEZO_CHAIN_ID });
   const [busy, setBusy] = useState(false);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const paymentButtonClass =
+    "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60";
 
   const handleClick = async () => {
     if (busy) return;
@@ -113,14 +116,14 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <button
+      <Button
         onClick={handleClick}
         disabled={busy}
-        className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-white text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60 ${uniform ? "bg-gradient-to-r from-primary to-accent" : "bg-gradient-to-r from-emerald-500 to-teal-500 text-xs font-bold px-4 py-2"}`}
+        className={uniform ? paymentButtonClass : `${paymentButtonClass} text-xs px-4 py-2`}
       >
         {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
         {busy ? "Confirming in wallet…" : "Pay with x402"}
-      </button>
+      </Button>
       {txHash && (
         <a
           href={`${EXPLORER}/${txHash}`}

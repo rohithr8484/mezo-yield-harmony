@@ -9,6 +9,7 @@ import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
 import { payWithBTC } from "@/lib/btcPayment";
 import PageLayout from "@/components/PageLayout";
+import { Button } from "@/components/ui/button";
 
 const GOV_CHAIN_ID = 31611;
 const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
@@ -53,6 +54,8 @@ const DeveloperServices = () => {
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync } = useSwitchChain();
   const [govPending, setGovPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
+  const paymentButtonClass =
+    "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card";
 
   const handleGovPay = async (token: "MUSD" | "MEZO" | "BTC") => {
     if (govPending) return;
@@ -121,7 +124,7 @@ const DeveloperServices = () => {
             className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up"
             style={{ animationDelay: "0.15s" }}
           >
-            APIs, oracles, compute, and analytics — all priced in MEZO. Like AWS for Web3, powered by Bitcoin.
+            APIs, oracles, compute, and analytics with a free starter plan for each user.
           </p>
         </div>
       </section>
@@ -133,7 +136,7 @@ const DeveloperServices = () => {
             API Marketplace
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Pay-per-use APIs — analytics, identity, governance data — all priced in MEZO.
+            Pay-per-use APIs — analytics, identity, and governance data with 4 free entries per user.
           </p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
             {/* AI Sentiment + Review Analyzer */}
@@ -148,7 +151,7 @@ const DeveloperServices = () => {
                 Score sentiment, extract pros/cons, and summarize customer reviews.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with 0.2MUSD/0.2MEZO/0.0001BTC / analysis
+                4 free entries per user · pay per analysis after
               </span>
               <PaymentGate
                 serviceName="AI Sentiment Analyzer"
@@ -169,7 +172,7 @@ const DeveloperServices = () => {
                 Condense long articles, docs, and threads into a concise summary with key bullet points.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with 0.2MUSD/0.2MEZO/0.0001BTC / summary
+                4 free entries per user · pay per summary after
               </span>
               <PaymentGate
                 serviceName="AI Text Summarizer"
@@ -190,7 +193,7 @@ const DeveloperServices = () => {
                 Enter any transaction hash to fetch full details — status, gas, token transfers, decoded input.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with 0.2MUSD/0.2MEZO/0.0001BTC / call
+                4 free entries per user · pay per call after
               </span>
               <PaymentGate
                 serviceName="On-chain Analytics"
@@ -212,7 +215,7 @@ const DeveloperServices = () => {
                 records.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                pay with 0.2MUSD/0.2MEZO/0.0001BTC / check
+                4 free entries per user · pay per check after
               </span>
               <PaymentGate
                 serviceName="Identity Verification"
@@ -234,7 +237,7 @@ const DeveloperServices = () => {
                 vectors.
               </p>
               <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                Pay-per-run 0.2MUSD/0.2MEZO/0.0001BTC
+                4 free entries per user · pay per run after
               </span>
               <PaymentGate
                 serviceName="Run Services"
@@ -255,7 +258,7 @@ const DeveloperServices = () => {
             Data Feeds / Oracles
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Real-time price feeds with charts. Pay to unlock live data and graphs by pay of 0.2MUSD/0.2MEZO/0.0001BTC
+            Real-time price feeds with charts. Each user gets 4 free feed unlocks before paid access.
           </p>
           <div className="max-w-3xl mx-auto space-y-6">
             {dataFeeds.map((feed) => (
@@ -303,7 +306,7 @@ const DeveloperServices = () => {
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Buy already-locked veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain
-            settlement by pay of 0.2MUSD/0.2MEZO/0.0001BTC.
+            settlement with free starter access per user.
           </p>
           <div className="max-w-6xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
             <PaymentGate
@@ -325,33 +328,32 @@ const DeveloperServices = () => {
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
             Shape the future of Bitcoin finance through decentralized governance by pay per call
-            0.2MUSD/0.2MEZO/0.0001BTC
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <button
+            <Button
               onClick={() => handleGovPay("MUSD")}
               disabled={!!govPending}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
+              className={paymentButtonClass}
             >
               <Wallet className="h-4 w-4" />
               {govPending === "MUSD" ? "Confirming..." : "Pay with MUSD"}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => handleGovPay("MEZO")}
               disabled={!!govPending}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-primary to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
+              className={paymentButtonClass}
             >
               <Wallet className="h-4 w-4" />
               {govPending === "MEZO" ? "Confirming..." : "Pay with MEZO"}
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => handleGovPay("BTC")}
               disabled={!!govPending}
-              className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card flex items-center gap-2"
+              className={paymentButtonClass}
             >
               <Bitcoin className="h-4 w-4" />
               {govPending === "BTC" ? "Confirming..." : "Pay with BTC"}
-            </button>
+            </Button>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-4">
             Settles on Mezo Testnet (Chain ID 31611), then opens Governance.
