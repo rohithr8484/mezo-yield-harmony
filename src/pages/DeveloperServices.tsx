@@ -15,6 +15,7 @@ const GOV_CHAIN_ID = 31611;
 const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const GOV_MUSD = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
 const GOV_MEZO = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
+const FREE_GOVERNANCE_ENTRIES = 4;
 import { PaymentGate } from "@/components/developer/PaymentGate";
 import { TransactionLookup } from "@/components/developer/TransactionLookup";
 import { RunSection } from "@/components/developer/RunSection";
@@ -50,12 +51,35 @@ const DeveloperServices = () => {
     }
   };
 
-  const { isConnected, chainId, connector } = useAccount();
+  const { isConnected, chainId, connector, address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync } = useSwitchChain();
   const [govPending, setGovPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
+  const [freeGovEntriesUsed, setFreeGovEntriesUsed] = useState(0);
   const paymentButtonClass =
     "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card";
+  const governanceFreeKey = `developer_free_entries_v1:${address?.toLowerCase() ?? "guest"}:Governance`;
+  const freeGovEntriesRemaining = Math.max(0, FREE_GOVERNANCE_ENTRIES - freeGovEntriesUsed);
+
+  const handleFreeGovernanceEntry = () => {
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    if (freeGovEntriesRemaining <= 0) {
+      toast.error("Free Governance entries used. Please pay to continue.");
+      return;
+    }
+    const nextUsed = freeGovEntriesUsed + 1;
+    setFreeGovEntriesUsed(nextUsed);
+    try {
+      window.localStorage.setItem(governanceFreeKey, String(nextUsed));
+    } catch {
+      // Keep the UI responsive even if browser storage is unavailable.
+    }
+    toast.success(`Free Governance entry activated. ${FREE_GOVERNANCE_ENTRIES - nextUsed} left.`);
+    setTimeout(() => navigate("/governance"), 300);
+  };
 
   const handleGovPay = async (token: "MUSD" | "MEZO" | "BTC") => {
     if (govPending) return;
@@ -93,6 +117,15 @@ const DeveloperServices = () => {
   useEffect(() => {
     window.localStorage.setItem("developer_paid_services", JSON.stringify(paidServices));
   }, [paidServices]);
+
+  useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem(governanceFreeKey);
+      setFreeGovEntriesUsed(stored ? Math.min(Number(stored) || 0, FREE_GOVERNANCE_ENTRIES) : 0);
+    } catch {
+      setFreeGovEntriesUsed(0);
+    }
+  }, [governanceFreeKey]);
 
   useEffect(() => {
     if (location.hash) {
@@ -327,8 +360,16 @@ const DeveloperServices = () => {
             Governance
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
-            Shape the future of Bitcoin finance through decentralized governance by pay per call
+            Shape the future of Bitcoin finance through decentralized governance. Each user gets 4 free entries.
           </p>
+          <div className="flex justify-center mb-4">
+            <Button
+              onClick={handleFreeGovernanceEntry}
+              className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-sm font-semibold shadow-card"
+            >
+              Use free Governance entry ({freeGovEntriesRemaining} left)
+            </Button>
+          </div>
           <div className="flex flex-wrap gap-4 justify-center">
             <Button
               onClick={() => handleGovPay("MUSD")}
