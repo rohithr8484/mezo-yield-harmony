@@ -177,12 +177,15 @@ const DeveloperServices = () => {
       {/* API Marketplace */}
       <section className="py-16" id="api-marketplace">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            API Marketplace
-          </h2>
-          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Pay-per-use APIs — analytics, identity, and governance data with 4 free entries per user.
-          </p>
+          <div className="mb-10 flex flex-col gap-3 border-l-2 border-accent pl-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase text-accent">01 / Service registry</p>
+              <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground">API Marketplace</h2>
+            </div>
+            <p className="max-w-xl text-muted-foreground md:text-right">
+              Pay-per-use APIs — analytics, identity, and governance data with 4 free entries per user.
+            </p>
+          </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
             {/* AI Sentiment + Review Analyzer */}
             <div className="ops-card p-7">
@@ -299,12 +302,15 @@ const DeveloperServices = () => {
       {/* Data Feeds / Oracles */}
       <section className="py-20" id="data-feeds">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
-            Data Feeds / Oracles
-          </h2>
-          <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
-            Real-time price feeds with charts. Each user gets 4 free feed unlocks before paid access.
-          </p>
+          <div className="mb-10 flex flex-col gap-3 border-l-2 border-primary pl-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase text-primary">02 / Oracle network</p>
+              <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground">Data Feeds / Oracles</h2>
+            </div>
+            <p className="max-w-xl text-muted-foreground md:text-right">
+              Real-time price feeds with charts. Each user gets 4 free feed unlocks before paid access.
+            </p>
+          </div>
           <div className="max-w-3xl mx-auto space-y-6">
             {dataFeeds.map((feed) => (
                <div
@@ -366,7 +372,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* Governance intro */}
-      <section className="py-16">
+      <section className="py-16" id="governance-analytics">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-center text-foreground mb-4">
             Governance
