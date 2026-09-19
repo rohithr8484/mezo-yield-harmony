@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Lock, Play, Wallet, Bitcoin, Sparkles, FileText, ShieldCheck } from "lucide-react";
+import { Activity, Database, Lock, Play, Wallet, Bitcoin, Sparkles, FileText, ShieldCheck, Radio, Layers3, Network } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -136,34 +136,46 @@ const DeveloperServices = () => {
 
   return (
     <PageLayout>
+      <div className="ops-page">
       {/* Hero */}
-      <section className="relative py-20 md:py-28 overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute top-0 left-1/4 h-72 w-72 rounded-full bg-primary/20 blur-3xl animate-blob" />
-          <div
-            className="absolute bottom-0 right-1/4 h-80 w-80 rounded-full bg-bitcoin/20 blur-3xl animate-blob"
-            style={{ animationDelay: "4s" }}
-          />
-        </div>
-        <div className="container text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full glass-card text-sm font-medium text-muted-foreground mb-6 animate-fade-in">
-            ⚡ Mezo Developer Infrastructure Services
-          </span>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight animate-fade-in-up">
-            <span className="text-foreground">Infrastructure for </span>
-            <span className="text-gradient-animated italic">Bitcoin DeFi</span>
-          </h1>
-          <p
-            className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto animate-fade-in-up"
-            style={{ animationDelay: "0.15s" }}
-          >
-            APIs, oracles, compute, and analytics with a free starter plan for each user.
-          </p>
+      <section className="relative overflow-hidden py-10 md:py-14">
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-px ops-scan" />
+        <div className="container">
+          <div className="ops-shell overflow-hidden rounded-lg">
+            <div className="grid lg:grid-cols-[1fr_auto]">
+              <div className="p-6 md:p-10">
+                <div className="mb-5 flex items-center gap-3 text-xs font-bold uppercase text-accent">
+                  <span className="ops-status-dot" />
+                  Mezo Testnet operations online
+                </div>
+                <h1 className="max-w-4xl text-4xl font-display font-bold leading-tight md:text-6xl animate-fade-in-up">
+                  Developer infrastructure <span className="text-gradient">control room</span>
+                </h1>
+                <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg animate-fade-in-up">
+                  APIs, oracles, compute, analytics, and governance access from one live workspace.
+                </p>
+              </div>
+              <div className="grid min-w-[290px] grid-cols-2 border-t border-border/70 bg-secondary/30 lg:grid-cols-1 lg:border-l lg:border-t-0">
+                <div className="flex items-center gap-3 border-b border-r border-border/70 p-5 lg:border-r-0">
+                  <Network className="h-5 w-5 text-accent" />
+                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Network</p><p className="font-display font-semibold">Chain 31611</p></div>
+                </div>
+                <div className="flex items-center gap-3 border-b border-border/70 p-5">
+                  <Layers3 className="h-5 w-5 text-primary" />
+                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Access</p><p className="font-display font-semibold">4 free entries</p></div>
+                </div>
+                <div className="col-span-2 flex items-center gap-3 p-5 lg:col-span-1">
+                  <Radio className="h-5 w-5 text-bitcoin" />
+                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Settlement</p><p className="font-display font-semibold">MUSD · MEZO · BTC</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* API Marketplace */}
-      <section className="py-20 bg-secondary/50" id="api-marketplace">
+      <section className="py-16" id="api-marketplace">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
             API Marketplace
@@ -171,9 +183,9 @@ const DeveloperServices = () => {
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Pay-per-use APIs — analytics, identity, and governance data with 4 free entries per user.
           </p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
             {/* AI Sentiment + Review Analyzer */}
-            <div className="rounded-2xl bg-primary/5 border border-primary/20 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+            <div className="ops-card p-7">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
                 <Sparkles className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -196,7 +208,7 @@ const DeveloperServices = () => {
             </div>
 
             {/* AI Text Summarization */}
-            <div className="rounded-2xl bg-bitcoin/5 border border-bitcoin/20 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+            <div className="ops-card p-7">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-bitcoin to-primary flex items-center justify-center mb-5">
                 <FileText className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -217,7 +229,7 @@ const DeveloperServices = () => {
             </div>
 
             {/* On-chain Analytics API */}
-            <div className="rounded-2xl bg-secondary border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+            <div className="ops-card p-7">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
                 <Activity className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -238,7 +250,7 @@ const DeveloperServices = () => {
             </div>
 
             {/* Identity Verification API */}
-            <div className="rounded-2xl bg-primary/10 border border-primary/30 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+            <div className="ops-card p-7">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-bitcoin flex items-center justify-center mb-5">
                 <Database className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -260,7 +272,7 @@ const DeveloperServices = () => {
             </div>
 
             {/* Run */}
-            <div className="rounded-2xl bg-bitcoin/10 border border-bitcoin/30 p-8 shadow-card hover:shadow-card-hover transition-all duration-300">
+            <div className="ops-card p-7">
               <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-bitcoin to-accent flex items-center justify-center mb-5">
                 <Play className="h-6 w-6 text-primary-foreground" />
               </div>
@@ -295,9 +307,9 @@ const DeveloperServices = () => {
           </p>
           <div className="max-w-3xl mx-auto space-y-6">
             {dataFeeds.map((feed) => (
-              <div
+               <div
                 key={feed.name}
-                className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300"
+                 className="ops-card p-7"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
@@ -327,7 +339,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* veNFT Marketplace */}
-      <section className="py-20 bg-secondary/50" id="venft-marketplace">
+      <section className="py-20 border-y border-border/50 bg-secondary/20" id="venft-marketplace">
         <div className="container">
           <div className="text-center mb-4">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
@@ -341,7 +353,7 @@ const DeveloperServices = () => {
             Buy already-locked veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain
             settlement with free starter access per user.
           </p>
-          <div className="max-w-6xl mx-auto rounded-2xl bg-card border border-border p-8 shadow-card">
+          <div className="max-w-6xl mx-auto ops-card p-8">
             <PaymentGate
               serviceName="veNFT Marketplace"
               onPaymentSuccess={() => markPaid("venft")}
@@ -401,6 +413,7 @@ const DeveloperServices = () => {
           </p>
         </div>
       </section>
+      </div>
     </PageLayout>
   );
 };
