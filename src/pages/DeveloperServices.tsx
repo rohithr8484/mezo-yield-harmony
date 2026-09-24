@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Lock, Play, Wallet, Bitcoin, Sparkles, FileText, ShieldCheck, Radio, Layers3, Network } from "lucide-react";
+import { Activity, Database, Lock, Play, Wallet, Bitcoin, FileText, ShieldCheck, Radio, Layers3, Network, CheckCircle2 } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -22,7 +22,6 @@ import { RunSection } from "@/components/developer/RunSection";
 
 import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
 import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
-import { AIReviewAnalyzer } from "@/components/developer/AIReviewAnalyzer";
 import { AITextSummarizer } from "@/components/developer/AITextSummarizer";
 import { X402Banner } from "@/components/developer/X402Banner";
 
@@ -175,125 +174,110 @@ const DeveloperServices = () => {
       </section>
 
       {/* API Marketplace */}
-      <section className="py-16" id="api-marketplace">
+      <section className="relative py-16 md:py-20" id="api-marketplace">
         <div className="container">
-          <div className="mb-10 flex flex-col gap-3 border-l-2 border-accent pl-5 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="mb-2 text-xs font-bold uppercase text-accent">01 / Service registry</p>
-              <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground">API Marketplace</h2>
-            </div>
-            <p className="max-w-xl text-muted-foreground md:text-right">
-              Pay-per-use APIs — analytics, identity, and governance data with 4 free entries per user.
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
-            {/* AI Sentiment + Review Analyzer */}
-            <div className="ops-card p-7">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
-                <Sparkles className="h-6 w-6 text-primary-foreground" />
+          <div className="overflow-hidden rounded-lg border border-border/80 bg-card/40 shadow-card backdrop-blur-xl">
+            <div className="flex flex-col gap-6 border-b border-border/70 bg-secondary/20 p-6 md:flex-row md:items-end md:justify-between md:p-8">
+              <div>
+                <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase text-accent">
+                  <span className="ops-status-dot" />
+                  01 / Service registry
+                </div>
+                <h2 className="text-3xl font-display font-bold text-foreground sm:text-4xl">API Marketplace</h2>
+                <p className="mt-3 max-w-2xl text-base text-muted-foreground">
+                  Production-ready services for intelligence, analytics, identity, and contract security.
+                </p>
               </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">
-                AI Sentiment + Review Analyzer
-              </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Score sentiment, extract pros/cons, and summarize customer reviews.
-              </p>
-              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                4 free entries per user · pay per analysis after
-              </span>
-              <PaymentGate
-                serviceName="AI Sentiment Analyzer"
-                onPaymentSuccess={() => markPaid("ai-sentiment")}
-                isPaid={!!paidServices["ai-sentiment"]}
-              >
-                <AIReviewAnalyzer />
-              </PaymentGate>
-            </div>
-
-            {/* AI Text Summarization */}
-            <div className="ops-card p-7">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-bitcoin to-primary flex items-center justify-center mb-5">
-                <FileText className="h-6 w-6 text-primary-foreground" />
+              <div className="grid grid-cols-3 overflow-hidden rounded-lg border border-border/70 bg-background/60 text-center">
+                <div className="border-r border-border/70 px-4 py-3">
+                  <p className="text-lg font-display font-bold text-foreground">4</p>
+                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Services</p>
+                </div>
+                <div className="border-r border-border/70 px-4 py-3">
+                  <p className="text-lg font-display font-bold text-accent">04</p>
+                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Free uses</p>
+                </div>
+                <div className="px-4 py-3">
+                  <p className="text-lg font-display font-bold text-primary">3</p>
+                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Assets</p>
+                </div>
               </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">AI Text Summarization</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Condense long articles, docs, and threads into a concise summary with key bullet points.
-              </p>
-              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                4 free entries per user · pay per summary after
-              </span>
-              <PaymentGate
-                serviceName="AI Text Summarizer"
-                onPaymentSuccess={() => markPaid("ai-summarize")}
-                isPaid={!!paidServices["ai-summarize"]}
-              >
-                <AITextSummarizer />
-              </PaymentGate>
             </div>
-
-            {/* On-chain Analytics API */}
-            <div className="ops-card p-7">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center mb-5">
-                <Activity className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">On-chain Analytics API</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Enter any transaction hash to fetch full details — status, gas, token transfers, decoded input.
-              </p>
-              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                4 free entries per user · pay per call after
-              </span>
-              <PaymentGate
-                serviceName="On-chain Analytics"
-                onPaymentSuccess={() => markPaid("analytics")}
-                isPaid={!!paidServices["analytics"]}
-              >
-                <TransactionLookup title="On-chain Analytics" icon={Activity} />
-              </PaymentGate>
-            </div>
-
-            {/* Identity Verification API */}
-            <div className="ops-card p-7">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-primary to-bitcoin flex items-center justify-center mb-5">
-                <Database className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">Identity Verification API</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Verify wallet identity via on-chain attestations. Enter transaction hash to inspect verification
-                records.
-              </p>
-              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                4 free entries per user · pay per check after
-              </span>
-              <PaymentGate
-                serviceName="Identity Verification"
-                onPaymentSuccess={() => markPaid("identity")}
-                isPaid={!!paidServices["identity"]}
-              >
-                <TransactionLookup title="Identity Verification" icon={Database} />
-              </PaymentGate>
-            </div>
-
-            {/* Run */}
-            <div className="ops-card p-7">
-              <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-bitcoin to-accent flex items-center justify-center mb-5">
-                <Play className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <h3 className="text-lg font-display font-semibold text-foreground mb-2">Run</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-3">
-                Upload contracts, run simulations, deploy AI models, and index data — AI explains risks and attack
-                vectors.
-              </p>
-              <span className="inline-block px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
-                4 free entries per user · pay per run after
-              </span>
-              <PaymentGate
-                serviceName="Run Services"
-                onPaymentSuccess={() => markPaid("run")}
-                isPaid={!!paidServices["run"]}
-              >
-                <RunSection />
-              </PaymentGate>
+            <div className="grid md:grid-cols-2">
+              {[
+                {
+                  key: "ai-summarize",
+                  serviceName: "AI Text Summarizer",
+                  label: "AI / LANGUAGE",
+                  title: "AI Text Summarization",
+                  description: "Condense long articles, documentation, and threads into concise summaries with key points.",
+                  icon: FileText,
+                  content: <AITextSummarizer />,
+                },
+                {
+                  key: "analytics",
+                  serviceName: "On-chain Analytics",
+                  label: "DATA / ON-CHAIN",
+                  title: "On-chain Analytics API",
+                  description: "Inspect transaction status, gas usage, token transfers, and decoded input from one hash.",
+                  icon: Activity,
+                  content: <TransactionLookup title="On-chain Analytics" icon={Activity} />,
+                },
+                {
+                  key: "identity",
+                  serviceName: "Identity Verification",
+                  label: "IDENTITY / ATTESTATION",
+                  title: "Identity Verification API",
+                  description: "Verify wallet identity through on-chain attestations and inspect verification records.",
+                  icon: Database,
+                  content: <TransactionLookup title="Identity Verification" icon={Database} />,
+                },
+                {
+                  key: "run",
+                  serviceName: "Run Services",
+                  label: "SECURITY / CONTRACTS",
+                  title: "Smart Contract Analysis",
+                  description: "Upload Solidity contracts for focused AI-assisted risk and attack-vector analysis.",
+                  icon: Play,
+                  content: <RunSection />,
+                },
+              ].map((service, index) => (
+                <article
+                  key={service.key}
+                  className={`group relative flex min-w-0 flex-col overflow-hidden p-6 transition-colors duration-300 hover:bg-secondary/25 md:p-8 ${
+                    index % 2 === 0 ? "md:border-r md:border-border/70" : ""
+                  } ${index < 2 ? "border-b border-border/70" : index === 2 ? "border-b border-border/70 md:border-b-0" : ""}`}
+                >
+                  <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-3xl transition-colors duration-500 group-hover:bg-accent/15" />
+                  <div className="relative flex h-full flex-col">
+                    <div className="mb-5 flex items-start justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/10 text-primary transition-colors group-hover:border-accent/40 group-hover:bg-accent/10 group-hover:text-accent">
+                          <service.icon className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold uppercase text-muted-foreground">{service.label}</p>
+                          <h3 className="mt-1 text-xl font-display font-semibold text-foreground">{service.title}</h3>
+                        </div>
+                      </div>
+                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase text-accent">
+                        <CheckCircle2 className="h-3 w-3" /> Live
+                      </span>
+                    </div>
+                    <p className="mb-5 max-w-xl text-sm leading-relaxed text-muted-foreground">{service.description}</p>
+                    <div className="mt-auto border-t border-border/60 pt-1">
+                      <PaymentGate
+                        serviceName={service.serviceName}
+                        onPaymentSuccess={() => markPaid(service.key)}
+                        isPaid={!!paidServices[service.key]}
+                        compact
+                      >
+                        {service.content}
+                      </PaymentGate>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </div>

@@ -20,9 +20,10 @@ interface PaymentGateProps {
   isPaid: boolean;
   children: React.ReactNode;
   uniform?: boolean;
+  compact?: boolean;
 }
 
-export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, uniform = false }: PaymentGateProps) => {
+export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, uniform = false, compact = false }: PaymentGateProps) => {
   const { isConnected, chainId, connector, address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
@@ -123,50 +124,59 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
   }
 
   return (
-    <div className="mt-4 space-y-3">
-      <p className="text-xs text-muted-foreground text-center">
-        Free plan includes {FREE_ENTRY_LIMIT} entries per user. Pay on Mezo Testnet after that.
-      </p>
+    <div className={compact ? "mt-4 space-y-4" : "mt-4 space-y-3"}>
+      <div className={compact ? "flex items-center justify-between gap-3" : "text-center"}>
+        <p className={compact ? "text-xs font-medium text-muted-foreground" : "text-xs text-muted-foreground"}>
+          {compact ? "Free allowance" : `Free plan includes ${FREE_ENTRY_LIMIT} entries per user. Pay on Mezo Testnet after that.`}
+        </p>
+        {compact && (
+          <span className="rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-xs font-bold text-accent">
+            {freeRemaining} of {FREE_ENTRY_LIMIT} left
+          </span>
+        )}
+      </div>
       {freeRemaining > 0 && (
-        <div className="flex justify-center">
+        <div className={compact ? "" : "flex justify-center"}>
           <Button
             onClick={activateFreeEntry}
-            className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-sm font-semibold shadow-card"
+            className={compact
+              ? "w-full rounded-lg border border-primary/30 bg-primary/10 text-sm font-semibold text-foreground shadow-none hover:bg-primary/20"
+              : "rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-sm font-semibold shadow-card"}
           >
-            Use free entry ({freeRemaining} left)
+            {compact ? "Use free entry" : `Use free entry (${freeRemaining} left)`}
           </Button>
         </div>
       )}
       {freeRemaining <= 0 && (
         <p className="text-xs text-muted-foreground text-center">Free plan used for this user.</p>
       )}
-      <div className="flex gap-3 justify-center flex-wrap">
+      <div className={compact ? "grid grid-cols-3 gap-2" : "flex gap-3 justify-center flex-wrap"}>
         <Button
           onClick={() => handlePay("MUSD")}
           disabled={isProcessing}
-          className={paymentButtonClass}
+          className={compact ? `${paymentButtonClass} min-w-0 rounded-lg px-2 text-xs` : paymentButtonClass}
         >
           <Wallet className="h-4 w-4" />
-          {pending === "MUSD" && isProcessing ? "Confirming..." : "Pay with MUSD"}
+          {pending === "MUSD" && isProcessing ? "Wait..." : compact ? "MUSD" : "Pay with MUSD"}
         </Button>
         <Button
           onClick={() => handlePay("MEZO")}
           disabled={isProcessing}
-          className={paymentButtonClass}
+          className={compact ? `${paymentButtonClass} min-w-0 rounded-lg px-2 text-xs` : paymentButtonClass}
         >
           <Wallet className="h-4 w-4" />
-          {pending === "MEZO" && isProcessing ? "Confirming..." : "Pay with MEZO"}
+          {pending === "MEZO" && isProcessing ? "Wait..." : compact ? "MEZO" : "Pay with MEZO"}
         </Button>
         <Button
           onClick={() => handlePay("BTC")}
           disabled={isProcessing}
-          className={paymentButtonClass}
+          className={compact ? `${paymentButtonClass} min-w-0 rounded-lg px-2 text-xs` : paymentButtonClass}
         >
           <Bitcoin className="h-4 w-4" />
-          {pending === "BTC" && isProcessing ? "Confirming..." : "Pay with BTC"}
+          {pending === "BTC" && isProcessing ? "Wait..." : compact ? "BTC" : "Pay with BTC"}
         </Button>
       </div>
-      <div className="text-center space-y-1">
+      <div className={compact ? "border-t border-border/50 pt-3 text-center space-y-1" : "text-center space-y-1"}>
         <p className="text-[10px] font-mono text-muted-foreground">MUSD: {MUSD_TOKEN}</p>
         <p className="text-[10px] font-mono text-muted-foreground">MEZO: {MEZO_TOKEN}</p>
         <p className="text-[10px] text-muted-foreground">Network: Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</p>
