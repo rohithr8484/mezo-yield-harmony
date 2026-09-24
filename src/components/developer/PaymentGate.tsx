@@ -151,7 +151,8 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
       {freeRemaining <= 0 && (
         <p className="text-xs text-muted-foreground text-center">Free plan used for this user.</p>
       )}
-      <div className={compact ? "grid grid-cols-3 gap-2" : "flex gap-3 justify-center flex-wrap"}>
+      <div className={compact ? "grid grid-cols-3 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
+        {!compact && extraButton}
         <Button
           onClick={() => handlePay("MUSD")}
           disabled={isProcessing}
