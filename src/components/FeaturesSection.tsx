@@ -37,7 +37,7 @@ const FeaturesSection = () => {
             Built on Bitcoin
           </span>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-foreground mb-4">
-            The Bitcoin finance app
+            AI Marketplace with pay per use services in MEZO/MUSD
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Mezo empowers you to live off of Bitcoin, without selling it.
