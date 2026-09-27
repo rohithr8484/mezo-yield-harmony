@@ -43,6 +43,20 @@ const HeroSection = () => {
             Governance
           </a>
         </div>
+
+        <div className="mt-8 animate-fade-in" style={{ animationDelay: "0.45s" }}>
+          <div className="inline-flex flex-col items-center gap-1.5 rounded-xl glass-card px-5 py-3 border border-primary/30">
+            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
+              Submitted for Build with MUSD and MEZO : Bitcoin's Economic Layer — Wavehack
+            </span>
+            <span className="text-sm font-semibold text-accent">
+              Track 2: Access and Distribution for MUSD/MEZO
+            </span>
+            <span className="text-sm text-muted-foreground max-w-xl">
+              How might we make MUSD and MEZO easier to discover, access, and use?
+            </span>
+          </div>
+        </div>
       </div>
     </section>
   );
