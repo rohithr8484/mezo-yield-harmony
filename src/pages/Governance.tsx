@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
-import { Vote, Users, BarChart3, Shield, Scale, Globe, ArrowDown, ArrowRight, CheckCircle, XCircle, MinusCircle, Lock, Coins, Gauge, FileText, Timer, Zap, Wallet, Search, ChevronDown, Plus } from "lucide-react";
+import { Vote, Users, BarChart3, Shield, Scale, Globe, ArrowDown, ArrowRight, CheckCircle, XCircle, MinusCircle, Coins, Gauge, FileText, Timer, Zap, Wallet, Search, ChevronDown, Plus } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
