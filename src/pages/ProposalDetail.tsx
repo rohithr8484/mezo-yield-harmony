@@ -212,8 +212,6 @@ const ProposalDetail = () => {
     );
   }
 
-  const quorumReached = tally.quorum >= proposal.quorumRequired;
-  const diffReached = tally.differential >= proposal.differentialRequired;
 
 
 
