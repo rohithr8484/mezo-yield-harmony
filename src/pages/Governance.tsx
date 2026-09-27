@@ -325,10 +325,9 @@ const Governance = () => {
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Governance power flows from token holders who participate in the protocol.
           </p>
-          <div className="grid sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
+          <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {[
               { icon: Coins, title: "MUSD Holders", desc: "Holders of Mezo's native stablecoin participate in protocol decisions and fee governance." },
-              { icon: Lock, title: "veMEZO Lockers", desc: "Lock MEZO tokens to receive veMEZO, gaining boosted voting power and gauge influence." },
               { icon: Gauge, title: "Gauge System", desc: "Direct protocol emissions and rewards through gauge weight voting with veMEZO." },
             ].map((item) => (
               <div key={item.title} className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center">
