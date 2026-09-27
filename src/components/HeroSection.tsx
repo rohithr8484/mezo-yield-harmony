@@ -20,22 +20,9 @@ const HeroSection = () => {
       </div>
 
       <div className="container relative z-10 text-center py-20">
-        <div className="mb-5 animate-fade-in">
-          <span className="inline-block px-4 py-1.5 rounded-full glass-card text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            ⚡ Powered by Bitcoin · Live on Mezo
-          </span>
-          <div className="mt-3 inline-flex flex-col items-center gap-1.5 rounded-xl glass-card px-5 py-3 border border-primary/30">
-            <span className="text-xs font-semibold uppercase tracking-widest text-primary">
-              Submitted for Build with MUSD and MEZO : Bitcoin's Economic Layer — Wavehack
-            </span>
-            <span className="text-sm font-semibold text-accent">
-              Track 2: Access and Distribution for MUSD/MEZO
-            </span>
-            <span className="text-sm text-muted-foreground max-w-xl">
-              How might we make MUSD and MEZO easier to discover, access, and use?
-            </span>
-          </div>
-        </div>
+        <span className="inline-block px-4 py-1.5 mb-6 rounded-full glass-card text-xs font-semibold uppercase tracking-wider text-muted-foreground animate-fade-in">
+          ⚡ Powered by Bitcoin · Live on Mezo
+        </span>
         <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold leading-[0.95] tracking-tight animate-fade-in-up">
           <span className="text-gradient-animated italic">B</span>
           <span className="text-gradient-animated">ank </span>
