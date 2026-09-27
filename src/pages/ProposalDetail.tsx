@@ -212,8 +212,6 @@ const ProposalDetail = () => {
     );
   }
 
-  const quorumReached = tally.quorum >= proposal.quorumRequired;
-  const diffReached = tally.differential >= proposal.differentialRequired;
 
 
 
@@ -400,35 +398,6 @@ const ProposalDetail = () => {
 
               {/* Proposal Info */}
               <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-3">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">State</span>
-                  <span className={`inline-block px-2.5 py-0.5 rounded border text-xs font-medium ${statusStyles[proposal.status]}`}>
-                    {proposal.status}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Quorum</span>
-                  <span className="flex items-center gap-1 text-foreground font-medium">
-                    {quorumReached ? "Reached" : "Not reached"}
-                    {quorumReached && <CheckCircle2 className="h-4 w-4 text-emerald-500" />}
-                  </span>
-                </div>
-                <div className="text-xs text-right text-muted-foreground">
-                  <div className="font-medium text-foreground">{formatVotes(tally.quorum)}</div>
-                  <div>of {formatVotes(proposal.quorumRequired)} required</div>
-                </div>
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Differential</span>
-                  <span className="flex items-center gap-1 text-foreground font-medium">
-                    {diffReached ? "Reached" : "Not reached"}
-                    {diffReached && <CheckCircle2 className="h-4 w-4 text-emerald-500" />}
-                  </span>
-                </div>
-                <div className="text-xs text-right text-muted-foreground">
-                  <div className="font-medium text-foreground">{formatVotes(tally.differential)}</div>
-                  <div>of {formatVotes(proposal.differentialRequired)} required</div>
-                </div>
-
                 {/* Contract addresses */}
                 <div className="border-t border-border pt-3 mt-3">
                   <p className="text-xs text-muted-foreground mb-1">Voting fee contracts:</p>
