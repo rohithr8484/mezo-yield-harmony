@@ -17,7 +17,8 @@ const GOV_MUSD = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
 const GOV_MEZO = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
 const FREE_GOVERNANCE_ENTRIES = 4;
 import { PaymentGate } from "@/components/developer/PaymentGate";
-import { TransactionLookup } from "@/components/developer/TransactionLookup";
+import { OnchainAnalytics } from "@/components/developer/OnchainAnalytics";
+import { IdentityVerification } from "@/components/developer/IdentityVerification";
 import { RunSection } from "@/components/developer/RunSection";
 
 import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
@@ -221,7 +222,7 @@ const DeveloperServices = () => {
                   title: "On-chain Analytics API",
                   description: "Inspect transaction status, gas usage, token transfers, and decoded input from one hash.",
                   icon: Activity,
-                  content: <TransactionLookup title="On-chain Analytics" icon={Activity} />,
+                  content: <OnchainAnalytics />,
                 },
                 {
                   key: "identity",
@@ -230,7 +231,7 @@ const DeveloperServices = () => {
                   title: "Identity Verification API",
                   description: "Verify wallet identity through on-chain attestations and inspect verification records.",
                   icon: Database,
-                  content: <TransactionLookup title="Identity Verification" icon={Database} />,
+                  content: <IdentityVerification />,
                 },
                 {
                   key: "run",
