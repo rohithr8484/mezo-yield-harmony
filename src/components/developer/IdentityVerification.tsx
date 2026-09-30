@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, ExternalLink, Loader2, XCircle, CheckCircle2, Circle, ShieldCheck, Coins, History, FileCode } from "lucide-react";
+import { Search, ExternalLink, Loader2, XCircle, CheckCircle2, Circle, ShieldCheck, Coins, History, FileCode, Droplets, Landmark, Wallet, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 const API = "https://api.explorer.test.mezo.org/api/v2";
@@ -24,6 +24,9 @@ const fmt = (val?: string | number | null, decimals = 18) => {
 };
 const short = (a?: string) => (a ? `${a.slice(0, 8)}…${a.slice(-6)}` : "—");
 
+const LENDING_METHODS = ["borrow", "repay", "supply", "deposit", "withdraw", "liquidat", "collateral", "opentrove", "closetrove", "adjusttrove", "redeem"];
+const LIQUIDITY_METHODS = ["addliquidity", "removeliquidity", "swap", "mint", "burn", "stake", "unstake"];
+
 interface Result {
   address: string;
   info: Any | null;
@@ -32,6 +35,10 @@ interface Result {
   txs: Any[];
   sourceTx?: Any | null;
 }
+
+const SectionTitle = ({ icon: Icon, children }: { icon: any; children: React.ReactNode }) => (
+  <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><Icon className="h-3.5 w-3.5" /> {children}</p>
+);
 
 export const IdentityVerification = () => {
   const [input, setInput] = useState("");
@@ -106,6 +113,40 @@ export const IdentityVerification = () => {
   const score = checks.length ? Math.round((passed / checks.length) * 100) : 0;
   const tier = score >= 75 ? "Verified" : score >= 45 ? "Partially verified" : "Unverified";
 
+  // ---- Wallet behavior: large-holder movements & activity change ----
+  const txs = res?.txs ?? [];
+  const btcValue = (t: Any) => Number(t.value ?? 0) / 1e18;
+  const largestTx = txs.length ? txs.reduce((a, b) => (btcValue(a) >= btcValue(b) ? a : b)) : null;
+  const largeMovements = txs.filter((t) => btcValue(t) >= 0.01);
+  const now = Date.now();
+  const recent7d = txs.filter((t) => t.timestamp && now - new Date(t.timestamp).getTime() < 7 * 864e5).length;
+  const prev7d = txs.filter((t) => {
+    const d = t.timestamp ? now - new Date(t.timestamp).getTime() : 0;
+    return d >= 7 * 864e5 && d < 14 * 864e5;
+  }).length;
+  const activityTrend = recent7d > prev7d ? "up" : recent7d < prev7d ? "down" : "flat";
+  const musdBal = musd ? Number(musd.value) / 1e18 : 0;
+  const mezoBal = mezo ? Number(mezo.value) / 1e18 : 0;
+  const isLargeHolder = balance / 1e18 >= 0.05 || musdBal >= 500 || mezoBal >= 500;
+
+  // ---- Liquidity & lending signals from recent methods ----
+  const methods = txs.map((t) => (t.method || "").toString().toLowerCase()).filter(Boolean);
+  const lendingActions = methods.filter((m) => LENDING_METHODS.some((l) => m.includes(l)));
+  const liquidityActions = methods.filter((m) => LIQUIDITY_METHODS.some((l) => m.includes(l)));
+  const liquidationHits = methods.filter((m) => m.includes("liquidat")).length;
+
+  // ---- Risk signals ----
+  const risks: { level: "high" | "medium" | "low"; text: string }[] = [];
+  if (res) {
+    if (isContract && !res.info?.is_verified) risks.push({ level: "high", text: "Unverified contract — source code cannot be audited on the explorer." });
+    if (liquidationHits > 0) risks.push({ level: "high", text: `${liquidationHits} liquidation-related call${liquidationHits === 1 ? "" : "s"} in recent history — collateral was forcibly closed.` });
+    if (failed > 2) risks.push({ level: "medium", text: `${failed} failed transactions recently — possible bot activity or misconfigured integrations.` });
+    if (isLargeHolder && largeMovements.length > 0) risks.push({ level: "medium", text: `Large holder with ${largeMovements.length} sizable movement${largeMovements.length === 1 ? "" : "s"} recently — watch for market impact.` });
+    if (txCount === 0) risks.push({ level: "medium", text: "No transaction history — identity cannot be established from on-chain activity." });
+    if (activityTrend === "down" && txCount > 0) risks.push({ level: "low", text: "Activity is declining week-over-week — wallet may be going dormant." });
+    if (!risks.length) risks.push({ level: "low", text: "No elevated risk signals detected for this wallet." });
+  }
+
   return (
     <div className="space-y-4">
       <div className="flex gap-2">
@@ -157,7 +198,7 @@ export const IdentityVerification = () => {
 
           {/* Attestation checks */}
           <div>
-            <p className="mb-2 text-xs font-semibold text-muted-foreground">On-chain attestation checks</p>
+            <SectionTitle icon={ShieldCheck}>On-chain attestation checks</SectionTitle>
             <div className="grid gap-1.5 sm:grid-cols-2">
               {checks.map((c) => (
                 <div key={c.label} className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs">
@@ -187,9 +228,105 @@ export const IdentityVerification = () => {
             ))}
           </div>
 
+          {/* Liquidity */}
+          <div>
+            <SectionTitle icon={Droplets}>Liquidity exposure</SectionTitle>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {[
+                ["MUSD balance", `${musdBal.toLocaleString(undefined, { maximumFractionDigits: 4 })} MUSD`],
+                ["MEZO balance", `${mezoBal.toLocaleString(undefined, { maximumFractionDigits: 4 })} MEZO`],
+                ["Pool / swap actions (recent)", liquidityActions.length ? `${liquidityActions.length} detected` : "None detected"],
+                ["Holder class", isLargeHolder ? "Large holder" : "Standard holder"],
+              ].map(([k, v]) => (
+                <div key={k} className="rounded-lg border border-border bg-card p-3">
+                  <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground">{k}</p>
+                  <p className="font-mono text-foreground">{v}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 rounded-lg border border-border bg-card p-3 text-[11px] text-muted-foreground">
+              {liquidityActions.length
+                ? `Recent history includes ${liquidityActions.length} liquidity action${liquidityActions.length === 1 ? "" : "s"} (swap / add / remove / stake), so this wallet actively provides or moves liquidity.`
+                : "No swap, add-liquidity, or staking methods in recent history — this wallet does not appear to provide liquidity."}
+            </p>
+          </div>
+
+          {/* Lending */}
+          <div>
+            <SectionTitle icon={Landmark}>Lending & collateral</SectionTitle>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              {[
+                ["Lending actions (recent)", lendingActions.length ? `${lendingActions.length} detected` : "None detected"],
+                ["Liquidations (recent)", liquidationHits ? `${liquidationHits} event${liquidationHits === 1 ? "" : "s"}` : "None"],
+                ["Borrowing demand signal", lendingActions.some((m) => m.includes("borrow") || m.includes("opentrove")) ? "Active borrower" : "No borrowing detected"],
+                ["Collateral base", balance > 0 ? `${fmt(res.info?.coin_balance)} BTC held` : "No BTC collateral held"],
+              ].map(([k, v]) => (
+                <div key={k} className="rounded-lg border border-border bg-card p-3">
+                  <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground">{k}</p>
+                  <p className="font-mono text-foreground">{v}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-2 rounded-lg border border-border bg-card p-3 text-[11px] text-muted-foreground">
+              {lendingActions.length
+                ? `Methods like "${lendingActions[0]}" indicate this wallet borrows, repays, or manages collateral. On Mezo, MUSD borrowing is backed by BTC collateral — utilization and liquidation risk scale with the size of the position.`
+                : "No borrow / repay / trove methods in recent history — no visible lending positions from this wallet."}
+            </p>
+          </div>
+
+          {/* Wallet behavior */}
+          <div>
+            <SectionTitle icon={Wallet}>Wallet behavior</SectionTitle>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div className="rounded-lg border border-border bg-card p-3">
+                <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground">Activity trend (7d vs prior 7d)</p>
+                <p className="flex items-center gap-1 font-mono text-foreground">
+                  {activityTrend === "up" ? <TrendingUp className="h-3.5 w-3.5 text-accent" /> : activityTrend === "down" ? <TrendingDown className="h-3.5 w-3.5 text-destructive" /> : null}
+                  {recent7d} vs {prev7d} txs · {activityTrend}
+                </p>
+              </div>
+              <div className="rounded-lg border border-border bg-card p-3">
+                <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground">Large movements (≥0.01 BTC)</p>
+                <p className="font-mono text-foreground">{largeMovements.length} in recent history</p>
+              </div>
+              <div className="rounded-lg border border-border bg-card p-3">
+                <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground">Out / in ratio (recent)</p>
+                <p className="font-mono text-foreground">{outgoing} out / {txs.length - outgoing} in</p>
+              </div>
+              <div className="rounded-lg border border-border bg-card p-3">
+                <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground">Failed txs (recent)</p>
+                <p className="font-mono text-foreground">{failed}</p>
+              </div>
+            </div>
+            {largestTx && btcValue(largestTx) > 0 && (
+              <p className="mt-2 rounded-lg border border-border bg-card p-3 text-[11px] text-muted-foreground">
+                Largest recent movement: <span className="font-mono text-foreground">{btcValue(largestTx).toLocaleString(undefined, { maximumFractionDigits: 6 })} BTC</span>{" "}
+                in tx <a href={`${EXPLORER}/tx/${largestTx.hash}`} target="_blank" rel="noopener noreferrer" className="font-mono text-primary hover:underline">{short(largestTx.hash)}</a>.
+                {isLargeHolder ? " This wallet's movements are large enough to signal accumulation or distribution — worth monitoring." : ""}
+              </p>
+            )}
+          </div>
+
+          {/* Risks */}
+          <div>
+            <SectionTitle icon={AlertTriangle}>Risk signals</SectionTitle>
+            <div className="space-y-1.5">
+              {risks.map((r, i) => (
+                <div key={i} className={`flex items-start gap-2 rounded-lg border p-3 text-xs ${
+                  r.level === "high" ? "border-destructive/30 bg-destructive/10 text-destructive"
+                  : r.level === "medium" ? "border-primary/30 bg-primary/5 text-foreground"
+                  : "border-border bg-card text-muted-foreground"
+                }`}>
+                  <AlertTriangle className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${r.level === "high" ? "text-destructive" : r.level === "medium" ? "text-primary" : "text-muted-foreground"}`} />
+                  <span><span className="font-bold uppercase">{r.level}</span> — {r.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Token holdings */}
           <div>
-            <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><Coins className="h-3.5 w-3.5" /> Token holdings ({res.tokens.length})</p>
+            <SectionTitle icon={Coins}>Token holdings ({res.tokens.length})</SectionTitle>
             {res.tokens.length === 0 ? (
               <p className="rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground">No token balances.</p>
             ) : (
@@ -206,9 +343,7 @@ export const IdentityVerification = () => {
 
           {/* Verification records */}
           <div>
-            <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-              <History className="h-3.5 w-3.5" /> Verification records (latest {Math.min(5, res.txs.length)}{failed ? ` · ${failed} failed` : ""})
-            </p>
+            <SectionTitle icon={History}>Verification records (latest {Math.min(5, res.txs.length)}{failed ? ` · ${failed} failed` : ""})</SectionTitle>
             {res.txs.length === 0 ? (
               <p className="rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground">No transaction records found.</p>
             ) : (
