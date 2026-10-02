@@ -49,15 +49,15 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
     setBusy(true);
     setPermitSig(null);
     setTxHash(null);
+    setSponsor(null);
     try {
       if (chainId !== MEZO_CHAIN_ID) {
         await switchChainAsync({ chainId: MEZO_CHAIN_ID });
       }
 
       // Step 1 of 2 — x402 protocol: sign Permit2 EIP-712 PermitTransferFrom.
-      // This is an OFF-CHAIN signature (wallet interaction #1): it authorizes the
-      // payment but moves no funds, so it produces a signature, not a tx hash.
-      toast.info("Step 1/2 · GET /paid → 402 · sign the Permit2 authorization in your wallet");
+      // OFF-CHAIN, gasless: the only wallet interaction. No funds move yet.
+      toast.info("Step 1/2 · GET /paid → 402 · sign the Permit2 authorization (gasless)");
       const nonceBytes = new Uint8Array(32);
       crypto.getRandomValues(nonceBytes);
       const nonce = BigInt(
@@ -78,30 +78,27 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
         },
       });
       setPermitSig(signature);
-      void toHex(nonce);
       toast.success("Step 1/2 done · Permit2 authorization signed (off-chain, no gas)");
 
-      // Step 2 of 2 — settlement: on-chain MUSD transfer (wallet interaction #2).
-      // This is the transaction that appears in your wallet activity and on the explorer.
-      toast.info("Step 2/2 · confirm the mUSD settlement in your wallet");
-      const hash = await writeContractAsync({
-        address: MUSD,
-        abi: erc20Abi,
-        functionName: "transfer",
-        args: [X402_PAYEE, PRICE_ATOMIC],
-        chainId: MEZO_CHAIN_ID,
+      // Step 2 of 2 — SPONSORED settlement: the facilitator wallet submits
+      // x402Permit2Proxy.settle() and pays the gas. Your wallet is not asked
+      // to confirm anything and pays 0 gas.
+      toast.info("Step 2/2 · facilitator is settling on-chain (sponsored gas)…");
+      const { data, error } = await supabase.functions.invoke("x402-settle", {
+        body: {
+          owner: address,
+          nonce: nonce.toString(),
+          deadline: deadline.toString(),
+          signature,
+        },
       });
-      setTxHash(hash);
-      toast.success(`Step 2/2 broadcast · ${hash.slice(0, 10)}… — confirming on Mezo…`);
-
-      if (publicClient) {
-        const receipt = await publicClient.waitForTransactionReceipt({ hash });
-        if (receipt.status === "success") {
-          toast.success(`x402 settled ✓ block ${receipt.blockNumber}`);
-        } else {
-          toast.error("Settlement reverted on-chain.");
-        }
+      if (error) throw new Error(error.message);
+      if (!data?.settled || !data?.txHash) {
+        throw new Error(data?.error ?? "Facilitator settlement failed");
       }
+      setTxHash(data.txHash as string);
+      setSponsor(data.sponsoredBy as string);
+      toast.success(`x402 settled ✓ gas sponsored · tx ${(data.txHash as string).slice(0, 10)}…`);
     } catch (e) {
       const msg = e instanceof Error ? e.message.toLowerCase() : "";
       toast.error(
