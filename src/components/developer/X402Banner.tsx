@@ -32,11 +32,10 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
   const { switchChainAsync } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
   const { signTypedDataAsync } = useSignTypedData();
-  const { writeContractAsync } = useWriteContract();
-  const publicClient = usePublicClient({ chainId: MEZO_CHAIN_ID });
   const [busy, setBusy] = useState(false);
   const [permitSig, setPermitSig] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [sponsor, setSponsor] = useState<string | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const paymentButtonClass =
     "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60";
