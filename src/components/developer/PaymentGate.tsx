@@ -151,9 +151,9 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
       )}
       </>
       )}
+      {!isPaid && !freeUnlocked && (
       <div className={compact ? "grid grid-cols-3 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
         {!compact && extraButton}
-        {!isPaid && !freeUnlocked && <>
         <Button
           onClick={() => handlePay("MUSD")}
           disabled={isProcessing}
@@ -178,8 +178,8 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
           <Bitcoin className="h-4 w-4" />
           {pending === "BTC" && isProcessing ? "Wait..." : compact ? "BTC" : "Pay with BTC"}
         </Button>
-        </>}
       </div>
+      )}
       {!isPaid && !freeUnlocked && (
       <div className={compact ? "border-t border-border/50 pt-3 text-center space-y-1" : "text-center space-y-1"}>
         <p className="text-[10px] font-mono text-muted-foreground">MUSD: {MUSD_TOKEN}</p>
