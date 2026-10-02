@@ -1,37 +1,22 @@
 import { useState } from "react";
-import { Zap, Loader2, CheckCircle2, ExternalLink, PenLine, Info } from "lucide-react";
+import { Zap, Loader2, CheckCircle2, ExternalLink, Info, Laugh } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  useAccount,
-  useSignTypedData,
-  useSwitchChain,
-  useWriteContract,
-  usePublicClient,
-} from "wagmi";
+import { useAccount, useSignTypedData, useSwitchChain, useWriteContract, usePublicClient } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { erc20Abi, toHex } from "viem";
+import { erc20Abi, maxUint256 } from "viem";
+import { wrapFetchWithPayment, x402Client, decodePaymentResponseHeader } from "@x402/fetch";
+import { ExactEvmScheme } from "@x402/evm/exact/client";
+import { toClientEvmSigner } from "@x402/evm";
 
+// Same live x402 resource + facilitator as the reference app (vativ/mezo-hack apps/humor).
+const RESOURCE_URL = "https://humor.vativ.io/joke";
 const MEZO_CHAIN_ID = 31611;
 const MUSD = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503" as `0x${string}`;
 const PERMIT2 = "0x000000000022D473030F116dDEE9F6B43aC78BA3" as `0x${string}`;
-const X402_PERMIT2_PROXY = "0x8dea1b08dc2e1D9b556450f736F19968F367A98d" as `0x${string}`;
-const X402_PAYEE = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
-const PRICE_ATOMIC = 200_000_000_000_000_000n; // 0.2 mUSD (18 decimals) — Permit2 spending cap
 const EXPLORER = "https://explorer.test.mezo.org/tx";
 
-const PERMIT_TYPES = {
-  PermitTransferFrom: [
-    { name: "permitted", type: "TokenPermissions" },
-    { name: "spender", type: "address" },
-    { name: "nonce", type: "uint256" },
-    { name: "deadline", type: "uint256" },
-  ],
-  TokenPermissions: [
-    { name: "token", type: "address" },
-    { name: "amount", type: "uint256" },
-  ],
-} as const;
+type Receipt = { joke: { setup: string; punchline: string }; tx?: string; payer?: string; network?: string };
 
 export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
   const { isConnected, address, chainId } = useAccount();
@@ -41,8 +26,8 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
   const { writeContractAsync } = useWriteContract();
   const publicClient = usePublicClient({ chainId: MEZO_CHAIN_ID });
   const [busy, setBusy] = useState(false);
-  const [permitSig, setPermitSig] = useState<string | null>(null);
-  const [txHash, setTxHash] = useState<string | null>(null);
+  const [status, setStatus] = useState<string>("");
+  const [result, setResult] = useState<Receipt | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const paymentButtonClass =
     "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60";
@@ -53,71 +38,55 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
       openConnectModal?.();
       return;
     }
+    if (!publicClient) return;
     setBusy(true);
-    setPermitSig(null);
-    setTxHash(null);
+    setResult(null);
     try {
-      if (chainId !== MEZO_CHAIN_ID) {
-        await switchChainAsync({ chainId: MEZO_CHAIN_ID });
+      if (chainId !== MEZO_CHAIN_ID) await switchChainAsync({ chainId: MEZO_CHAIN_ID });
+
+      // One-time setup: Permit2 must be allowed to move mUSD (only asked the very first time).
+      const allowance = await publicClient.readContract({
+        address: MUSD, abi: erc20Abi, functionName: "allowance", args: [address, PERMIT2],
+      });
+      if (allowance === 0n) {
+        setStatus("One-time setup: approve Permit2 for mUSD…");
+        const h = await writeContractAsync({
+          address: MUSD, abi: erc20Abi, functionName: "approve", args: [PERMIT2, maxUint256], chainId: MEZO_CHAIN_ID,
+        });
+        await publicClient.waitForTransactionReceipt({ hash: h });
       }
 
-      // Step 1 of 2 — x402 protocol: sign Permit2 EIP-712 PermitTransferFrom.
-      // This is an OFF-CHAIN signature (wallet interaction #1): it authorizes the
-      // payment but moves no funds, so it produces a signature, not a tx hash.
-      toast.info("Step 1/2 · GET /paid → 402 · sign the Permit2 authorization in your wallet");
-      const nonceBytes = new Uint8Array(32);
-      crypto.getRandomValues(nonceBytes);
-      const nonce = BigInt(
-        "0x" + Array.from(nonceBytes).map((b) => b.toString(16).padStart(2, "0")).join(""),
-      );
-      const deadline = BigInt(Math.floor(Date.now() / 1000) + 300);
-
-      const signature = await signTypedDataAsync({
-        account: address,
-        domain: { name: "Permit2", chainId: MEZO_CHAIN_ID, verifyingContract: PERMIT2 },
-        types: PERMIT_TYPES,
-        primaryType: "PermitTransferFrom",
-        message: {
-          permitted: { token: MUSD, amount: PRICE_ATOMIC },
-          spender: X402_PERMIT2_PROXY,
-          nonce,
-          deadline,
+      const signer = toClientEvmSigner(
+        {
+          address,
+          signTypedData: (msg) =>
+            signTypedDataAsync({ account: address, ...(msg as any) }) as Promise<`0x${string}`>,
         },
-      });
-      setPermitSig(signature);
-      void toHex(nonce);
-      toast.success("Step 1/2 done · Permit2 authorization signed (off-chain, no gas)");
+        publicClient as any,
+      );
+      const client = new x402Client();
+      client.register("eip155:*", new ExactEvmScheme(signer));
+      const fetchWithPay = wrapFetchWithPayment(fetch, client);
 
-      // Step 2 of 2 — settlement: on-chain MUSD transfer (wallet interaction #2).
-      // This is the transaction that appears in your wallet activity and on the explorer.
-      toast.info("Step 2/2 · confirm the mUSD settlement in your wallet");
-      const hash = await writeContractAsync({
-        address: MUSD,
-        abi: erc20Abi,
-        functionName: "transfer",
-        args: [X402_PAYEE, PRICE_ATOMIC],
-        chainId: MEZO_CHAIN_ID,
-      });
-      setTxHash(hash);
-      toast.success(`Step 2/2 broadcast · ${hash.slice(0, 10)}… — confirming on Mezo…`);
-
-      if (publicClient) {
-        const receipt = await publicClient.waitForTransactionReceipt({ hash });
-        if (receipt.status === "success") {
-          toast.success(`x402 settled ✓ block ${receipt.blockNumber}`);
-        } else {
-          toast.error("Settlement reverted on-chain.");
-        }
-      }
+      setStatus("402 received · sign the payment in your wallet (no gas)…");
+      const res = await fetchWithPay(RESOURCE_URL);
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+      setStatus("Facilitator settling on Mezo…");
+      const joke = await res.json();
+      const header = res.headers.get("PAYMENT-RESPONSE") || res.headers.get("X-PAYMENT-RESPONSE");
+      const settle = header ? decodePaymentResponseHeader(header) : null;
+      setResult({ joke, tx: settle?.transaction, payer: settle?.payer, network: settle?.network });
+      toast.success("x402 payment settled — resource unlocked");
     } catch (e) {
       const msg = e instanceof Error ? e.message.toLowerCase() : "";
       toast.error(
-        msg.includes("reject") || msg.includes("denied") || msg.includes("cancelled")
+        msg.includes("reject") || msg.includes("denied") || msg.includes("cancel")
           ? "Cancelled in wallet."
-          : "x402 settlement failed. Please try again.",
+          : "x402 payment failed. Make sure you hold a little testnet mUSD.",
       );
     } finally {
       setBusy(false);
+      setStatus("");
     }
   };
 
@@ -130,7 +99,7 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
           className={uniform ? paymentButtonClass : `${paymentButtonClass} text-xs px-4 py-2`}
         >
           {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
-          {busy ? "Confirming in wallet…" : "Pay with x402"}
+          {busy ? "Processing…" : "Pay with x402"}
         </Button>
         <button
           type="button"
@@ -141,46 +110,46 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
         </button>
       </div>
 
+      {busy && status && <p className="text-[11px] text-muted-foreground">{status}</p>}
+
       {showInfo && (
         <div className="rounded-lg border border-border bg-card p-3 text-[11px] leading-relaxed text-muted-foreground animate-in fade-in duration-200">
-          <span className="font-semibold text-foreground">x402</span> is an open payment protocol that
-          revives the HTTP <span className="font-mono text-foreground">402 Payment Required</span> status
-          code: a client requests a paid resource, the server answers <span className="font-mono text-foreground">402</span> with
-          the price, the client signs a payment authorization, and retries with that proof attached — the
-          server then settles the payment on-chain and returns the resource. Here it runs on Mezo Testnet
-          with mUSD: <span className="font-semibold text-foreground">Step 1</span> signs a gasless Permit2
-          authorization (off-chain), <span className="font-semibold text-foreground">Step 2</span> settles
-          the mUSD payment on-chain. Two wallet confirmations, one paid request.
+          <span className="font-semibold text-foreground">x402</span> revives HTTP{" "}
+          <span className="font-mono text-foreground">402 Payment Required</span>. The app requests a paid
+          resource, the server replies 402 with the price, you sign a gasless Permit2 authorization (one
+          wallet popup, no transaction from you), and the request is retried with that signature. The
+          server's facilitator submits the on-chain settlement and pays the gas, then returns the resource
+          plus a payment receipt — shown right here in the app.
         </div>
       )}
 
-      {(permitSig || txHash) && (
-        <div className="space-y-1.5 rounded-lg border border-border bg-card p-3 text-[11px]">
-          {permitSig && (
-            <div className="flex flex-wrap items-center gap-1.5">
-              <PenLine className="h-3.5 w-3.5 shrink-0 text-primary" />
-              <span className="font-semibold text-foreground">Step 1 · Permit2 signature</span>
-              <span className="rounded bg-secondary px-1.5 py-0.5 text-[10px] font-bold text-muted-foreground">OFF-CHAIN · NO TX HASH</span>
-              <span className="break-all font-mono text-muted-foreground">
-                {permitSig.slice(0, 18)}…{permitSig.slice(-10)}
-              </span>
+      {result && (
+        <div className="space-y-2 rounded-lg border border-border bg-card p-3 text-[11px] animate-in fade-in duration-200">
+          <div className="flex items-start gap-2">
+            <Laugh className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+            <div>
+              <p className="font-semibold text-foreground">{result.joke.setup}</p>
+              <p className="text-muted-foreground">{result.joke.punchline}</p>
             </div>
-          )}
-          {txHash && (
-            <div className="flex flex-wrap items-center gap-1.5">
-              <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-accent" />
-              <span className="font-semibold text-foreground">Step 2 · Settlement tx</span>
+          </div>
+          <div className="flex flex-wrap items-center gap-1.5 border-t border-border pt-2">
+            <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-accent" />
+            <span className="font-semibold text-foreground">Payment receipt</span>
+            {result.tx ? (
               <a
-                href={`${EXPLORER}/${txHash}`}
+                href={`${EXPLORER}/${result.tx}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 font-mono text-accent hover:underline"
               >
-                {txHash.slice(0, 14)}…{txHash.slice(-10)}
+                {result.tx.slice(0, 12)}…{result.tx.slice(-8)}
                 <ExternalLink className="h-3 w-3" />
               </a>
-            </div>
-          )}
+            ) : (
+              <span className="text-muted-foreground">settled</span>
+            )}
+            {result.network && <span className="text-muted-foreground">· {result.network}</span>}
+          </div>
         </div>
       )}
     </div>
