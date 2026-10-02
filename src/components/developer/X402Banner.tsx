@@ -18,7 +18,7 @@ const EXPLORER = "https://explorer.test.mezo.org/tx";
 
 type Receipt = { joke: { setup: string; punchline: string }; tx?: string; payer?: string; network?: string };
 
-export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
+export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: boolean; onPaymentSuccess?: () => void } = {}) => {
   const { isConnected, address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
@@ -75,7 +75,9 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
       const joke = await res.json();
       const header = res.headers.get("PAYMENT-RESPONSE") || res.headers.get("X-PAYMENT-RESPONSE");
       const settle = header ? decodePaymentResponseHeader(header) : null;
+      if (!settle?.success) throw new Error("x402 settlement was not confirmed");
       setResult({ joke, tx: settle?.transaction, payer: settle?.payer, network: settle?.network });
+      onPaymentSuccess?.();
       toast.success("x402 payment settled — resource unlocked");
     } catch (e) {
       const msg = e instanceof Error ? e.message.toLowerCase() : "";

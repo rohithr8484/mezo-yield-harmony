@@ -296,7 +296,7 @@ const DeveloperServices = () => {
               Real-time price feeds with charts. Each user gets 4 free feed unlocks before paid access.
             </p>
           </div>
-          <div className="max-w-3xl mx-auto space-y-6">
+          <div className="mx-auto max-w-6xl space-y-6">
             {dataFeeds.map((feed) => (
                <div
                 key={feed.name}
@@ -317,7 +317,7 @@ const DeveloperServices = () => {
                   onPaymentSuccess={() => markPaid(`feed-v2-${feed.name}`)}
                   isPaid={!!paidServices[`feed-v2-${feed.name}`]}
                   uniform
-                  extraButton={<X402Banner uniform />}
+                  extraButton={<X402Banner uniform onPaymentSuccess={() => markPaid(`feed-v2-${feed.name}`)} />}
                 >
                   <PriceFeedChart feedName={feed.name} />
                 </PaymentGate>
