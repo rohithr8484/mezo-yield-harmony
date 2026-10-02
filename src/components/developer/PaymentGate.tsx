@@ -53,7 +53,7 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
         const { stakeHash } = await payWithBTC(parseEther("0.0001"));
         txHash = stakeHash as `0x${string}`;
       } else if (token === "MUSD") {
-        const { stakeHash } = await payWithMUSD(parseUnits("0.2", 18), "0.5");
+        const { stakeHash } = await payWithMUSD(parseUnits("0.2", 18), "0.05");
         txHash = stakeHash as `0x${string}`;
       } else {
         const { stakeHash } = await payWithMEZO(parseUnits("0.2", 18));
