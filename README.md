@@ -1,6 +1,6 @@
 # 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi using pay per use with MUSD/MEZO/BTC
 
-Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (sentiment analysis, text summarization, wallet verification, smart contract simulation & risk analysis), real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), a veMEZO marketplace (buy/lock governance positions with escrowless P2P on-chain settlement), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, or BTC,
+Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (text summarization, wallet verification, smart contract simulation & risk analysis), real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, or BTC,
 
 <img width="1774" height="887" alt="image" src="https://github.com/user-attachments/assets/e243ff5f-179c-457b-be80-f655c0fce20c" />
 
@@ -21,7 +21,6 @@ Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — al
 
 ### Included APIs
 
-- AI sentiment and review analysis
 - AI-powered text summarization
 - On-chain analytics APIs
 - Wallet identity verification
@@ -40,19 +39,6 @@ Real-time decentralized oracle infrastructure for Bitcoin DeFi applications -  a
 - cbBTC/USD
 - Live charts and market data
 - Low-latency decentralized pricing
-
----
-
-## 🪙 veMEZO Marketplace
-
-Marketplace for trading and boosting locked veMEZO governance positions across the Mezo ecosystem -  all priced in MEZO/MUSD/BTC
-
-### Marketplace Features
-
-- Buy locked veMEZO positions
-- Lock veMEZO for governance power
-- Escrowless peer-to-peer settlement
-- Fully on-chain transactions
 
 ---
 
@@ -143,7 +129,6 @@ MEZO powers the entire infrastructure economy.
 
 - Pay for API access
 - Unlock oracle feeds
-- Lock veMEZO positions
 - Execute compute workloads
 - Participate in DAO governance
 
@@ -198,7 +183,6 @@ MUSD appears in your wallet
 
 
 **Native Currency:** MUSD 
-
 
 
 **Explorer:**
@@ -271,15 +255,6 @@ VITE_SUPABASE_URL=
 
 ---
 
-## **veMEZO Marketplace**
-
-| Contract / Component | Address | Description |
-|---|---|---|
-| **veMEZO Contract** | `0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b` | veMEZO staking and governance contract. |
-| **Boost Voter** | `0x21d7bDF5a5929AD179F8cA0c9014A0B62ae6Bfd1` | Voting boost and incentive manager. |
-
----
-
 ## **x402 usage (Mezo Testnet – Chain 31611)**
 
 | Contract / Component | Address | Description |
@@ -327,4 +302,4 @@ From APIs and AI tooling to governance and decentralized compute — Mezo Auth D
 
 ## 🚀 Mezo Auth Dev
 
-**Powering the infrastructure layer for Bitcoin DeFi, Thanks to Mezo Hackathon mentors**
+**Powering the infrastructure layer for Bitcoin DeFi, Thanks to Hackathon mentors**
