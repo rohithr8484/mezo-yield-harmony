@@ -10,7 +10,6 @@ const MEZO_CHAIN_ID = 31611;
 const MUSD = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503" as `0x${string}`;
 const PERMIT2 = "0x000000000022D473030F116dDEE9F6B43aC78BA3" as `0x${string}`;
 const X402_PERMIT2_PROXY = "0x8dea1b08dc2e1D9b556450f736F19968F367A98d" as `0x${string}`;
-const X402_PAYEE = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const PRICE_ATOMIC = 200_000_000_000_000_000n; // 0.2 mUSD (18 decimals) — Permit2 spending cap
 const EXPLORER = "https://explorer.test.mezo.org/tx";
 
@@ -139,8 +138,9 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
           the price, the client signs a payment authorization, and retries with that proof attached — the
           server then settles the payment on-chain and returns the resource. Here it runs on Mezo Testnet
           with mUSD: <span className="font-semibold text-foreground">Step 1</span> signs a gasless Permit2
-          authorization (off-chain), <span className="font-semibold text-foreground">Step 2</span> settles
-          the mUSD payment on-chain. Two wallet confirmations, one paid request.
+          authorization (off-chain — your only wallet interaction), <span className="font-semibold text-foreground">Step 2</span> a
+          facilitator settles the mUSD payment on-chain and <span className="font-semibold text-foreground">sponsors the gas</span> —
+          your wallet pays 0 gas and is never asked to confirm a transaction.
         </div>
       )}
 
@@ -160,6 +160,7 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
             <div className="flex flex-wrap items-center gap-1.5">
               <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-accent" />
               <span className="font-semibold text-foreground">Step 2 · Settlement tx</span>
+              <span className="rounded bg-accent/15 px-1.5 py-0.5 text-[10px] font-bold text-accent">GAS SPONSORED</span>
               <a
                 href={`${EXPLORER}/${txHash}`}
                 target="_blank"
