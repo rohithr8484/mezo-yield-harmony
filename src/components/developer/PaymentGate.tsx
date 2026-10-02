@@ -111,7 +111,7 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
 
   const isProcessing = isSubmitting || isSwitching;
 
-  if (isPaid) return <>{children}</>;
+  if (isPaid) return <>{children}{extraButton && <div className="mt-4">{extraButton}</div>}</>;
 
   if (freeUnlocked) {
     return (
