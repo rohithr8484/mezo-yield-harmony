@@ -134,19 +134,28 @@ MEZO powers the entire infrastructure economy.
 
 ---
 
+# 💳 MUSD Utility
+
+MUSD powers the entire infrastructure economy.
+
+- Pay for API access
+- Unlock oracle feeds
+- Execute compute workloads
+- Participate in DAO governance
+
+---
+
 # 🌐 Infrastructure Marketplace
 
 ## Available Infrastructure Products
 
 | **Product** | **Description** | **Tech Used** |
 | --- | --- | --- |
-| **AI Sentiment Analyzer** | AI review scoring and sentiment extraction | AI + APIs |
-| **Text Summarization API** | AI-powered document summarization | OpenAI + Compute |
+| **AI Text Summarization API** | AI-powered document summarization | OpenAI + Compute |
 | **On-chain Analytics API** | Blockchain transaction analytics | Solidity + APIs |
 | **Identity Verification API** | Wallet verification infrastructure | Attestations + Web3 |
 | **Oracle Data Feeds** | Real-time market pricing infrastructure | Pyth + Mezo |
 | **Compute Runtime** | Smart contract simulation engine | AI + Solidity |
-| **veMEZO Marketplace** | Governance position marketplace | Solidity Smart Contracts |
 | **DAO Governance** | Proposal and voting infrastructure | Solidity + Javascript |
 
 ---
