@@ -111,21 +111,19 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
 
   const isProcessing = isSubmitting || isSwitching;
 
-  if (isPaid) return <>{children}{extraButton && <div className="mt-4">{extraButton}</div>}</>;
-
-  if (freeUnlocked) {
-    return (
-      <div className="mt-4 space-y-3">
-        {children}
-        <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-center text-xs text-muted-foreground">
-          Free plan active · {freeRemaining} of {FREE_ENTRY_LIMIT} entries left for this user
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={compact ? "mt-4 space-y-4" : "mt-4 space-y-3"}>
+      {(isPaid || freeUnlocked) ? (
+        <>
+          {children}
+          {freeUnlocked && !isPaid && (
+            <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-center text-xs text-muted-foreground">
+              Free plan active · {freeRemaining} of {FREE_ENTRY_LIMIT} entries left for this user
+            </div>
+          )}
+        </>
+      ) : (
+      <>
       <div className={compact ? "flex items-center justify-between gap-3" : "text-center"}>
         <p className={compact ? "text-xs font-medium text-muted-foreground" : "text-xs text-muted-foreground"}>
           {compact ? "Free allowance" : `Free plan includes ${FREE_ENTRY_LIMIT} entries per user. Pay on Mezo Testnet after that.`}
@@ -152,7 +150,6 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
         <p className="text-xs text-muted-foreground text-center">Free plan used for this user.</p>
       )}
       <div className={compact ? "grid grid-cols-3 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
-        {!compact && extraButton}
         <Button
           onClick={() => handlePay("MUSD")}
           disabled={isProcessing}
@@ -183,6 +180,9 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
         <p className="text-[10px] font-mono text-muted-foreground">MEZO: {MEZO_TOKEN}</p>
         <p className="text-[10px] text-muted-foreground">Network: Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</p>
       </div>
+      </>
+      )}
+      {extraButton && <div className={compact ? "" : "flex justify-center"}>{extraButton}</div>}
     </div>
   );
 };
