@@ -2,15 +2,9 @@ import { useState } from "react";
 import { Zap, Loader2, CheckCircle2, ExternalLink, PenLine, Info } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import {
-  useAccount,
-  useSignTypedData,
-  useSwitchChain,
-  useWriteContract,
-  usePublicClient,
-} from "wagmi";
+import { useAccount, useSignTypedData, useSwitchChain } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { erc20Abi, toHex } from "viem";
+import { supabase } from "@/integrations/supabase/client";
 
 const MEZO_CHAIN_ID = 31611;
 const MUSD = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503" as `0x${string}`;
