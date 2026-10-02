@@ -85,7 +85,7 @@ const ProposalDetail = () => {
 
       let txHash: string;
       if (payToken === "MUSD") {
-        const { stakeHash } = await payWithMUSD(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS), "0.5");
+        const { stakeHash } = await payWithMUSD(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS), "0.05");
         txHash = stakeHash;
       } else {
         const { stakeHash } = await payWithMEZO(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS));
