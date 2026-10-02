@@ -170,6 +170,11 @@ export const X402Banner = ({ uniform = false }: { uniform?: boolean } = {}) => {
                 {txHash.slice(0, 14)}…{txHash.slice(-10)}
                 <ExternalLink className="h-3 w-3" />
               </a>
+              {sponsor && (
+                <span className="break-all font-mono text-muted-foreground">
+                  · gas paid by facilitator {sponsor.slice(0, 8)}…{sponsor.slice(-6)}
+                </span>
+              )}
             </div>
           )}
         </div>
