@@ -268,11 +268,11 @@ VITE_SUPABASE_URL=
 
 | Contract / Component | Address | Description |
 |---|---|---|
-| **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Token approval and signed transfer authorization contract used by the x402 payment flow. |
-| **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Settlement proxy that submits the signed Permit2 transfer from the client to the payee. |
-| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Mezo Testnet mUSD token used exclusively for x402 settlement in this project. |
+| **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Used directly by the browser for the one-time mUSD allowance and as the verifying contract for signed payment authorization. |
+| **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Used by the server-side facilitator to settle the signed authorization through Permit2. The browser does not call this contract directly. |
+| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Mezo Testnet mUSD token approved by the user and transferred during x402 settlement. |
 
-These addresses are consistently configured in the app, paywall server, facilitator, command-line client, and x402 flow guide.
+Permit2 and mUSD are configured in the browser app. All three addresses are configured consistently across the server-side x402 flow and its supporting guide.
 
 ---
 
@@ -313,7 +313,7 @@ Supporting files: `starter/server/humor-server.ts` (returns the 402 with `spende
 ### What x402 does NOT do here
 
 - No x402 contract was written or deployed for this project.
-- The app never calls `proxy.settle()` or Permit2 directly, and never picks the payee — the `humor.vativ.io` server names it.
+- The browser never calls `proxy.settle()` and never picks the payee — the server supplies both the proxy spender and payee in its payment requirements. The browser **does** call mUSD directly to read and grant Permit2 allowance, then signs a Permit2 authorization; the facilitator performs settlement through the proxy.
 - The app does not run the local facilitator; it uses the live one behind that server. The three-terminal flow only runs when you start `starter/` yourself.
 - x402 pays mUSD `0x1189…c503`, while the MUSD/MEZO/BTC buttons use different addresses — two separate money paths inside the same card.
 - The governance contracts stay out of it entirely.
