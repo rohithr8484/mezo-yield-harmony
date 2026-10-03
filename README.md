@@ -309,7 +309,6 @@ Notes:
 
 Supporting files: `starter/server/humor-server.ts` (returns the 402 with `spender` = proxy and `payTo` = `PAYEE_ADDRESS`, then calls `/verify` and `/settle`), `starter/client/client.ts` (headless payer), `starter/2-server.ts` (package-driven version using `@x402/express` + `@x402/paywall`).
 
-### What x402 does NOT do here
 
 - The server supplies both the proxy spender and payee in its payment requirements. The browser **does** call MUSD directly to read and grant Permit2 allowance, then signs a Permit2 authorization; the facilitator performs settlement through the proxy.
 - The app does not run the local facilitator; it uses the live one behind that server. The three-terminal flow only runs when you start `starter/` yourself.
