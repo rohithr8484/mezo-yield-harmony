@@ -302,7 +302,7 @@ Notes:
   
 ### Where the proxy is really called
 
-`starter/facilitator/facilitator.ts` holds the only ABI for it in this repo:
+`starter/facilitator/facilitator.ts` holds the only ABI for it here:
 
 - `POST /verify` — recovers the EIP-712 signer, checks owner / amount / deadline
 - `POST /settle` — encodes `settle()`, estimates gas with a **×3 multiplier** (Mezo's `eth_estimateGas` omits the EIP-7623 calldata floor, so an unmultiplied estimate reverts), then sends with `FACILITATOR_PRIVATE_KEY`
