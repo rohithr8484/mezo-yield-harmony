@@ -268,9 +268,11 @@ VITE_SUPABASE_URL=
 
 | Contract / Component | Address | Description |
 |---|---|---|
-| **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Token approval and delegation contract. |
-| **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Permit2 integration proxy. |
-| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Testnet MUSD settlement token. |
+| **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Token approval and signed transfer authorization contract used by the x402 payment flow. |
+| **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Settlement proxy that submits the signed Permit2 transfer from the client to the payee. |
+| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Mezo Testnet mUSD token used exclusively for x402 settlement in this project. |
+
+These addresses are consistently configured in the app, paywall server, facilitator, command-line client, and x402 flow guide.
 
 ---
 
