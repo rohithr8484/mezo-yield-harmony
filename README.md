@@ -298,8 +298,8 @@ Notes:
 
 - The proxy address arrives inside the server's 402 requirements.
 - The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
-- Step 2 is a real transaction and shows up in wallet activity and the explorer. Every payment after that is **signature only**, which is why the receipt points at the facilitator's settlement transaction rather than one from your wallet.
-
+- Reward also provided for completion of task
+  
 ### Where the proxy is really called
 
 `starter/facilitator/facilitator.ts` holds the only ABI for it in this repo:
@@ -308,7 +308,6 @@ Notes:
 - `POST /settle` — encodes `settle()`, estimates gas with a **×3 multiplier** (Mezo's `eth_estimateGas` omits the EIP-7623 calldata floor, so an unmultiplied estimate reverts), then sends with `FACILITATOR_PRIVATE_KEY`
 
 Supporting files: `starter/server/humor-server.ts` (returns the 402 with `spender` = proxy and `payTo` = `PAYEE_ADDRESS`, then calls `/verify` and `/settle`), `starter/client/client.ts` (headless payer), `starter/2-server.ts` (package-driven version using `@x402/express` + `@x402/paywall`).
-
 
 - The server supplies both the proxy spender and payee in its payment requirements. The browser **does** call MUSD directly to read and grant Permit2 allowance, then signs a Permit2 authorization; the facilitator performs settlement through the proxy.
 - The app does not run the local facilitator; it uses the live one behind that server. The three-terminal flow only runs when you start `starter/` yourself.
