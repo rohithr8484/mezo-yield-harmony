@@ -270,7 +270,7 @@ VITE_SUPABASE_URL=
 |---|---|---|
 | **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Used directly by the browser for the one-time mUSD allowance and as the verifying contract for signed payment authorization. |
 | **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Used by the server-side facilitator to settle the signed authorization through Permit2. The browser does not call this contract directly. |
-| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Mezo Testnet mUSD token approved by the user and transferred during x402 settlement. |
+| **MUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Mezo Testnet MUSD token approved by the user and transferred during x402 settlement. |
 
 Permit2 and mUSD are configured in the browser app. All three addresses are configured consistently across the server-side x402 flow and its supporting guide.
 
