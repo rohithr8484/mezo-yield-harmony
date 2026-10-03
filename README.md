@@ -296,10 +296,9 @@ The three contracts above are all **already deployed** on Mezo Testnet. None of 
 
 Notes:
 
-- The proxy address **never appears in the app source** — it arrives inside the server's 402 requirements.
+- The proxy address arrives inside the server's 402 requirements.
 - The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
 - Step 2 is a real transaction and shows up in wallet activity and the explorer. Every payment after that is **signature only**, which is why the receipt points at the facilitator's settlement transaction rather than one from your wallet.
-- No private key ever lives in the browser — the wallet signs; the only keys are server-side.
 
 ### Where the proxy is really called
 
@@ -312,11 +311,9 @@ Supporting files: `starter/server/humor-server.ts` (returns the 402 with `spende
 
 ### What x402 does NOT do here
 
-- No x402 contract was written or deployed for this project.
-- The browser never calls `proxy.settle()` and never picks the payee — the server supplies both the proxy spender and payee in its payment requirements. The browser **does** call mUSD directly to read and grant Permit2 allowance, then signs a Permit2 authorization; the facilitator performs settlement through the proxy.
+- The server supplies both the proxy spender and payee in its payment requirements. The browser **does** call MUSD directly to read and grant Permit2 allowance, then signs a Permit2 authorization; the facilitator performs settlement through the proxy.
 - The app does not run the local facilitator; it uses the live one behind that server. The three-terminal flow only runs when you start `starter/` yourself.
-- x402 pays mUSD `0x1189…c503`, while the MUSD/MEZO/BTC buttons use different addresses — two separate money paths inside the same card.
-- The governance contracts stay out of it entirely.
+- x402 pays MUSD `0x1189…c503`, while the MUSD/MEZO/BTC buttons use different addresses — two separate money paths inside the same card.
 
 ---
 
