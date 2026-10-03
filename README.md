@@ -1,6 +1,6 @@
 # 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi using pay per use with MUSD/MEZO/BTC
 
-Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (text summarization, wallet verification, smart contract simulation & risk analysis), real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, or BTC.
+Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (text summarization, wallet verification, smart contract simulation & risk analysis), real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, or BTC,
 
 <img width="1774" height="887" alt="image" src="https://github.com/user-attachments/assets/e243ff5f-179c-457b-be80-f655c0fce20c" />
 
@@ -9,7 +9,6 @@ Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, poweri
   <img src="https://img.shields.io/badge/MEZO-blue?style=flat-square" />
   <img src="https://img.shields.io/badge/Infrastructure-green?style=flat-square" />
   <img src="https://img.shields.io/badge/Web3-purple?style=flat-square" />
-  <img src="https://img.shields.io/badge/x402-pay%20per%20use-teal?style=flat-square" />
 </p>
 
 ---
@@ -18,12 +17,12 @@ Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, poweri
 
 ## 🔌 AI API Marketplace
 
-Decentralized pay-per-use APIs for analytics, AI, and identity infrastructure — each with 4 free entries per user, then paid on Mezo Testnet.
+Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — all priced in MEZO/MUSD/BTC.
 
 ### Included APIs
 
-- AI-powered text summarization (focus chips: Liquidity, Lending, Wallet behavior, Governance)
-- On-chain analytics APIs (liquidity, lending, wallet activity, risk signals)
+- AI-powered text summarization
+- On-chain analytics APIs
 - Wallet identity verification
 - Smart contract simulation & AI risk analysis
 
@@ -31,7 +30,7 @@ Decentralized pay-per-use APIs for analytics, AI, and identity infrastructure �
 
 ## 📡 Data Feeds & Oracle Infrastructure
 
-Real-time decentralized oracle infrastructure for Bitcoin DeFi applications. Each feed card carries a `Pay with x402` button; the feed unlocks as soon as the settlement is confirmed, and the button disappears once unlocked.
+Real-time decentralized oracle infrastructure for Bitcoin DeFi applications -  all priced in MEZO/MUSD/BTC.
 
 ### Supported Feeds
 
@@ -45,15 +44,14 @@ Real-time decentralized oracle infrastructure for Bitcoin DeFi applications. Eac
 
 ## 🏛 Governance Infrastructure
 
-Shape the future of Bitcoin finance through decentralized governance systems.
+Shape the future of Bitcoin finance through decentralized governance systems -  all priced in MEZO/MUSD/BTC
 
 ### Governance Features
 
-- DAO proposals that persist across refresh, with live tallies from recorded votes only
+- DAO proposal voting
 - Treasury signaling systems
 - Community-driven protocol upgrades
-- 4 free Governance entries per user, then paid on Mezo Testnet
-- Transparent community participation (no synthetic percentages or invented statistics)
+- Transparent community participation
 
 ---
 
@@ -61,42 +59,55 @@ Shape the future of Bitcoin finance through decentralized governance systems.
 
 ## Frontend
 
-- **React 18** — Modern UI development
+- **React** — Modern UI development
 - **TypeScript** — Type-safe applications
-- **Vite 5** — Dev server and build (port `8080`)
 - **Tailwind CSS** — Utility-first styling
-- **Radix UI / shadcn** — Accessible UI primitives
+- **Radix UI** — Accessible UI primitives
 
 ---
 
 ## Blockchain & Infrastructure
 
-- **Wagmi + viem** — Web3 React hooks and contract calls
-- **RainbowKit** — Wallet connection UI
-- **@mezo-org/passport** — Mezo wallet integration
-- **@x402/fetch + @x402/evm** — Pay-per-call HTTP payments
-- **ethers.js** — Ethereum-compatible interactions
-- **Pyth Network** — Oracle price feeds
-- **Boar API / Mezo explorer** — Mezo infrastructure and analytics
+- **Solidity** — Smart contract development
+- **Wagmi** — Web3 React Hooks
+- **@mezo-org/passport** - Web3 wallet integration
+- **Mezo SDK** — Native Mezo integration
+- **Pyth Network** — Oracle infrastructure
+- **Boar API** — Mezo infrastructure and analytics integration
+- **Ethers.js** — Ethereum-compatible interactions
 
 ---
 
-## AI & Backend
+## AI & Compute
 
-- **Lovable Cloud functions** — `ai-summarize`, `governance-chat`, `ai-chat`, `ai-sentiment`, `boar-chat`
-- **OpenAI-compatible models** — AI processing behind those functions
-- **Browser local store** — proposal persistence, vote counts, free-entry allowances
+- **OpenAI APIs** — AI processing infrastructure
+- **AI Runtime Engine** — Smart contract analysis
+- **Decentralized Compute Layer** — Simulation execution
+- **Indexing Infrastructure** — Blockchain data indexing
 
 ---
 
-# 🗺 App Map
+## Analytics & APIs
 
-| **Route** | **Screen** |
-| --- | --- |
-| `/` | Hero, Wavehack submission card, FAQs |
-| `/governance` | Proposal list, token holders, gauge system |
-| `/governance/:id` | Proposal detail, vote entry, payment, live results |
-| `/developer-services` | API Marketplace, Data Feeds & Oracles |
+- **REST APIs** — API marketplace architecture
+- **GraphQL** — Flexible data querying
+- **Realtime WebSockets** — Live blockchain updates
+- **On-chain Analytics Engine** — Blockchain intelligence
+
+---
+
+## Wallet & Identity
+
+- **Mezo Passport** — Authentication infrastructure
+- **Boar Wallet** — Wallet connectivity
+- **On-chain Attestations** — Identity verification
+
+---
+
+# 🏗 Technical Architecture
+
+<img width="926" height="630" alt="image" src="https://github.com/user-attachments/assets/26812a46-2b84-4400-af09-512fb0187e71" />
+
 
 ---
 
@@ -112,55 +123,148 @@ Shape the future of Bitcoin finance through decentralized governance systems.
 
 ---
 
-# 💳 How Payments Actually Work
+# 💳 MEZO Utility
 
-There are **three separate money paths** in this app. They do not share contracts, and they do not share token addresses.
+MEZO powers the entire infrastructure economy.
 
-## Path 1 — MUSD & MEZO buttons (`src/lib/musdPayment.ts`, `src/lib/mezoPayment.ts`)
-
-| Step | What happens | On-chain? |
-| --- | --- | --- |
-| 1 | `allowance` check, then `approve` if needed | Yes |
-| 2 | `fundMarket2(amount)` on the market contract | Yes |
-| 3 | `adminWithdraw(user, 0.05 MUSD)` reward back | Yes |
-
-- Market contract: `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7`
-- MUSD used by that helper: `0xD88b46ef8444dAA8aa493d714b1124DE75CCa067`
-- MEZO: `0x7B7c000000000000000000000000000000000001` — `transfer` to the token address, then half back as reward
-- Reward: **0.05 MUSD** on MUSD payments; half the stake back on MEZO payments
-
-> ⚠️ The MUSD address shown in the UI (`0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3`) is a **display constant** in `PaymentGate.tsx`, `proposals.ts`, and `mezo.ts`. The MUSD the payment helper actually moves is `0xD88b46…a067`. Aligning the two is a known cleanup item.
-
-## Path 2 — BTC button (`src/lib/btcPayment.ts`)
-
-Native BTC transfer to `0x000000000000000000000000000000000000dEaD`, then a self-transfer of half back to the user as the reward. The dead address is a landing point, not a treasury — it cannot send anything out.
-
-## Path 3 — x402 (see the next section)
-
-## What each payment costs
-
-| **Surface** | **MUSD** | **MEZO** | **BTC** |
-| --- | --- | --- | --- |
-| API Marketplace services & data feeds | 0.2 | 0.2 | — |
-| Governance entries (Developer Services) | 0.01 | 0.01 | 0.01 |
-| Proposal vote fee | 0.2 | 0.2 | — |
-| x402 per call | 0.001 test mUSD | — | — |
-
-Every user gets **4 free entries per service** and **4 free Governance votes** before any payment is asked for.
+- Pay for API access
+- Unlock oracle feeds
+- Execute compute workloads
+- Participate in DAO governance
 
 ---
 
-# 🏛 Governance Contracts — How They Are Used
+# 💳 MUSD Utility
+
+MUSD powers the entire infrastructure economy.
+
+- Pay for API access
+- Unlock oracle feeds
+- Execute compute workloads
+- Participate in DAO governance
+
+---
+
+# 🌐 Infrastructure Marketplace
+
+## Available Infrastructure Products
+
+| **Product** | **Description** | **Tech Used** |
+| --- | --- | --- |
+| **AI Text Summarization API** | AI-powered document summarization | OpenAI + Compute |
+| **On-chain Analytics API** | Blockchain transaction analytics | Solidity + APIs |
+| **Identity Verification API** | Wallet verification infrastructure | Attestations + Web3 |
+| **Oracle Data Feeds** | Real-time market pricing infrastructure | Pyth + Mezo |
+| **Compute Runtime** | Smart contract simulation engine | AI + Solidity |
+| **DAO Governance** | Proposal and voting infrastructure | Solidity + Javascript |
+
+---
+
+# 🔐 Wallet Integration
+
+Seamless onboarding and wallet infrastructure.
+
+### Wallet Features
+
+- Multi-wallet support
+- Bitcoin wallet integrations
+- Mezo Passport authentication
+- Secure MEZO payments
+- Cross-chain wallet connectivity
+
+---
+
+## Mezo Network Configuration
+
+Connect your wallet to Mezo Testnet (RPC: https://rpc.test.mezo.org, chain ID 31611).
+
+Get BTC + MEZO from faucet ( https://faucet.test.mezo.org/ )
+
+Open Mezo website (testnet)
+
+Deposit testnet BTC as collateral
+
+Borrow → Mint MUSD
+
+MUSD appears in your wallet
+
+- **Network:** Mezo Testnet    **Chain ID:** `31611`
+
+
+**Native Currency:** MUSD 
+
+
+**Explorer:**
+
+https://explorer.mezo.org
+
+---
+
+# 🚀 Quick Start
+
+## Installation
+
+```bash
+# Clone repository
+git clone https://github.com/rohithr8484/mezo-yield-harmony.git
+
+# Enter project folder
+cd src
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+Open browser at:
+
+```bash
+http://localhost:5173
+```
+
+---
+
+# ⚙️ Environment Variables
+
+VITE_SUPABASE_PROJECT_ID=
+
+VITE_SUPABASE_PUBLISHABLE_KEY=
+
+VITE_SUPABASE_URL=
+
+---
+
+# 📁 Folder Structure
+
+<img width="172" height="797" alt="image" src="https://github.com/user-attachments/assets/b5bd4463-56f2-414f-aec7-110e69139ef7" />
+
+
+---
+## **Smart Contracts Modules**
+## **Governance Infrastructure**
+
+| Contract / Component | Address | Description |
+|---|---|---|
+| **GovernanceDataHelper** | `0xE58329AE4803E2aa9594912066A5cB087C68f88c` | Proposal summaries and governance analytics. |
+| **VotingDataHelper** | `0xD0AEc8C123add8aFBf64bdB58cB1adc6CC3f9D15` | Voting receipts and turnout tracking. |
+| **MarketplaceAdmin** | `0x1D462522A9f8fbea6c10122dce01E09432A64dBF` | Marketplace admin and fee controls. |
+| **MUSD Governance Treasury** | `0x000000000000000000000000000000000000dEaD` | Governance treasury and payments. |
+
+---
+
+## **Governance Contracts — How They Are Used**
 
 Three Solidity contracts live in `contracts/`. All three are **read-side or admin-side helpers**; none of them holds user payments.
 
 | Contract | File | Purpose |
-| --- | --- | --- |
+|---|---|---|
 | **GovernanceDataHelper** | `contracts/governance/GovernanceDataHelper.sol` | Read-only batched proposal view. `getProposalsBatch(ids)` and `getProposalsRange(from, to)` loop over `MezoGovernance.proposals()` + `state()` and return `id, proposer, title, category, forVotes, againstVotes, abstainVotes, state` in one RPC call. |
 | **VotingDataHelper** | `contracts/governance/VotingDataHelper.sol` | Read-only vote analytics. `getReceiptsBatch(proposalId, voters)` returns each voter's `hasVoted / voteType / votes`; `getTurnout(proposalId)` returns totals plus For/Against/Abstain shares in basis points. Also `getMUSDBalance()` and `fundMarket(amount)`. |
 | **MarketplaceAdmin** | `contracts/MarketplaceAdmin.sol` | Admin controls for the veNFT marketplace: `PAUSER_ROLE`, `FEE_MANAGER_ROLE`, `COLLECTION_MANAGER_ROLE`, emergency pause, collection whitelist, and a 48h timelocked fee change that calls `PaymentRouter.setProtocolFee()`. |
 
-## Deploy wiring (`scripts/deploy.ts`, `scripts/deploy2.ts`)
+### Deploy wiring (`scripts/deploy.ts`, `scripts/deploy2.ts`)
 
 ```text
 deploy.ts
@@ -180,34 +284,46 @@ deploy2.ts   (veNFT marketplace side)
 
 Each helper receives the governance address in its constructor, which is how it knows where to read from.
 
-## What the live UI does today
+### What the live UI does today
 
 - The Governance screens (proposal list, votes, results) run through the **browser local proposal store** (`src/lib/proposalStore.ts`) — proposals persist across refresh and tallies count only recorded votes.
 - The two data helpers are the **on-chain layer those screens are designed to plug into**: proposal lists would come from `GovernanceDataHelper`, live tallies from `VotingDataHelper.getTurnout()`.
 - Payment buttons and `Pay with x402` do **not** route through any of these contracts.
 
-## Known gaps
+### Known gaps
 
-- `VotingDataHelper` and `MarketplaceAdmin` hardcode MUSD as `0xbCAD6F09cb93a31a675B2E0156526B99CCdcF5Df` — a **third** MUSD address, different from both the UI display constant and the payment helper's token. It must be aligned before those contracts feed the live payment flow.
+- `VotingDataHelper` and `MarketplaceAdmin` hardcode MUSD as `0xbCAD6F09cb93a31a675B2E0156526B99CCdcF5Df` — a **third** MUSD address, different from the UI payment address `0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3`. It must be aligned before those contracts feed the live payment flow.
 - `MarketplaceAdmin`'s `supportedCollections` whitelist is **advisory only** — the marketplace enforces collection support through `MezoVeNFTAdapter.isSupported()`.
 - `scripts/deploy.ts` declares `MUSD_ADDRESS` / `LP_TOKEN_ADDRESS` / `FEE_COLLECTOR` but never passes them to a constructor; `MATS_TOKEN_ADDRESS` is `0x0`.
 - No Hardhat config or `hardhat` dependency is present in this repo, so the deploy scripts are reference/ops scripts and need a Hardhat project around them to run.
 
 ---
 
-# ⚡ x402 — How It Is Used (and How It Isn't)
+## **Pay-per-Use Infrastructure (Mezo)**
 
-## The three contracts in the path
+| Contract / Component | Address | Description |
+|---|---|---|
+| **Mezo Caller** | `0x7B7c000000000000000000000000000000000001` | Executes pay-per-use settlement flows. |
+| **MUSD** | `0xD88b46ef8444dAA8aa493d714b1124DE75CCa067` | Stablecoin for ecosystem payments. |
+| **MUSD Treasury** | `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` | Treasury reserve and liquidity manager. |
 
-| Contract | Address | Role |
-| --- | --- | --- |
-| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | The ERC-20 being paid. |
-| **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Canonical Uniswap contract that holds the allowance and verifies the signature. |
-| **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | The spender named in the signature. `settle(permit, transferDetails, owner, signature)` calls Permit2 to move mUSD to the payee. |
+---
 
-**None of these is written or deployed by this repo.** They are already deployed on Mezo Testnet, and no `.sol` file in `contracts/` mentions x402 or Permit2.
+## **x402 usage (Mezo Testnet – Chain 31611)**
 
-## What the app actually does (`src/components/developer/X402Banner.tsx`)
+| Contract / Component | Address | Description |
+|---|---|---|
+| **Permit2** | `0x000000000022D473030F116dDEE9F6B43aC78BA3` | Token approval and delegation contract. |
+| **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Permit2 integration proxy. |
+| **mUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Testnet MUSD settlement token. |
+
+---
+
+## **x402 — How It Is Used (and How It Isn't)**
+
+The three contracts above are all **already deployed** on Mezo Testnet. None of them is written or deployed by this repo, and no `.sol` file in `contracts/` mentions x402 or Permit2.
+
+### What the app actually does (`src/components/developer/X402Banner.tsx`)
 
 ```text
 1. read mUSD.allowance(user, Permit2)
@@ -224,11 +340,11 @@ Each helper receives the governance address in its constructor, which is how it 
 Notes:
 
 - The proxy address **never appears in the app source** — it arrives inside the server's 402 requirements.
-- The feed unlocks the moment settlement is confirmed (`onPaymentSuccess` → `feed-v2-<feed>`), and the `Pay with x402` button is hidden once the feed is unlocked.
+- The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
 - Step 2 is a real transaction and shows up in wallet activity and the explorer. Every payment after that is **signature only**, which is why the receipt points at the facilitator's settlement transaction rather than one from your wallet.
 - No private key ever lives in the browser — the wallet signs; the only keys are server-side.
 
-## Where the proxy is really called
+### Where the proxy is really called
 
 `starter/facilitator/facilitator.ts` holds the only ABI for it in this repo:
 
@@ -237,7 +353,7 @@ Notes:
 
 Supporting files: `starter/server/humor-server.ts` (returns the 402 with `spender` = proxy and `payTo` = `PAYEE_ADDRESS`, then calls `/verify` and `/settle`), `starter/client/client.ts` (headless payer), `starter/2-server.ts` (package-driven version using `@x402/express` + `@x402/paywall`).
 
-## What x402 does NOT do here
+### What x402 does NOT do here
 
 - No x402 contract was written or deployed for this project.
 - The app never calls `proxy.settle()` or Permit2 directly, and never picks the payee — the `humor.vativ.io` server names it.
@@ -247,136 +363,13 @@ Supporting files: `starter/server/humor-server.ts` (returns the 402 with `spende
 
 ---
 
-# 🌐 Infrastructure Marketplace
+## **x402 Wallet Roles & Funding Requirements**
 
-| **Product** | **Description** | **Tech Used** |
-| --- | --- | --- |
-| **AI Text Summarization API** | AI-powered document summarization with focus modes | Cloud function + AI model |
-| **On-chain Analytics API** | Liquidity, lending, wallet activity, risk signals | Mezo explorer + APIs |
-| **Identity Verification API** | Wallet verification infrastructure | Attestations + Web3 |
-| **Smart Contract Analysis** | Simulation & AI risk analysis | AI + Solidity |
-| **Oracle Data Feeds** | Real-time market pricing, x402 unlocked | Pyth + x402 + Permit2 |
-| **DAO Governance** | Proposal and voting infrastructure | Solidity + React |
-
----
-
-# 🔐 Wallet Integration
-
-### Wallet Features
-
-- Single `Connect Wallet` entry point
-- Mezo Passport, RainbowKit, and injected EVM wallets
-- Automatic switch to Mezo Testnet before any payment
-- MUSD / MEZO / native BTC payment options
-- Gasless x402 signing after a one-time approval
-
-## Mezo Network Configuration
-
-Connect your wallet to Mezo Testnet (RPC: https://rpc.test.mezo.org, chain ID 31611).
-
-Get BTC + MEZO from faucet ( https://faucet.test.mezo.org/ )
-
-Open Mezo website (testnet)
-
-Deposit testnet BTC as collateral
-
-Borrow → Mint MUSD
-
-MUSD appears in your wallet
-
-- **Network:** Mezo Testnet    **Chain ID:** `31611`
-- **Gas token:** BTC
-- **Explorer:** https://explorer.test.mezo.org
-
----
-
-# 🚀 Quick Start
-
-## App
-
-```bash
-# Clone repository
-git clone https://github.com/rohithr8484/mezo-yield-harmony.git
-cd mezo-yield-harmony
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-Open browser at:
-
-```bash
-http://localhost:8080
-```
-
-## x402 reference stack (optional)
-
-```bash
-cd starter
-cp .env.example .env     # set PAYEE_ADDRESS
-
-pnpm install
-pnpm dev                 # step 1: free joke API
-pnpm x402                # step 2: same API behind an x402 paywall
-```
-
-The full three-terminal flow (facilitator + humor server + client) is documented in `starter/README.md` and `starter/PERMIT2_FLOW.md`.
-
----
-
-# ⚙️ Environment Variables
-
-```
-VITE_SUPABASE_PROJECT_ID=
-VITE_SUPABASE_PUBLISHABLE_KEY=
-VITE_SUPABASE_URL=
-```
-
-`starter/` keeps its own `.env` files: `PAYEE_ADDRESS`, `FACILITATOR_PRIVATE_KEY`, `CLIENT_PRIVATE_KEY` — all server-side, never in the app.
-
----
-
-# 📁 Folder Structure
-
-| **Path** | **Contents** |
-| --- | --- |
-| `src/pages/` | `Index`, `Governance`, `ProposalDetail`, `DeveloperServices` |
-| `src/components/developer/` | `PaymentGate`, `X402Banner`, `OnchainAnalytics`, `IdentityVerification`, `VeNFTMarketplace` |
-| `src/lib/` | `proposalStore`, `proposals`, `musdPayment`, `mezoPayment`, `btcPayment`, `mezo` |
-| `supabase/functions/` | `ai-summarize`, `governance-chat`, `ai-chat`, `ai-sentiment`, `boar-chat` |
-| `contracts/` | `MarketplaceAdmin.sol`, `governance/GovernanceDataHelper.sol`, `governance/VotingDataHelper.sol` |
-| `scripts/` | `deploy.ts`, `deploy2.ts` |
-| `starter/` | x402 facilitator, humor server, headless client, Permit2 flow docs |
-
----
-
-# 🧪 State & Persistence
-
-| **What** | **Where** | **Key** |
-| --- | --- | --- |
-| Proposals & recorded votes | Browser local store | proposal store (`src/lib/proposalStore.ts`) |
-| Paid / unlocked feeds | `localStorage` | `developer_paid_services` → `feed-v2-<feed>` |
-| Free API entries (4/user/service) | `localStorage` | `developer_free_entries_v1:<address>:<service>` |
-| Free Governance votes (4/user) | `localStorage` | `governance_free_votes_v1:<address>` |
-
-Free-entry allowances and unlock state are **per browser, per wallet address** — they are convenience gates, not server-enforced entitlements. Clearing site data or switching wallets resets them.
-
----
-
-# 🧊 Hidden / Removed For Now
-
-| **Item** | **Status** |
-| --- | --- |
-| veMEZO Marketplace | Hidden (`display: none`, `id="venft-marketplace"`) — to be restored later |
-| veMEZO Lockers | Removed from the Governance screen |
-| Staking, Locks, Liquidity, Bridge, Gauge Voting | Removed from navigation |
-| Vote buttons on proposals | Removed; voting runs through the pay entry |
-| Borrow-with-Bitcoin cards | Removed |
-| Synthetic analytics, invented vote percentages, fake statistics | Removed |
-
+| Wallet | Purpose | Funding Needed |
+|---|---|---|
+| **Facilitator** | Executes `settle()` calls | Testnet BTC |
+| **Payee** | Receives MUSD payments | None |
+| **Client** | Signs Permit2 approvals | Testnet MUSD + BTC |
 ---
 
 # 🤝 Contributing
