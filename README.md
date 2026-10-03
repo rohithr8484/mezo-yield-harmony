@@ -254,51 +254,6 @@ VITE_SUPABASE_URL=
 
 ---
 
-## **Governance Contracts — How They Are Used**
-
-Three Solidity contracts live in `contracts/`. All three are **read-side or admin-side helpers**; none of them holds user payments.
-
-| Contract | File | Purpose |
-|---|---|---|
-| **GovernanceDataHelper** | `contracts/governance/GovernanceDataHelper.sol` | Read-only batched proposal view. `getProposalsBatch(ids)` and `getProposalsRange(from, to)` loop over `MezoGovernance.proposals()` + `state()` and return `id, proposer, title, category, forVotes, againstVotes, abstainVotes, state` in one RPC call. |
-| **VotingDataHelper** | `contracts/governance/VotingDataHelper.sol` | Read-only vote analytics. `getReceiptsBatch(proposalId, voters)` returns each voter's `hasVoted / voteType / votes`; `getTurnout(proposalId)` returns totals plus For/Against/Abstain shares in basis points. Also `getMUSDBalance()` and `fundMarket(amount)`. |
-| **MarketplaceAdmin** | `contracts/MarketplaceAdmin.sol` | Admin controls for the veNFT marketplace: `PAUSER_ROLE`, `FEE_MANAGER_ROLE`, `COLLECTION_MANAGER_ROLE`, emergency pause, collection whitelist, and a 48h timelocked fee change that calls `PaymentRouter.setProtocolFee()`. |
-
-### Deploy wiring (`scripts/deploy.ts`, `scripts/deploy2.ts`)
-
-```text
-deploy.ts
-  MezoGovernance(governanceToken)
-      ├─▶ VotingDataHelper(governance)
-      └─▶ GovernanceDataHelper(governance)
-  MarketplaceAdmin(deployer, isTestnet)
-  MezoLocks(governanceToken, governance)
-
-deploy2.ts   (veNFT marketplace side)
-  MezoVeNFTAdapter(veBTC, veMEZO)
-  PaymentRouter(feeRecipient, admin, MUSD, feeBps)
-  MarketplaceAdmin(admin, isTestnet)  ──▶ owns PaymentRouter admin
-  VeNFTMarketplace(adapter, router, admin)
-  → writes deployments/testnet.json
-```
-
-Each helper receives the governance address in its constructor, which is how it knows where to read from.
-
-### What the live UI does today
-
-- The Governance screens (proposal list, votes, results) run through the **browser local proposal store** (`src/lib/proposalStore.ts`) — proposals persist across refresh and tallies count only recorded votes.
-- The two data helpers are the **on-chain layer those screens are designed to plug into**: proposal lists would come from `GovernanceDataHelper`, live tallies from `VotingDataHelper.getTurnout()`.
-- Payment buttons and `Pay with x402` do **not** route through any of these contracts.
-
-### Known gaps
-
-- `VotingDataHelper` and `MarketplaceAdmin` hardcode MUSD as `0xbCAD6F09cb93a31a675B2E0156526B99CCdcF5Df` — a **third** MUSD address, different from the UI payment address `0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3`. It must be aligned before those contracts feed the live payment flow.
-- `MarketplaceAdmin`'s `supportedCollections` whitelist is **advisory only** — the marketplace enforces collection support through `MezoVeNFTAdapter.isSupported()`.
-- `scripts/deploy.ts` declares `MUSD_ADDRESS` / `LP_TOKEN_ADDRESS` / `FEE_COLLECTOR` but never passes them to a constructor; `MATS_TOKEN_ADDRESS` is `0x0`.
-- No Hardhat config or `hardhat` dependency is present in this repo, so the deploy scripts are reference/ops scripts and need a Hardhat project around them to run.
-
----
-
 ## **Pay-per-Use Infrastructure (Mezo)**
 
 | Contract / Component | Address | Description |
