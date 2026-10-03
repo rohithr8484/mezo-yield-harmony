@@ -276,7 +276,7 @@ Permit2 and mUSD are configured in the browser app. All three addresses are conf
 
 ---
 
-## **x402 — How It Is Used **
+## **x402 — How It Is Used**
 
 - The proxy address arrives inside the server's 402 requirements.
 - The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
