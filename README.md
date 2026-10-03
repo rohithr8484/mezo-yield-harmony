@@ -276,25 +276,7 @@ Permit2 and mUSD are configured in the browser app. All three addresses are conf
 
 ---
 
-## **x402 — How It Is Used (and How It Isn't)**
-
-The three contracts above are all **already deployed** on Mezo Testnet. None of them is written or deployed by this repo, and no `.sol` file in `contracts/` mentions x402 or Permit2.
-
-### What the app actually does (`src/components/developer/X402Banner.tsx`)
-
-```text
-1. read mUSD.allowance(user, Permit2)
-2. if allowance == 0  →  mUSD.approve(Permit2, maxUint256)     ← the ONLY tx from your wallet
-3. GET https://humor.vativ.io/joke  →  402 + PaymentRequirements
-     (asset, amount, payTo, spender = the proxy)
-4. ExactEvmScheme signs a PermitTransferFrom EIP-712 message
-     domain = Permit2, chainId = 31611, spender = x402Permit2Proxy
-5. retry the request with the base64 X-PAYMENT header
-6. server's facilitator submits settle() on-chain and pays the gas
-7. PAYMENT-RESPONSE header decoded → tx hash + receipt shown in the app
-```
-
-Notes:
+## **x402 — How It Is Used **
 
 - The proxy address arrives inside the server's 402 requirements.
 - The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
