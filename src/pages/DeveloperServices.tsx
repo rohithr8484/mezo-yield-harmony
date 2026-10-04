@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Lock, Play, Wallet, Bitcoin, FileText, ShieldCheck, Radio, Layers3, Network, CheckCircle2 } from "lucide-react";
+import { Activity, Database, Lock, Play, Wallet, Bitcoin, FileText, ShieldCheck, Radio, Layers3, Network, CheckCircle2, ExternalLink } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -16,6 +16,7 @@ const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${strin
 const GOV_MUSD = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
 const GOV_MEZO = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
 const FREE_GOVERNANCE_ENTRIES = 4;
+const X402_EXPLORER = "https://explorer.test.mezo.org/tx";
 import { PaymentGate } from "@/components/developer/PaymentGate";
 import { OnchainAnalytics } from "@/components/developer/OnchainAnalytics";
 import { IdentityVerification } from "@/components/developer/IdentityVerification";
@@ -41,6 +42,14 @@ const DeveloperServices = () => {
       return {};
     }
   });
+  const [x402Transactions, setX402Transactions] = useState<Record<string, string>>(() => {
+    try {
+      const stored = window.localStorage.getItem("developer_x402_transactions");
+      return stored ? JSON.parse(stored) : {};
+    } catch {
+      return {};
+    }
+  });
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -49,6 +58,13 @@ const DeveloperServices = () => {
     if (key === "governance") {
       setTimeout(() => navigate("/governance"), 600);
     }
+  };
+
+  const markX402Paid = (key: string, txHash?: string) => {
+    if (txHash) {
+      setX402Transactions((prev) => ({ ...prev, [key]: txHash }));
+    }
+    markPaid(key);
   };
 
   const { isConnected, chainId, connector, address } = useAccount();
@@ -117,6 +133,10 @@ const DeveloperServices = () => {
   useEffect(() => {
     window.localStorage.setItem("developer_paid_services", JSON.stringify(paidServices));
   }, [paidServices]);
+
+  useEffect(() => {
+    window.localStorage.setItem("developer_x402_transactions", JSON.stringify(x402Transactions));
+  }, [x402Transactions]);
 
   useEffect(() => {
     try {
@@ -297,7 +317,10 @@ const DeveloperServices = () => {
             </p>
           </div>
           <div className="mx-auto max-w-6xl space-y-6">
-            {dataFeeds.map((feed) => (
+            {dataFeeds.map((feed) => {
+              const paymentKey = `feed-v2-${feed.name}`;
+              const x402Tx = x402Transactions[paymentKey];
+              return (
                <div
                 key={feed.name}
                  className="ops-card p-7"
@@ -314,15 +337,38 @@ const DeveloperServices = () => {
                 </div>
                 <PaymentGate
                   serviceName={`${feed.name} Oracle`}
-                  onPaymentSuccess={() => markPaid(`feed-v2-${feed.name}`)}
-                  isPaid={!!paidServices[`feed-v2-${feed.name}`]}
+                  onPaymentSuccess={() => markPaid(paymentKey)}
+                  isPaid={!!paidServices[paymentKey]}
                   uniform
-                  extraButton={<X402Banner uniform onPaymentSuccess={() => markPaid(`feed-v2-${feed.name}`)} />}
+                  extraButton={<X402Banner uniform onPaymentSuccess={(txHash) => markX402Paid(paymentKey, txHash)} />}
                 >
                   <PriceFeedChart feedName={feed.name} />
+                  {x402Tx && (
+                    <div className="mt-4 border-t border-border/60 pt-4">
+                      <a
+                        href={`${X402_EXPLORER}/${x402Tx}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-accent hover:underline"
+                      >
+                        {x402Tx.slice(0, 12)}…{x402Tx.slice(-8)}
+                        <ExternalLink className="h-3.5 w-3.5" />
+                      </a>
+                      <div className="mt-3 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+                        <p><span className="font-semibold text-foreground">MUSD</span> 0.001 payment</p>
+                        <p><span className="font-semibold text-foreground">MEZO</span> 0</p>
+                        <p><span className="font-semibold text-foreground">BTC</span> facilitator-paid network gas</p>
+                      </div>
+                      <div className="mt-2 grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
+                        <p><span className="font-semibold text-foreground">Platform fee</span> not reported by x402</p>
+                        <p><span className="font-semibold text-foreground">Reward fee</span> not reported by x402</p>
+                      </div>
+                    </div>
+                  )}
                 </PaymentGate>
               </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
