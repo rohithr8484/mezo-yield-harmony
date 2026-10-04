@@ -258,9 +258,9 @@ VITE_SUPABASE_URL=
 
 | Contract / Component | Address | Description |
 |---|---|---|
-| **Mezo Caller** | `0x7B7c000000000000000000000000000000000001` | Executes pay-per-use settlement flows. |
+| **Mezo Caller/Token** | `0x7B7c000000000000000000000000000000000001` | Executes pay-per-use settlement flows. |
 | **MUSD** | `0xD88b46ef8444dAA8aa493d714b1124DE75CCa067` | Stablecoin for ecosystem payments. |
-| **MUSD Treasury** | `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` | Treasury reserve and liquidity manager. |
+| **MUSD Platform/payments** | `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` | Treasury reserve and liquidity manager. |
 
 ---
 
