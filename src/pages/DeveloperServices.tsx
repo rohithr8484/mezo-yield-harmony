@@ -360,8 +360,8 @@ const DeveloperServices = () => {
                         <p><span className="font-semibold text-foreground">BTC</span> facilitator-paid network gas</p>
                       </div>
                       <div className="mt-2 grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
-                        <p><span className="font-semibold text-foreground">Platform fee</span> not charged in this settlement</p>
-                        <p><span className="font-semibold text-foreground">Reward fee</span> not charged in this settlement</p>
+                        <p><span className="font-semibold text-foreground">Platform fee</span> not reported by x402</p>
+                        <p><span className="font-semibold text-foreground">Reward fee</span> not reported by x402</p>
                       </div>
                     </div>
                   )}
