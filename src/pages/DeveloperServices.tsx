@@ -37,7 +37,9 @@ const DeveloperServices = () => {
   const [paidServices, setPaidServices] = useState<Record<string, boolean>>(() => {
     try {
       const stored = window.localStorage.getItem("developer_paid_services");
-      return stored ? JSON.parse(stored) : {};
+      const saved = stored ? JSON.parse(stored) as Record<string, boolean> : {};
+      // Feed access lasts until refresh; keep other service unlocks as before.
+      return Object.fromEntries(Object.entries(saved).filter(([key]) => !key.startsWith("feed-v2-")));
     } catch {
       return {};
     }
@@ -131,7 +133,10 @@ const DeveloperServices = () => {
   };
 
   useEffect(() => {
-    window.localStorage.setItem("developer_paid_services", JSON.stringify(paidServices));
+    const persistentServices = Object.fromEntries(
+      Object.entries(paidServices).filter(([key]) => !key.startsWith("feed-v2-")),
+    );
+    window.localStorage.setItem("developer_paid_services", JSON.stringify(persistentServices));
   }, [paidServices]);
 
   useEffect(() => {
@@ -343,29 +348,29 @@ const DeveloperServices = () => {
                   extraButton={<X402Banner uniform onPaymentSuccess={(txHash) => markX402Paid(paymentKey, txHash)} />}
                 >
                   <PriceFeedChart feedName={feed.name} />
-                  {x402Tx && (
-                    <div className="mt-4 border-t border-border/60 pt-4">
-                      <a
-                        href={`${X402_EXPLORER}/${x402Tx}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-accent hover:underline"
-                      >
-                        {x402Tx.slice(0, 12)}…{x402Tx.slice(-8)}
-                        <ExternalLink className="h-3.5 w-3.5" />
-                      </a>
-                      <div className="mt-3 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
-                        <p><span className="font-semibold text-foreground">MUSD</span> 0.001 payment</p>
-                        <p><span className="font-semibold text-foreground">MEZO</span> 0</p>
-                        <p><span className="font-semibold text-foreground">BTC</span> facilitator-paid network gas</p>
-                      </div>
-                      <div className="mt-2 grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
-                        <p><span className="font-semibold text-foreground">Platform fee</span> not reported by x402</p>
-                        <p><span className="font-semibold text-foreground">Reward fee</span> not reported by x402</p>
-                      </div>
-                    </div>
-                  )}
                 </PaymentGate>
+                {x402Tx && (
+                  <div className="mt-4 border-t border-border/60 pt-4">
+                    <a
+                      href={`${X402_EXPLORER}/${x402Tx}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 font-mono text-xs font-semibold text-accent hover:underline"
+                    >
+                      {x402Tx.slice(0, 12)}…{x402Tx.slice(-8)}
+                      <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                    <div className="mt-3 grid gap-2 text-xs text-muted-foreground sm:grid-cols-3">
+                      <p><span className="font-semibold text-foreground">MUSD</span> 0.001 payment</p>
+                      <p><span className="font-semibold text-foreground">MEZO</span> 0</p>
+                      <p><span className="font-semibold text-foreground">BTC</span> facilitator-paid network gas</p>
+                    </div>
+                    <div className="mt-2 grid gap-2 text-xs text-muted-foreground sm:grid-cols-2">
+                      <p><span className="font-semibold text-foreground">Platform fee</span> not reported by x402</p>
+                      <p><span className="font-semibold text-foreground">Reward fee</span> not reported by x402</p>
+                    </div>
+                  </div>
+                )}
               </div>
               );
             })}

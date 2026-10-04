@@ -1,3 +1,3 @@
 # Project Rules
 
-- Persist confirmed x402 settlement hashes in the feed page state so the explorer receipt remains available after payment unlocks and hides the payment control; this preserves verifiable payment evidence without changing the external settlement flow.
+- Persist confirmed x402 settlement hashes separately from session-only feed access and render the explorer receipt outside the payment gate, so evidence remains visible both after unlocking and after refresh restores payment controls.
