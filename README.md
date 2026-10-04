@@ -156,6 +156,14 @@ MUSD powers the entire infrastructure economy.
 
 Network gas and any first-time token approval are additional; x402 settlement gas is paid by the facilitator. The x402 payment uses a different MUSD token from the regular MUSD buttons.
 
+## Rewards (Mezo Testnet)
+
+| Pay with | APIs / data feeds | Governance entry | Proposal vote |
+|---|---:|---:|---:|
+| MUSD | 0.0005 MUSD | 0.0005 MUSD | 0.0005 MUSD |
+
+For each regular MUSD payment, the app attempts to send this reward from `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` back to the paying wallet after the payment confirms. Reward payout can fail separately from the payment. This reward does not apply to x402, MEZO, or BTC payments.
+
 ---
 
 # 🌐 Infrastructure Marketplace
