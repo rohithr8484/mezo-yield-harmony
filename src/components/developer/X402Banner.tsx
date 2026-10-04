@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Zap, Loader2, CheckCircle2, ExternalLink, Info, Laugh } from "lucide-react";
+import { Zap, Loader2, ExternalLink, Info } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { useAccount, useSignTypedData, useSwitchChain, useWriteContract, usePublicClient } from "wagmi";
@@ -16,9 +16,9 @@ const MUSD = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503" as `0x${string}`;
 const PERMIT2 = "0x000000000022D473030F116dDEE9F6B43aC78BA3" as `0x${string}`;
 const EXPLORER = "https://explorer.test.mezo.org/tx";
 
-type Receipt = { joke: { setup: string; punchline: string }; tx?: string; payer?: string; network?: string };
+type Receipt = { tx?: string };
 
-export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: boolean; onPaymentSuccess?: () => void } = {}) => {
+export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: boolean; onPaymentSuccess?: (txHash?: string) => void } = {}) => {
   const { isConnected, address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
@@ -72,12 +72,12 @@ export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: bo
       const res = await fetchWithPay(RESOURCE_URL);
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
       setStatus("Facilitator settling on Mezo…");
-      const joke = await res.json();
+      await res.json();
       const header = res.headers.get("PAYMENT-RESPONSE") || res.headers.get("X-PAYMENT-RESPONSE");
       const settle = header ? decodePaymentResponseHeader(header) : null;
       if (!settle?.success) throw new Error("x402 settlement was not confirmed");
-      setResult({ joke, tx: settle?.transaction, payer: settle?.payer, network: settle?.network });
-      onPaymentSuccess?.();
+      setResult({ tx: settle?.transaction });
+      onPaymentSuccess?.(settle?.transaction);
       toast.success("x402 payment settled — resource unlocked");
     } catch (e) {
       const msg = e instanceof Error ? e.message.toLowerCase() : "";
@@ -126,33 +126,17 @@ export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: bo
       )}
 
       {result && (
-        <div className="space-y-2 rounded-lg border border-border bg-card p-3 text-[11px] animate-in fade-in duration-200">
-          <div className="flex items-start gap-2">
-            <Laugh className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
-            <div>
-              <p className="font-semibold text-foreground">{result.joke.setup}</p>
-              <p className="text-muted-foreground">{result.joke.punchline}</p>
-            </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-1.5 border-t border-border pt-2">
-            <CheckCircle2 className="h-3.5 w-3.5 shrink-0 text-accent" />
-            <span className="font-semibold text-foreground">Payment receipt</span>
-            {result.tx ? (
-              <a
-                href={`${EXPLORER}/${result.tx}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 font-mono text-accent hover:underline"
-              >
-                {result.tx.slice(0, 12)}…{result.tx.slice(-8)}
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            ) : (
-              <span className="text-muted-foreground">settled</span>
-            )}
-            {result.network && <span className="text-muted-foreground">· {result.network}</span>}
-          </div>
-        </div>
+        result.tx && (
+          <a
+            href={`${EXPLORER}/${result.tx}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 font-mono text-xs text-accent hover:underline"
+          >
+            {result.tx.slice(0, 12)}…{result.tx.slice(-8)}
+            <ExternalLink className="h-3 w-3" />
+          </a>
+        )
       )}
     </div>
   );
