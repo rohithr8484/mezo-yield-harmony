@@ -34,7 +34,7 @@ export interface PayWithMUSDResult {
  */
 export const payWithMUSD = async (
   amountWei: bigint,
-  rewardMUSD: string = "0.05"
+  rewardMUSD: string = "0.0005"
 ): Promise<PayWithMUSDResult> => {
   const eth = (window as any).ethereum;
   if (!eth) throw new Error("No wallet found. Please install MetaMask.");
@@ -101,6 +101,6 @@ export const payWithMUSD = async (
 export const sendMarketplacePayment = async (
   amountWei: bigint
 ): Promise<string> => {
-  const { stakeHash } = await payWithMUSD(amountWei, "0.05");
+  const { stakeHash } = await payWithMUSD(amountWei, "0.0005");
   return stakeHash;
 };

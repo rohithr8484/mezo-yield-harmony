@@ -115,7 +115,7 @@ const DeveloperServices = () => {
         const { stakeHash } = await payWithBTC(parseEther("0.01"));
         txHash = stakeHash as `0x${string}`;
       } else if (token === "MUSD") {
-        const { stakeHash } = await payWithMUSD(parseUnits("0.01", 18), "0.05");
+        const { stakeHash } = await payWithMUSD(parseUnits("0.01", 18), "0.0005");
         txHash = stakeHash as `0x${string}`;
       } else {
         const { stakeHash } = await payWithMEZO(parseUnits("0.01", 18));
