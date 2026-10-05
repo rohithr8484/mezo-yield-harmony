@@ -79,14 +79,16 @@ const Governance = () => {
 
   return (
     <PageLayout>
+      <div className="ops-page">
       {/* Hero */}
-      <section className="py-20 md:py-28">
-        <div className="container text-center">
-          <span className="inline-block px-4 py-1.5 rounded-full border border-border bg-card text-sm font-medium text-muted-foreground mb-6">
+      <section className="py-10 md:py-14">
+        <div className="container">
+          <div className="ops-shell rounded-lg px-6 py-10 text-center md:px-10 md:py-14">
+          <span className="mb-5 inline-flex items-center gap-2 rounded-md border border-border bg-card px-3 py-1.5 text-xs font-semibold text-muted-foreground">
             🔗 Mezo Testnet · Chain ID 31611
           </span>
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-display font-bold leading-tight">
-            <span className="text-gradient italic">Proposals</span>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-display font-bold leading-tight">
+            <span className="text-gradient">Governance proposals</span>
           </h1>
           <p className="mt-6 text-lg text-muted-foreground max-w-2xl mx-auto">
             Vote on MUSD, Mezo, veMezo gauges. Each user gets 4 free Governance entries before paid voting.
@@ -94,13 +96,13 @@ const Governance = () => {
 
           {isConnected && (
             <div className="mt-8 flex flex-wrap justify-center gap-4">
-              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+              <div className="rounded-lg bg-card border border-border px-6 py-3 shadow-card">
                 <div className="text-xs text-muted-foreground">Your MUSD Balance</div>
                 <div className="text-lg font-display font-bold text-foreground">
                   {musdBalance ? parseFloat(formatUnits(musdBalance as bigint, 18)).toFixed(2) : "0.00"} MUSD
                 </div>
               </div>
-              <div className="rounded-xl bg-card border border-border px-6 py-3 shadow-card">
+              <div className="rounded-lg bg-card border border-border px-6 py-3 shadow-card">
                 <div className="text-xs text-muted-foreground">MUSD Total Supply</div>
                 <div className="text-lg font-display font-bold text-gradient">
                   {musdSupply ? parseFloat(formatUnits(musdSupply as bigint, 18)).toLocaleString(undefined, { maximumFractionDigits: 0 }) : "—"}
@@ -108,28 +110,32 @@ const Governance = () => {
               </div>
             </div>
           )}
+          </div>
         </div>
       </section>
 
       {/* Proposals */}
-      <section className="py-20 bg-secondary/50">
+      <section className="border-y border-border/60 bg-secondary/35 py-14 md:py-16">
         <div className="container">
           <div className="max-w-5xl mx-auto">
             {/* Header with filter & search */}
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-              <h2 className="text-3xl font-display font-bold text-foreground">All Proposals</h2>
-              <div className="flex items-center gap-3 w-full sm:w-auto">
+            <div className="ops-section-heading mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="mb-1 text-xs font-bold uppercase text-accent">Proposal registry</p>
+                <h2 className="text-3xl font-display font-bold text-foreground">All Proposals</h2>
+              </div>
+              <div className="ops-toolbar w-full sm:w-auto">
                 <span className="text-sm text-muted-foreground hidden sm:block">Filter</span>
                 <div className="relative">
                   <button
                     onClick={() => setFilterOpen(!filterOpen)}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg border border-border bg-card text-sm text-foreground hover:bg-secondary transition-colors"
+                    className="flex min-h-10 items-center gap-2 rounded-md border border-border bg-card px-4 py-2 text-sm text-foreground transition-colors hover:bg-secondary"
                   >
                     {filterOptions.find((f) => f.value === statusFilter)?.label}
                     <ChevronDown className="h-4 w-4 text-muted-foreground" />
                   </button>
                   {filterOpen && (
-                    <div className="absolute top-full left-0 mt-1 w-48 rounded-lg border border-border bg-card shadow-lg z-10">
+                    <div className="absolute left-0 top-full z-10 mt-1 w-48 overflow-hidden rounded-md border border-border bg-card shadow-lg">
                       {filterOptions.map((opt) => (
                         <button
                           key={opt.value}
@@ -149,14 +155,14 @@ const Governance = () => {
                     placeholder="Search proposals"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full sm:w-56 pl-9 pr-4 py-2 rounded-lg border border-border bg-card text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className="min-h-10 w-full rounded-md border border-border bg-card py-2 pl-9 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring sm:w-56"
                   />
                 </div>
               </div>
             </div>
 
             {/* Proposal List */}
-            <div className="space-y-0 rounded-2xl border border-border bg-card overflow-hidden shadow-card backdrop-blur-sm">
+            <div className="overflow-hidden rounded-lg border border-border bg-card/85 shadow-card backdrop-blur-sm">
               {filteredProposals.length === 0 && (
                 <div className="p-12 text-center text-muted-foreground text-sm">No proposals found.</div>
               )}
@@ -164,18 +170,18 @@ const Governance = () => {
                 <Link
                   to={`/governance/${p.id}`}
                   key={p.id}
-                  className={`group flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8 p-6 hover:bg-primary/[0.03] transition-all duration-300 cursor-pointer ${idx < filteredProposals.length - 1 ? "border-b border-border" : ""}`}
+                  className={`ops-row group flex flex-col gap-4 p-5 lg:flex-row lg:items-center lg:gap-8 md:p-6 ${idx === filteredProposals.length - 1 ? "border-b-0" : ""}`}
                 >
                   {/* Left: content */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <img src={p.authorAvatar} alt="" className="h-5 w-5 rounded-full ring-1 ring-border" />
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-semibold uppercase tracking-wide ${statusStyles[p.status]}`}>
+                      <span className={`inline-block rounded-md px-2.5 py-0.5 text-[11px] font-semibold uppercase ${statusStyles[p.status]}`}>
                         {p.status}
                       </span>
                       <span className="text-[11px] text-muted-foreground font-mono">{p.id}</span>
                     </div>
-                    <h3 className="text-lg font-display font-bold text-foreground mb-1 leading-snug group-hover:text-primary transition-colors">{p.title}</h3>
+                    <h3 className="mb-1 text-lg font-display font-bold leading-snug text-foreground transition-colors group-hover:text-primary">{p.title}</h3>
                     <p className="text-xs text-muted-foreground mb-2">by {p.author}</p>
                     <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{p.summary}</p>
                   </div>
@@ -188,7 +194,7 @@ const Governance = () => {
       </section>
 
       {/* Submit Proposal */}
-      <section className="py-20">
+      <section className="py-16">
         <div className="container">
           <div className="max-w-3xl mx-auto">
             <div className="flex items-center justify-between mb-8">
@@ -204,7 +210,7 @@ const Governance = () => {
                   }
                   setShowSubmitForm(!showSubmitForm);
                 }}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
+                className="flex items-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
               >
                 <Plus className="h-4 w-4" />
                 {showSubmitForm ? "Cancel" : "New Proposal"}
@@ -212,7 +218,7 @@ const Governance = () => {
             </div>
 
             {showSubmitForm && (
-              <div className="rounded-2xl bg-card border border-border shadow-card p-6 md:p-8 space-y-5">
+              <div className="space-y-5 rounded-lg border border-border bg-card p-6 shadow-card md:p-8">
                 <div>
                   <label className="block text-sm font-semibold text-foreground mb-1.5">Title</label>
                   <input
@@ -319,7 +325,7 @@ const Governance = () => {
       </section>
 
       {/* Token Holders Layer */}
-      <section className="py-20 bg-secondary/50">
+      <section className="border-y border-border/60 bg-secondary/35 py-16">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Token Holders Layer</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
@@ -330,7 +336,7 @@ const Governance = () => {
               { icon: Coins, title: "MUSD Holders", desc: "Holders of Mezo's native stablecoin participate in protocol decisions and fee governance." },
               { icon: Gauge, title: "Gauge System", desc: "Direct protocol emissions and rewards through gauge weight voting with veMEZO." },
             ].map((item) => (
-              <div key={item.title} className="rounded-2xl bg-card border border-border p-8 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1 text-center">
+              <div key={item.title} className="ops-card p-8 text-center">
                 <div className="h-14 w-14 rounded-xl bg-bitcoin/10 flex items-center justify-center mb-5 mx-auto">
                   <item.icon className="h-7 w-7 text-bitcoin" />
                 </div>
@@ -343,14 +349,14 @@ const Governance = () => {
       </section>
 
       {/* Proposal Creation */}
-      <section className="py-20 bg-secondary/50">
+      <section className="bg-secondary/35 py-16">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Proposal Creation</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Any eligible token holder can create a governance proposal.
           </p>
           <div className="max-w-2xl mx-auto">
-            <div className="rounded-2xl bg-card border border-border p-8 shadow-card">
+            <div className="rounded-lg bg-card border border-border p-8 shadow-card">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <FileText className="h-6 w-6 text-primary" />
@@ -380,14 +386,14 @@ const Governance = () => {
       </section>
 
       {/* Governor Bravo Contract */}
-      <section className="py-20">
+      <section className="py-16">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Governance Contract</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Powered by Governor Bravo — battle-tested on-chain governance.
           </p>
           <div className="max-w-2xl mx-auto">
-            <div className="rounded-2xl bg-card border-2 border-primary/30 p-8 shadow-card">
+            <div className="rounded-lg bg-card border border-primary/30 p-8 shadow-card">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
                   <Shield className="h-6 w-6 text-primary" />
@@ -419,14 +425,14 @@ const Governance = () => {
       </section>
 
       {/* Community Voting */}
-      <section className="py-20 bg-secondary/50">
+      <section className="border-t border-border/60 bg-secondary/35 py-16">
         <div className="container">
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">Community Voting</h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Every token holder can cast votes on active proposals with 4 free entries per user.
           </p>
           <div className="max-w-md mx-auto">
-            <div className="rounded-2xl bg-card border border-border p-8 shadow-card">
+            <div className="rounded-lg bg-card border border-border p-8 shadow-card">
               <div className="flex justify-center mb-6">
                 <div className="flex -space-x-3">
                   {["voter1", "voter2", "voter3", "voter4", "voter5"].map((seed) => (
@@ -465,6 +471,7 @@ const Governance = () => {
         </div>
       </section>
 
+      </div>
     </PageLayout>
   );
 };
