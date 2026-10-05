@@ -292,7 +292,7 @@ VITE_SUPABASE_URL=
 | **x402Permit2Proxy** | `0x8dea1b08dc2e1D9b556450f736F19968F367A98d` | Used by the server-side facilitator to settle the signed authorization through Permit2. The browser does not call this contract directly. |
 | **MUSD (x402)** | `0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503` | Mezo Testnet MUSD token approved by the user and transferred during x402 settlement. |
 
-Permit2 and mUSD are configured in the browser app. All three addresses are configured consistently across the server-side x402 flow and its supporting guide.
+Permit2 and MUSD are configured in the browser app. All three addresses are configured consistently across the server-side x402 flow and its supporting guide.
 
 ---
 
@@ -300,7 +300,6 @@ Permit2 and mUSD are configured in the browser app. All three addresses are conf
 
 - The proxy address arrives inside the server's 402 requirements.
 - The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
-- Reward also provided for completion of task
   
 ### Where the proxy is really called
 
