@@ -151,7 +151,7 @@ MUSD powers the entire infrastructure economy.
 | MUSD | 0.2 MUSD | 0.01 MUSD | 0.2 MUSD |
 | MEZO | 0.2 MEZO | 0.01 MEZO | 0.2 MEZO |
 | BTC | 0.0001 BTC | 0.01 BTC | Not offered |
-| x402 | 0.001 MUSD per feed unlock | Not offered | Not offered |
+| x402 (MUSD) | 0.001 MUSD per feed unlock | Not offered | Not offered |
 
 Network gas and any first-time token approval are additional; x402 settlement gas is paid by the facilitator. The x402 payment uses a different MUSD token from the regular MUSD buttons.
 
