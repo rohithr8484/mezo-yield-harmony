@@ -169,7 +169,7 @@ const DeveloperServices = () => {
           <div className="ops-shell overflow-hidden rounded-lg">
             <div className="grid lg:grid-cols-[1fr_auto]">
               <div className="p-6 md:p-10">
-                <div className="mb-5 flex items-center gap-3 text-xs font-bold uppercase text-accent">
+                <div className="ops-kicker mb-5">
                   <span className="ops-status-dot" />
                   Mezo Testnet operations online
                 </div>
@@ -200,12 +200,12 @@ const DeveloperServices = () => {
       </section>
 
       {/* API Marketplace */}
-      <section className="relative py-16 md:py-20" id="api-marketplace">
+      <section className="relative py-12 md:py-16" id="api-marketplace">
         <div className="container">
-          <div className="overflow-hidden rounded-lg border border-border/80 bg-card/40 shadow-card backdrop-blur-xl">
+          <div className="overflow-hidden rounded-lg border border-border/80 bg-card/80 shadow-card backdrop-blur-xl">
             <div className="flex flex-col gap-6 border-b border-border/70 bg-secondary/20 p-6 md:flex-row md:items-end md:justify-between md:p-8">
               <div>
-                <div className="mb-3 flex items-center gap-2 text-xs font-bold uppercase text-accent">
+                <div className="ops-kicker mb-3">
                   <span className="ops-status-dot" />
                   01 / Service registry
                 </div>
@@ -270,11 +270,10 @@ const DeveloperServices = () => {
               ].map((service, index) => (
                 <article
                   key={service.key}
-                  className={`group relative flex min-w-0 flex-col overflow-hidden p-6 transition-colors duration-300 hover:bg-secondary/25 md:p-8 ${
-                    index % 2 === 0 ? "md:border-r md:border-border/70" : ""
-                  } ${index < 2 ? "border-b border-border/70" : index === 2 ? "border-b border-border/70 md:border-b-0" : ""}`}
+                  className={`ops-row group flex min-w-0 flex-col overflow-hidden p-6 md:p-8 ${
+                    index === 3 ? "border-b-0" : ""
+                  }`}
                 >
-                  <div className="pointer-events-none absolute -right-16 -top-16 h-36 w-36 rounded-full bg-primary/10 blur-3xl transition-colors duration-500 group-hover:bg-accent/15" />
                   <div className="relative flex h-full flex-col">
                     <div className="mb-5 flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
@@ -291,7 +290,7 @@ const DeveloperServices = () => {
                       </span>
                     </div>
                     <p className="mb-5 max-w-xl text-sm leading-relaxed text-muted-foreground">{service.description}</p>
-                    <div className="mt-auto border-t border-border/60 pt-1">
+                    <div className="mt-auto border-t border-border/60 pt-2">
                       <PaymentGate
                         serviceName={service.serviceName}
                         onPaymentSuccess={() => markPaid(service.key)}
@@ -310,9 +309,9 @@ const DeveloperServices = () => {
       </section>
 
       {/* Data Feeds / Oracles */}
-      <section className="py-20" id="data-feeds">
+      <section className="py-16" id="data-feeds">
         <div className="container">
-          <div className="mb-10 flex flex-col gap-3 border-l-2 border-primary pl-5 md:flex-row md:items-end md:justify-between">
+          <div className="ops-section-heading mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="mb-2 text-xs font-bold uppercase text-primary">02 / Oracle network</p>
               <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground">Data Feeds / Oracles</h2>
@@ -328,15 +327,20 @@ const DeveloperServices = () => {
               return (
                <div
                 key={feed.name}
-                 className="ops-card p-7"
+                 className="ops-card p-5 md:p-7"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                    <Activity className="h-5 w-5 text-primary-foreground" />
+                 <div className="mb-4 flex flex-col gap-4 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex items-center gap-3">
+                   <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/25 bg-primary/10">
+                     <Activity className="h-5 w-5 text-primary" />
                   </div>
                   <h3 className="text-xl font-display font-semibold text-foreground">{feed.name}</h3>
+                  </div>
+                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase text-accent">
+                    <span className="ops-status-dot" /> Live oracle
+                  </span>
                 </div>
-                <div className="bg-secondary/60 rounded-lg p-3 mb-4">
+                 <div className="mb-4 rounded-lg border border-border/60 bg-secondary/40 p-3">
                   <p className="text-xs text-muted-foreground mb-1">Feed ID</p>
                   <p className="font-mono text-xs text-foreground break-all select-all">{feed.feedId}</p>
                 </div>
@@ -407,9 +411,11 @@ const DeveloperServices = () => {
       </section>
 
       {/* Governance intro */}
-      <section className="py-16" id="governance-analytics">
+      <section className="border-t border-border/60 bg-secondary/25 py-16" id="governance-analytics">
         <div className="container">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-center text-foreground mb-4">
+          <div className="mx-auto max-w-3xl rounded-lg border border-border/80 bg-card/85 p-6 text-center shadow-card md:p-10">
+          <p className="mb-3 text-xs font-bold uppercase text-accent">03 / Protocol participation</p>
+          <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
             Governance
           </h2>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
@@ -452,6 +458,7 @@ const DeveloperServices = () => {
           <p className="text-center text-xs text-muted-foreground mt-4">
             Settles on Mezo Testnet (Chain ID 31611), then opens Governance.
           </p>
+          </div>
         </div>
       </section>
       </div>

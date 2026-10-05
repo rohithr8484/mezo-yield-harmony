@@ -121,8 +121,38 @@
   }
 
   .ops-shell {
-    @apply border-y border-border/70 bg-background/80 backdrop-blur-xl;
+    @apply border border-border/70 bg-background/90 backdrop-blur-xl;
     box-shadow: inset 0 1px hsl(var(--foreground) / 0.03), var(--shadow-card);
+  }
+
+  .ops-kicker {
+    @apply flex items-center gap-2 text-xs font-bold uppercase text-accent;
+  }
+
+  .ops-section-heading {
+    @apply border-l-2 border-primary pl-5;
+  }
+
+  .ops-toolbar {
+    @apply flex flex-col gap-3 border border-border/70 bg-card/80 p-3 shadow-card backdrop-blur-lg sm:flex-row sm:items-center;
+  }
+
+  .ops-row {
+    @apply relative border-b border-border/70 bg-card/70 transition-colors duration-200 last:border-b-0 hover:bg-secondary/45;
+  }
+
+  .ops-row::before {
+    content: '';
+    @apply absolute inset-y-0 left-0 w-0.5 origin-bottom scale-y-0 bg-accent transition-transform duration-200;
+  }
+
+  .ops-row:hover::before,
+  .ops-row:focus-within::before {
+    @apply scale-y-100;
+  }
+
+  .ops-panel-title {
+    @apply flex items-center justify-between border-b border-border/70 bg-secondary/25 px-5 py-3;
   }
 
   .ops-card {
@@ -175,6 +205,10 @@
     animation: none;
   }
   .ops-card {
+    transition-duration: 0.01ms;
+  }
+  .ops-row,
+  .ops-row::before {
     transition-duration: 0.01ms;
   }
 }

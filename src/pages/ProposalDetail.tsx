@@ -217,16 +217,17 @@ const ProposalDetail = () => {
 
   return (
     <PageLayout>
-      <section className="py-12 md:py-16">
+      <div className="ops-page min-h-screen">
+      <section className="py-10 md:py-14">
         <div className="container">
           <Link to="/governance" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-8">
             <ArrowLeft className="h-4 w-4" /> Back to Proposals
           </Link>
 
-          <div className="grid lg:grid-cols-[1fr_340px] gap-8">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div className="space-y-6">
-              <div className="rounded-2xl bg-card border border-border shadow-card overflow-hidden">
-                <div className="bg-secondary/50 border-b border-border px-6 py-4">
+              <div className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
+                <div className="ops-panel-title">
                   <h3 className="text-sm font-semibold text-foreground">Proposal overview</h3>
                 </div>
                 <div className="p-6 md:p-8">
@@ -263,7 +264,7 @@ const ProposalDetail = () => {
 
 
             <div className="space-y-6">
-              <div className="rounded-2xl bg-card border border-border shadow-card p-6">
+              <div className="rounded-lg bg-card border border-border shadow-card p-6">
                 <h3 className="text-lg font-display font-bold text-foreground mb-1">Your voting info</h3>
                 <p className="text-xs text-muted-foreground mb-2">
                   {proposal.status === "Active" ? "Voting is live 🟢" : "Voting is closed 🔴"}
@@ -273,7 +274,7 @@ const ProposalDetail = () => {
                 </p>
                 <div className="space-y-3">
                   {proposal.status === "Active" && (
-                    <div className="space-y-3 rounded-xl border border-border bg-secondary/40 p-3">
+                    <div className="space-y-3 rounded-lg border border-border bg-secondary/40 p-3">
                       <div>
                         <p className="text-xs text-muted-foreground">Connected wallet app</p>
                         <p className="text-sm font-semibold text-foreground">{isConnected ? connectedWalletName : "Not connected"}</p>
@@ -364,7 +365,7 @@ const ProposalDetail = () => {
 
 
               {/* Live Results */}
-              <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-4">
+              <div className="rounded-lg bg-card border border-border shadow-card p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-display font-bold text-foreground">Live results</h3>
                   <span className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold uppercase tracking-wide">
@@ -397,7 +398,7 @@ const ProposalDetail = () => {
               </div>
 
               {/* Proposal Info */}
-              <div className="rounded-2xl bg-card border border-border shadow-card p-6 space-y-3">
+              <div className="rounded-lg bg-card border border-border shadow-card p-6 space-y-3">
                 {/* Contract addresses */}
                 <div className="border-t border-border pt-3 mt-3">
                   <p className="text-xs text-muted-foreground mb-1">Voting fee contracts:</p>
@@ -412,6 +413,7 @@ const ProposalDetail = () => {
           </div>
         </div>
       </section>
+      </div>
     </PageLayout>
   );
 };
