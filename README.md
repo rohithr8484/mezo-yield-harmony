@@ -24,7 +24,7 @@ Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — al
 - AI-powered text summarization
 - On-chain analytics APIs
 - Wallet identity verification
-- Smart contract simulation & AI risk analysis
+- Smart contract simulation & risk analysis
 
 ---
 
@@ -50,7 +50,6 @@ Shape the future of Bitcoin finance through decentralized governance systems -  
 
 - DAO proposal voting
 - Treasury signaling systems
-- Community-driven protocol upgrades
 - Transparent community participation
 
 ---
