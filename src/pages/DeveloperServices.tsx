@@ -332,7 +332,7 @@ const DeveloperServices = () => {
                  <div className="mb-4 flex flex-col gap-4 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3">
                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/25 bg-primary/10">
-                    <Activity className="h-5 w-5 text-primary-foreground" />
+                     <Activity className="h-5 w-5 text-primary" />
                   </div>
                   <h3 className="text-xl font-display font-semibold text-foreground">{feed.name}</h3>
                   </div>
