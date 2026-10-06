@@ -589,10 +589,10 @@ export const VeNFTMarketplace = () => {
         </button>
       </div>
 
-      <div title="Unavailable: the deployed veMEZO contract rounds expiry down to weekly boundaries, so a 60-second duration normally reverts.">
+      <div title="One-week lock option is not enabled yet; this change only renames the button.">
         <Button variant="outline" disabled className="h-auto min-h-10 max-w-full whitespace-normal text-left">
           <Lock className="h-4 w-4 shrink-0" />
-          Lock 2 MEZO for 1 minute
+          Lock 2 MEZO for 1 week
         </Button>
       </div>
 
