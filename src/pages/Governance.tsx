@@ -16,8 +16,6 @@ import { ContractLogs } from "@/components/governance/ContractLogs";
 const filterOptions: Array<{ label: string; value: string }> = [
   { label: "All proposals", value: "all" },
   { label: "Active", value: "Active" },
-  { label: "Accepted", value: "Accepted" },
-  { label: "Rejected", value: "Rejected" },
   { label: "Finished", value: "Finished" },
 ];
 
