@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Fix only the getProposalsBatch/getProposalsRange invalid-proposal handling and verify both buttons.
+
 - [x] Use shared absolute JavaScript deadlines, move expired proposals to Finished, and show their final results (verified with clock-controlled browser checks and vote-store tests; votes remain session-local as requested).
 
 - [x] Unlock the selected data feed immediately after a confirmed x402 settlement.
