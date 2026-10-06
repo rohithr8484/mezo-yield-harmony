@@ -6,6 +6,7 @@ import { parseUnits } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
+import { getVeMezoWithdrawError, VEMEZO_WITHDRAW_REVERT_MESSAGE } from "@/lib/veMezoWithdrawError";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const MEZO_TESTNET_CHAIN_HEX = `0x${MEZO_TESTNET_CHAIN_ID.toString(16)}`;
@@ -445,7 +446,7 @@ export const VeNFTMarketplace = () => {
         const now = Math.floor(Date.now() / 1000);
         if (lockEnd > 0 && now < lockEnd) {
           const daysLeft = Math.ceil((lockEnd - now) / 86400);
-          toast.error(`Lock still active — ${daysLeft} day(s) remaining until withdrawal is allowed.`);
+          toast.error(`${VEMEZO_WITHDRAW_REVERT_MESSAGE} Lock still active — ${daysLeft} day(s) remaining until withdrawal is allowed.`);
           return;
         }
       } catch {
@@ -460,12 +461,7 @@ export const VeNFTMarketplace = () => {
       setOwned((prev) => ({ ...prev, [tokenId]: true }));
     } catch (err: unknown) {
       console.error(err);
-      const e = err as { code?: string; shortMessage?: string; reason?: string; message?: string };
-      let message = e.shortMessage || e.reason || e.message || "Withdraw failed";
-      if (e.code === "CALL_EXCEPTION" && !e.reason) {
-        message = "Transaction reverted by contract. Most likely cause: lock has not expired yet, or the connected wallet is not the owner of this veMEZO position.";
-      }
-      toast.error(message);
+      toast.error(getVeMezoWithdrawError(err));
     } finally {
       setWithdrawingId(null);
     }
