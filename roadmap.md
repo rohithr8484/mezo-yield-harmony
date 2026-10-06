@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Fix only the getProposalsBatch/getProposalsRange invalid-proposal handling and verify both buttons.
+- [x] Fix only the getProposalsBatch/getProposalsRange invalid-proposal handling; six tests pass and both real contract calls display honest unavailable results. Requested on-chain IDs do not exist; returning actual proposal data requires creating proposals in the linked governance contract.
 
 - [x] Use shared absolute JavaScript deadlines, move expired proposals to Finished, and show their final results (verified with clock-controlled browser checks and vote-store tests; votes remain session-local as requested).
 
