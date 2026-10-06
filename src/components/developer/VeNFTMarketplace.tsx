@@ -7,6 +7,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
 import { getVeMezoWithdrawError, VEMEZO_WITHDRAW_REVERT_MESSAGE } from "@/lib/veMezoWithdrawError";
+import { Button } from "@/components/ui/button";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const MEZO_TESTNET_CHAIN_HEX = `0x${MEZO_TESTNET_CHAIN_ID.toString(16)}`;
@@ -586,6 +587,13 @@ export const VeNFTMarketplace = () => {
           {locking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
           {locking ? "Locking…" : "Lock veMEZO"}
         </button>
+      </div>
+
+      <div title="Unavailable: the deployed veMEZO contract rounds expiry down to weekly boundaries, so a 60-second duration normally reverts.">
+        <Button variant="outline" disabled className="h-auto min-h-10 max-w-full whitespace-normal text-left">
+          <Lock className="h-4 w-4 shrink-0" />
+          Lock 2 MEZO for 1 minute
+        </Button>
       </div>
 
       <div className="rounded-3xl border border-bitcoin/30 bg-bitcoin/5 p-5 space-y-4">

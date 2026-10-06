@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Hide only marketplace Boost buttons and check whether a real one-minute 2 MEZO lock is supported before adding it.
+- [x] Hide only marketplace Boost buttons; add a disabled one-minute lock button below the 52-week lock. Verified deployed veMEZO expiry rounds down to weekly boundaries and rejects expiry not in the future, so a dependable one-minute lock requires a different or upgraded contract.
 
 - [x] Fix only the getProposalsBatch/getProposalsRange invalid-proposal handling; six tests pass and both real contract calls display honest unavailable results. Requested on-chain IDs do not exist; returning actual proposal data requires creating proposals in the linked governance contract.
 
