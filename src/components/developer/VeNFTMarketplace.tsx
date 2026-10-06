@@ -279,8 +279,9 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boos
         </button>
         <button
           onClick={onBoost}
+          hidden
           disabled={boosting}
-          className="w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 border border-bitcoin/40 text-foreground hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-amber-500/30 disabled:opacity-50"
+          className="hidden w-full font-semibold py-3 rounded-full transition items-center justify-center gap-2 border border-bitcoin/40 text-foreground hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-amber-500/30 disabled:opacity-50"
         >
           {boosting ? <><Loader2 className="h-4 w-4 animate-spin" /> Boosting…</> : <><Sparkles className="h-4 w-4" /> Boost #{token.id}</>}
         </button>
