@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createPublicClient, http, formatUnits } from "viem";
 import { mezoTestnet } from "@/lib/mezo";
 import { Terminal, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const GOV_HELPER = "0xE58329AE4803E2aa9594912066A5cB087C68f88c" as const;
 const VOTE_HELPER = "0xD0AEc8C123add8aFBf64bdB58cB1adc6CC3f9D15" as const;
@@ -47,7 +48,16 @@ const VOTE_ABI = [
 ] as const;
 
 const fmt = (v: unknown) => JSON.stringify(v, (_k, x) => (typeof x === "bigint" ? x.toString() : x), 2);
-const ids = (s: string) => s.split(",").map((x) => x.trim()).filter(Boolean).map((x) => BigInt(x));
+const proposalId = (s: string) => {
+  if (!/^\d+$/.test(s.trim())) throw new Error("Enter a non-negative numeric on-chain proposal ID.");
+  const value = BigInt(s.trim());
+  if (value >= 2n ** 256n) throw new Error("Proposal ID is too large.");
+  return value;
+};
+const ids = (s: string) => {
+  if (!s.trim()) throw new Error("Enter at least one on-chain proposal ID.");
+  return s.split(",").map(proposalId);
+};
 
 export const ContractLogs = () => {
   const [idList, setIdList] = useState("1,2");
@@ -56,15 +66,22 @@ export const ContractLogs = () => {
   const [pid, setPid] = useState("1");
   const [voters, setVoters] = useState("");
   const [busy, setBusy] = useState<string | null>(null);
-  const [log, setLog] = useState<{ fn: string; ok: boolean; out: string; ts: string }[]>([]);
+  const [log, setLog] = useState<{ fn: string; status: "success" | "empty" | "error"; out: string; ts: string }[]>([]);
 
   const run = async (fn: string, call: () => Promise<unknown>) => {
     setBusy(fn);
     try {
       const out = await call();
-      setLog((l) => [{ fn, ok: true, out: fmt(out), ts: new Date().toLocaleTimeString() }, ...l]);
-    } catch (e: any) {
-      setLog((l) => [{ fn, ok: false, out: e?.shortMessage || e?.message || String(e), ts: new Date().toLocaleTimeString() }, ...l]);
+      setLog((l) => [{ fn, status: "success", out: fmt(out), ts: new Date().toLocaleTimeString() }, ...l]);
+    } catch (e: unknown) {
+      const error = e instanceof Error ? e : new Error(String(e));
+      const shortMessage = "shortMessage" in error && typeof error.shortMessage === "string" ? error.shortMessage : error.message;
+      const missingProposal = (fn === "getProposalsBatch" || fn === "getProposalsRange") && /Invalid proposal/i.test(error.message);
+      const requested = fn === "getProposalsBatch" ? idList : `${from}–${to}`;
+      const out = missingProposal
+        ? `No results: one or more requested on-chain proposal IDs (${requested}) do not exist. The helper returns no data when any ID is missing. App proposals and JavaScript votes are not stored in this contract. Create a proposal in the linked governance contract, then use its on-chain ID here.`
+        : shortMessage;
+      setLog((l) => [{ fn, status: missingProposal ? "empty" : "error", out, ts: new Date().toLocaleTimeString() }, ...l]);
     } finally {
       setBusy(null);
     }
@@ -73,9 +90,9 @@ export const ContractLogs = () => {
   const input = "h-9 rounded-md border border-border bg-background px-3 text-sm text-foreground";
   const btn = "inline-flex h-9 items-center gap-2 rounded-md border border-primary/30 bg-primary/10 px-3 font-mono text-xs font-semibold text-primary transition-colors hover:bg-primary/20 disabled:opacity-50";
   const B = ({ fn, onClick }: { fn: string; onClick: () => void }) => (
-    <button className={btn} disabled={!!busy} onClick={onClick}>
+    <Button variant="outline" size="sm" className={btn} disabled={!!busy} onClick={onClick}>
       {busy === fn && <Loader2 className="h-3 w-3 animate-spin" />}{fn}()
-    </button>
+    </Button>
   );
 
   return (
@@ -89,13 +106,18 @@ export const ContractLogs = () => {
           <p className="text-xs font-bold uppercase text-accent">GovernanceDataHelper</p>
           <p className="break-all font-mono text-[11px] text-muted-foreground">{GOV_HELPER}</p>
           <div className="flex flex-wrap gap-2">
-            <input className={`${input} w-28`} value={idList} onChange={(e) => setIdList(e.target.value)} placeholder="ids 1,2" />
+            <input aria-label="On-chain proposal IDs" className={`${input} w-28`} value={idList} onChange={(e) => setIdList(e.target.value)} placeholder="ids 1,2" />
             <B fn="getProposalsBatch" onClick={() => run("getProposalsBatch", () => client.readContract({ address: GOV_HELPER, abi: GOV_ABI, functionName: "getProposalsBatch", args: [ids(idList)] }))} />
           </div>
           <div className="flex flex-wrap gap-2">
-            <input className={`${input} w-14`} value={from} onChange={(e) => setFrom(e.target.value)} />
-            <input className={`${input} w-14`} value={to} onChange={(e) => setTo(e.target.value)} />
-            <B fn="getProposalsRange" onClick={() => run("getProposalsRange", () => client.readContract({ address: GOV_HELPER, abi: GOV_ABI, functionName: "getProposalsRange", args: [BigInt(from || 0), BigInt(to || 0)] }))} />
+            <input aria-label="First on-chain proposal ID" className={`${input} w-14`} value={from} onChange={(e) => setFrom(e.target.value)} />
+            <input aria-label="Last on-chain proposal ID" className={`${input} w-14`} value={to} onChange={(e) => setTo(e.target.value)} />
+            <B fn="getProposalsRange" onClick={() => run("getProposalsRange", () => {
+              const start = proposalId(from);
+              const end = proposalId(to);
+              if (end < start) throw new Error("Last proposal ID must be greater than or equal to the first.");
+              return client.readContract({ address: GOV_HELPER, abi: GOV_ABI, functionName: "getProposalsRange", args: [start, end] });
+            })} />
           </div>
         </div>
         <div className="space-y-3">
@@ -117,7 +139,7 @@ export const ContractLogs = () => {
           <p className="text-xs text-muted-foreground">Click a function to see its result here.</p>
         ) : log.map((l, i) => (
           <div key={i} className="mb-3 last:mb-0">
-            <p className={`font-mono text-xs font-semibold ${l.ok ? "text-primary" : "text-destructive"}`}>[{l.ts}] {l.fn}() {l.ok ? "✓" : "✕"}</p>
+            <p className={`font-mono text-xs font-semibold ${l.status === "success" ? "text-primary" : l.status === "empty" ? "text-muted-foreground" : "text-destructive"}`}>[{l.ts}] {l.fn}() {l.status === "success" ? "✓" : l.status === "empty" ? "— No results" : "✕"}</p>
             <pre className="mt-1 whitespace-pre-wrap break-all font-mono text-[11px] text-foreground">{l.out}</pre>
           </div>
         ))}
