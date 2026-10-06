@@ -8,3 +8,4 @@
 - Keep contract log reads on-chain and handle missing proposal IDs as unavailable results, never substitute JavaScript proposals or votes; helper reverts must not be presented as successful reads.
 
 - Persist confirmed x402 settlement hashes separately from session-only feed access and render the explorer receipt outside the payment gate, so evidence remains visible both after unlocking and after refresh restores payment controls.
+- Keep veMEZO marketplace access session-only through the shared service payment gate; persist free-entry usage and NFT positions, but restore unlock controls on refresh.

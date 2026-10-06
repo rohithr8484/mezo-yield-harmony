@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Match veMEZO marketplace unlock controls to API services and restore its controls after refresh without resetting free-entry usage or NFT positions.
+
 - [x] Hide only marketplace Boost buttons and replace the unsupported one-minute option with an enabled 2 MEZO one-week lock using the existing approval, simulation, and confirmation flow; expiry remains rounded down to weekly boundaries by the contract.
 
 - [x] Fix only the getProposalsBatch/getProposalsRange invalid-proposal handling; six tests pass and both real contract calls display honest unavailable results. Requested on-chain IDs do not exist; returning actual proposal data requires creating proposals in the linked governance contract.
