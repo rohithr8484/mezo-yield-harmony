@@ -25,6 +25,7 @@ export interface Proposal {
   motivation: string;
   specification: string;
   status: ProposalStatus;
+  votingEndsAt?: number;
   forVotes: number;
   forPct: number;
   againstVotes: number;

@@ -25,7 +25,12 @@ export function getUserProposals(): Proposal[] {
 }
 
 export function getAllProposals(): Proposal[] {
-  return [...getUserProposals(), ...staticProposals];
+  return [...getUserProposals(), ...staticProposals].map((proposal) => ({
+    ...proposal,
+    status: proposal.status === "Finished" || Date.now() >= getVotingEndTime(proposal.id, proposal)
+      ? "Finished"
+      : "Active",
+  }));
 }
 
 export function findProposal(id: string): Proposal | undefined {
@@ -36,17 +41,20 @@ export function findProposal(id: string): Proposal | undefined {
 // In-memory JavaScript store for voting data (per proposal). Resets on page refresh.
 const votesMemory: VotesMap = {};
 
-// 25-minute voting window per active proposal, kept in memory.
+// A fixed schedule is shared by all browsers; opening a page never starts a timer.
 export const VOTING_WINDOW_MS = 25 * 60 * 1000;
+export const EXISTING_PROPOSALS_END_AT = Date.parse("2026-10-06T17:10:31Z");
 const endTimes: Record<string, number> = {};
 
-export function getVotingEndTime(proposalId: string): number {
-  if (!endTimes[proposalId]) endTimes[proposalId] = Date.now() + VOTING_WINDOW_MS;
+export function getVotingEndTime(proposalId: string, proposal?: Proposal): number {
+  const source = proposal ?? [...getUserProposals(), ...staticProposals].find((p) => p.id === proposalId);
+  endTimes[proposalId] = source?.votingEndsAt ?? EXISTING_PROPOSALS_END_AT;
   return endTimes[proposalId];
 }
 
 export function isVotingOpen(proposalId: string): boolean {
-  return Date.now() < getVotingEndTime(proposalId);
+  const proposal = findProposal(proposalId);
+  return proposal?.status === "Active" && Date.now() < getVotingEndTime(proposalId, proposal);
 }
 
 export function getVotes(): VotesMap {
@@ -58,14 +66,15 @@ export function getVotesFor(proposalId: string): VoteRecord[] {
 }
 
 export function addVote(proposalId: string, vote: VoteRecord) {
-  if (!isVotingOpen(proposalId)) return;
+  if (!isVotingOpen(proposalId)) return false;
   (votesMemory[proposalId] ??= []).push(vote);
   window.dispatchEvent(new CustomEvent("mezo:votes-updated", { detail: { proposalId } }));
+  return true;
 }
 
 export function saveUserProposal(p: Proposal) {
   const list = getUserProposals();
-  const next = [p, ...list];
+  const next = [{ ...p, votingEndsAt: p.votingEndsAt ?? Date.now() + VOTING_WINDOW_MS }, ...list];
   try {
     localStorage.setItem(USER_PROPOSALS_KEY, JSON.stringify(next));
     window.dispatchEvent(new CustomEvent("mezo:proposals-updated"));

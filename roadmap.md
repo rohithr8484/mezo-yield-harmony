@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Use shared absolute JavaScript deadlines, move expired proposals to Finished, and show their final results.
+
 - [x] Unlock the selected data feed immediately after a confirmed x402 settlement.
 - [x] Widen the data feed blocks.
 - [x] Keep the confirmed x402 settlement hash visible after a feed unlocks.

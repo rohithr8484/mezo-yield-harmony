@@ -8,7 +8,7 @@ import { parseUnits } from "viem";
 import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
 import { statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
-import { findProposal, addVote, computeLiveTally, getVotingEndTime, type LiveTally } from "@/lib/proposalStore";
+import { findProposal, addVote, computeLiveTally, getVotingEndTime, isVotingOpen, type LiveTally } from "@/lib/proposalStore";
 
 function formatRelative(ts: number): string {
   const diff = Math.max(0, Date.now() - ts);
@@ -68,6 +68,10 @@ const ProposalDetail = () => {
 
   const handlePayAndVote = async (payToken: "MEZO" | "MUSD") => {
     if (!selectedVote || isProcessingPayment) return;
+    if (!proposal || !isVotingOpen(proposal.id)) {
+      toast.error("Voting has ended for this proposal.");
+      return;
+    }
 
     if (!isConnected) {
       setPendingPayToken(payToken);
@@ -93,13 +97,17 @@ const ProposalDetail = () => {
       }
 
       if (proposal) {
-        addVote(proposal.id, {
+        const recorded = addVote(proposal.id, {
           voter: address ?? "anonymous",
           type: selectedVote,
           weight: 1,
           ts: Date.now(),
           txHash,
         });
+        if (!recorded) {
+          toast.error("Payment confirmed, but voting ended before confirmation. No vote was counted.");
+          return;
+        }
       }
       setVoted(selectedVote);
       setSelectedVote(null);
@@ -124,6 +132,10 @@ const ProposalDetail = () => {
 
   const handleFreeVote = () => {
     if (!selectedVote || isProcessingPayment) return;
+    if (!proposal || !isVotingOpen(proposal.id)) {
+      toast.error("Voting has ended for this proposal.");
+      return;
+    }
 
     if (!isConnected) {
       openConnectModal?.();
@@ -136,12 +148,13 @@ const ProposalDetail = () => {
     }
 
     if (proposal) {
-      addVote(proposal.id, {
+      const recorded = addVote(proposal.id, {
         voter: address ?? "anonymous",
         type: selectedVote,
         weight: 1,
         ts: Date.now(),
       });
+      if (!recorded) return;
     }
     const nextUsed = freeVotesUsed + 1;
     setFreeVotesUsed(nextUsed);
@@ -180,7 +193,7 @@ const ProposalDetail = () => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-  const endAt = proposal && proposal.status === "Active" ? getVotingEndTime(proposal.id) : 0;
+  const endAt = proposal ? getVotingEndTime(proposal.id, proposal) : 0;
   const isActive = !!proposal && proposal.status === "Active" && now < endAt;
   const remainingMs = Math.max(0, endAt - now);
   const countdown = `${Math.floor(remainingMs / 60000)}:${String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, "0")}`;
@@ -377,17 +390,17 @@ const ProposalDetail = () => {
               {/* Live Results */}
               <div className="rounded-lg bg-card border border-border shadow-card p-6 space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-display font-bold text-foreground">Live results</h3>
+                  <h3 className="text-lg font-display font-bold text-foreground">{isActive ? "Live results" : "Final results"}</h3>
                   <span className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold uppercase tracking-wide">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                    Realtime
+                    {isActive ? "Realtime" : "Finished"}
                   </span>
                 </div>
                 <p className="text-xs text-muted-foreground -mt-2">
                   {tally.voteCount} {tally.voteCount === 1 ? "vote" : "votes"} counted
                   {tally.lastVoteAt && ` · last vote ${formatRelative(tally.lastVoteAt)}`}
                 </p>
-                {proposal.status === "Active" && !isActive && (
+                {!isActive && (
                   <p className="rounded-md border border-border bg-secondary/40 px-3 py-2 text-xs font-semibold text-foreground">
                     Final result:{" "}
                     {tally.voteCount === 0

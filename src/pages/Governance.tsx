@@ -6,8 +6,8 @@ import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { Link } from "react-router-dom";
-import { proposals as staticProposals, statusStyles, type Proposal } from "@/lib/proposals";
-import { getUserProposals, saveUserProposal } from "@/lib/proposalStore";
+import { statusStyles, type Proposal } from "@/lib/proposals";
+import { getAllProposals, getUserProposals, saveUserProposal } from "@/lib/proposalStore";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
@@ -28,6 +28,12 @@ const Governance = () => {
   const [proposalForm, setProposalForm] = useState({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
   const { openConnectModal } = useConnectModal();
   const [userProposals, setUserProposals] = useState<Proposal[]>(() => getUserProposals());
+  const [now, setNow] = useState(Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     const refresh = () => setUserProposals(getUserProposals());
@@ -45,7 +51,7 @@ const Governance = () => {
     };
   }, []);
 
-  const allProposals = useMemo(() => [...userProposals, ...staticProposals], [userProposals]);
+  const allProposals = useMemo(() => getAllProposals(), [userProposals, now]);
 
 
   const filteredProposals = useMemo(() => {
