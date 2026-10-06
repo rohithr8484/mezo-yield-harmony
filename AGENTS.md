@@ -1,6 +1,6 @@
 # Project Rules
 
-- Keep the one-minute veMEZO lock action disabled while the deployed implementation rounds expiry down to weeks; do not submit misleading short-duration locks.
+- Route both supported veMEZO lock durations through the same approval, simulation, and confirmation flow; respect the deployed contract's weekly expiry rounding and never submit one-minute locks.
 
 - Normalize veMEZO withdrawal reverts through a shared error formatter, including nested wallet errors; keep cancellation and network failures distinct so rejection explanations remain consistent across NFT IDs.
 
