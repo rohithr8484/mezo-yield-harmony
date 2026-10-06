@@ -38,8 +38,8 @@ const DeveloperServices = () => {
     try {
       const stored = window.localStorage.getItem("developer_paid_services");
       const saved = stored ? JSON.parse(stored) as Record<string, boolean> : {};
-      // Feed access lasts until refresh; keep other service unlocks as before.
-      return Object.fromEntries(Object.entries(saved).filter(([key]) => !key.startsWith("feed-v2-")));
+      // Feed and marketplace access lasts until refresh; keep API unlocks as before.
+      return Object.fromEntries(Object.entries(saved).filter(([key]) => !key.startsWith("feed-v2-") && key !== "venft"));
     } catch {
       return {};
     }
@@ -134,7 +134,7 @@ const DeveloperServices = () => {
 
   useEffect(() => {
     const persistentServices = Object.fromEntries(
-      Object.entries(paidServices).filter(([key]) => !key.startsWith("feed-v2-")),
+      Object.entries(paidServices).filter(([key]) => !key.startsWith("feed-v2-") && key !== "venft"),
     );
     window.localStorage.setItem("developer_paid_services", JSON.stringify(persistentServices));
   }, [paidServices]);
@@ -402,6 +402,7 @@ const DeveloperServices = () => {
               serviceName="veNFT Marketplace"
               onPaymentSuccess={() => markPaid("venft")}
               isPaid={!!paidServices["venft"]}
+              compact
             >
               <VeNFTMarketplace />
             </PaymentGate>
