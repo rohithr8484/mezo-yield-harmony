@@ -568,33 +568,29 @@ export const VeNFTMarketplace = () => {
         ))}
       </div>
 
-      <div className="rounded-3xl border border-border bg-gradient-to-br from-card to-card/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {([52, 1] as const).map((weeks) => (
+      <div key={weeks} title={weeks === 1 ? "The contract rounds expiry down to the next weekly boundary, so the actual lock may be shorter than seven days." : undefined} className="rounded-3xl border border-border bg-gradient-to-br from-card to-card/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start gap-4">
           <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-500 to-pink-500 flex items-center justify-center shadow-lg shadow-bitcoin/20">
             <Lock className="h-5 w-5 text-white" />
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Create New Position</p>
-            <h3 className="font-display text-xl font-bold text-foreground">Lock 2 MEZO for 52 weeks</h3>
+            <h3 className="font-display text-xl font-bold text-foreground">Lock 2 MEZO for {weeks} {weeks === 1 ? "week" : "weeks"}</h3>
             <p className="text-xs text-muted-foreground mt-1">Mint your own veMEZO position directly on-chain.</p>
           </div>
         </div>
-        <button
-          onClick={() => handleLock(52)}
+        <Button
+          aria-label={`Lock 2 MEZO for ${weeks} ${weeks === 1 ? "week" : "weeks"}`}
+          onClick={() => handleLock(weeks)}
           disabled={locking}
-          className="px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-bitcoin/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
+          className="h-auto px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-bitcoin/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
         >
           {locking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
           {locking ? "Locking…" : "Lock veMEZO"}
-        </button>
-      </div>
-
-      <div title="The contract rounds expiry down to the next weekly boundary, so the actual lock may be shorter than seven days.">
-        <Button variant="outline" onClick={() => handleLock(1)} disabled={locking} className="h-auto min-h-10 max-w-full whitespace-normal text-left">
-          {locking ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Lock className="h-4 w-4 shrink-0" />}
-          {locking ? "Locking…" : "Lock 2 MEZO for 1 week"}
         </Button>
       </div>
+      ))}
 
       <div className="rounded-3xl border border-bitcoin/30 bg-bitcoin/5 p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
