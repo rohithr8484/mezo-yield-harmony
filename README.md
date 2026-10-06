@@ -263,12 +263,10 @@ VITE_SUPABASE_URL=
 
 ---
 ## **Smart Contracts Modules**
-## **Governance Infrastructure**
+## **Infrastructure**
 
 | Contract / Component | Address | Description |
 |---|---|---|
-| **GovernanceDataHelper** | `0xE58329AE4803E2aa9594912066A5cB087C68f88c` | Proposal summaries and governance analytics. |
-| **VotingDataHelper** | `0xD0AEc8C123add8aFBf64bdB58cB1adc6CC3f9D15` | Voting receipts and turnout tracking. |
 | **MarketplaceAdmin** | `0x1D462522A9f8fbea6c10122dce01E09432A64dBF` | Marketplace admin and fee controls. |
 | **MUSD Governance Treasury** | `0x000000000000000000000000000000000000dEaD` | Governance treasury and payments. |
 
