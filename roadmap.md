@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Use shared absolute JavaScript deadlines, move expired proposals to Finished, and show their final results.
+- [x] Use shared absolute JavaScript deadlines, move expired proposals to Finished, and show their final results (verified with clock-controlled browser checks and vote-store tests; votes remain session-local as requested).
 
 - [x] Unlock the selected data feed immediately after a confirmed x402 settlement.
 - [x] Widen the data feed blocks.
