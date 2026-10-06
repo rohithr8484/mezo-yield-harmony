@@ -8,7 +8,7 @@ import { parseUnits } from "viem";
 import PageLayout from "@/components/PageLayout";
 import WalletButton from "@/components/WalletButton";
 import { statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
-import { findProposal, addVote, computeLiveTally, type LiveTally } from "@/lib/proposalStore";
+import { findProposal, addVote, computeLiveTally, getVotingEndTime, type LiveTally } from "@/lib/proposalStore";
 
 function formatRelative(ts: number): string {
   const diff = Math.max(0, Date.now() - ts);
@@ -175,6 +175,16 @@ const ProposalDetail = () => {
 
   const proposal = id ? findProposal(id) : undefined;
 
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const endAt = proposal && proposal.status === "Active" ? getVotingEndTime(proposal.id) : 0;
+  const isActive = !!proposal && proposal.status === "Active" && now < endAt;
+  const remainingMs = Math.max(0, endAt - now);
+  const countdown = `${Math.floor(remainingMs / 60000)}:${String(Math.floor((remainingMs % 60000) / 1000)).padStart(2, "0")}`;
+
   const [tally, setTally] = useState<LiveTally | null>(
     proposal ? computeLiveTally(proposal) : null
   );
@@ -267,13 +277,13 @@ const ProposalDetail = () => {
               <div className="rounded-lg bg-card border border-border shadow-card p-6">
                 <h3 className="text-lg font-display font-bold text-foreground mb-1">Your voting info</h3>
                 <p className="text-xs text-muted-foreground mb-2">
-                  {proposal.status === "Active" ? "Voting is live 🟢" : "Voting is closed 🔴"}
+                  {isActive ? `Voting is live 🟢 · ends in ${countdown}` : "Voting is closed 🔴"}
                 </p>
                 <p className="text-xs text-muted-foreground mb-4">
                   4 free Governance entries per user, then {VOTING_FEE} MEZO or MUSD per vote
                 </p>
                 <div className="space-y-3">
-                  {proposal.status === "Active" && (
+                  {isActive && (
                     <div className="space-y-3 rounded-lg border border-border bg-secondary/40 p-3">
                       <div>
                         <p className="text-xs text-muted-foreground">Connected wallet app</p>
@@ -296,7 +306,7 @@ const ProposalDetail = () => {
                       <CheckCircle2 className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
                       <p className="text-sm font-semibold text-foreground">You voted: {voted}</p>
                     </div>
-                  ) : proposal.status === "Active" ? (
+                  ) : isActive ? (
                     <>
                       <div className="grid grid-cols-3 gap-2">
                         <button
@@ -377,6 +387,18 @@ const ProposalDetail = () => {
                   {tally.voteCount} {tally.voteCount === 1 ? "vote" : "votes"} counted
                   {tally.lastVoteAt && ` · last vote ${formatRelative(tally.lastVoteAt)}`}
                 </p>
+                {proposal.status === "Active" && !isActive && (
+                  <p className="rounded-md border border-border bg-secondary/40 px-3 py-2 text-xs font-semibold text-foreground">
+                    Final result:{" "}
+                    {tally.voteCount === 0
+                      ? "No votes cast"
+                      : tally.forVotes > tally.againstVotes
+                      ? "Passed (For wins)"
+                      : tally.againstVotes > tally.forVotes
+                      ? "Rejected (Against wins)"
+                      : "Tied"}
+                  </p>
+                )}
 
                 {[
                   { label: "For", value: tally.forVotes, pct: tally.forPct, color: "bg-emerald-500" },

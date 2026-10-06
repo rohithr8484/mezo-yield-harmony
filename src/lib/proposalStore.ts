@@ -33,13 +33,24 @@ export function findProposal(id: string): Proposal | undefined {
   return getAllProposals().find((p) => p.id.toLowerCase() === lower);
 }
 
+// In-memory JavaScript store for voting data (per proposal). Resets on page refresh.
+const votesMemory: VotesMap = {};
+
+// 10-minute voting window per active proposal, kept in memory.
+export const VOTING_WINDOW_MS = 10 * 60 * 1000;
+const endTimes: Record<string, number> = {};
+
+export function getVotingEndTime(proposalId: string): number {
+  if (!endTimes[proposalId]) endTimes[proposalId] = Date.now() + VOTING_WINDOW_MS;
+  return endTimes[proposalId];
+}
+
+export function isVotingOpen(proposalId: string): boolean {
+  return Date.now() < getVotingEndTime(proposalId);
+}
+
 export function getVotes(): VotesMap {
-  try {
-    const raw = localStorage.getItem(VOTES_KEY);
-    return raw ? (JSON.parse(raw) as VotesMap) : {};
-  } catch {
-    return {};
-  }
+  return votesMemory;
 }
 
 export function getVotesFor(proposalId: string): VoteRecord[] {
@@ -47,14 +58,9 @@ export function getVotesFor(proposalId: string): VoteRecord[] {
 }
 
 export function addVote(proposalId: string, vote: VoteRecord) {
-  const map = getVotes();
-  const list = map[proposalId] ?? [];
-  list.push(vote);
-  map[proposalId] = list;
-  try {
-    localStorage.setItem(VOTES_KEY, JSON.stringify(map));
-    window.dispatchEvent(new CustomEvent("mezo:votes-updated", { detail: { proposalId } }));
-  } catch {}
+  if (!isVotingOpen(proposalId)) return;
+  (votesMemory[proposalId] ??= []).push(vote);
+  window.dispatchEvent(new CustomEvent("mezo:votes-updated", { detail: { proposalId } }));
 }
 
 export function saveUserProposal(p: Proposal) {
