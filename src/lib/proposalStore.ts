@@ -18,7 +18,7 @@ export type VotesMap = Record<string, VoteRecord[]>;
 export function getUserProposals(): Proposal[] {
   try {
     const raw = localStorage.getItem(USER_PROPOSALS_KEY);
-    return raw ? (JSON.parse(raw) as Proposal[]) : [];
+    return raw ? (JSON.parse(raw) as Proposal[]).map((p) => ({ ...p, status: p.status === "Finished" ? "Finished" : "Active" })) : [];
   } catch {
     return [];
   }
@@ -36,8 +36,8 @@ export function findProposal(id: string): Proposal | undefined {
 // In-memory JavaScript store for voting data (per proposal). Resets on page refresh.
 const votesMemory: VotesMap = {};
 
-// 10-minute voting window per active proposal, kept in memory.
-export const VOTING_WINDOW_MS = 10 * 60 * 1000;
+// 25-minute voting window per active proposal, kept in memory.
+export const VOTING_WINDOW_MS = 25 * 60 * 1000;
 const endTimes: Record<string, number> = {};
 
 export function getVotingEndTime(proposalId: string): number {
