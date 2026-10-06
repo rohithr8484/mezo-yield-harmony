@@ -11,7 +11,6 @@ import { getAllProposals, getUserProposals, saveUserProposal } from "@/lib/propo
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
-import { ContractLogs } from "@/components/governance/ContractLogs";
 
 const filterOptions: Array<{ label: string; value: string }> = [
   { label: "All proposals", value: "all" },
@@ -115,7 +114,6 @@ const Governance = () => {
               </div>
             </div>
           )}
-          <ContractLogs />
           </div>
         </div>
       </section>
