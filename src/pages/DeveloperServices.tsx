@@ -382,9 +382,8 @@ const DeveloperServices = () => {
         </div>
       </section>
 
-      {/* veNFT Marketplace — hidden for now; to re-enable: change HIDDEN to false and remove the `hidden` class */}
-      {/* HIDDEN */}
-      <section className="hidden py-20 border-y border-border/50 bg-secondary/20" id="venft-marketplace">
+      {/* veNFT Marketplace */}
+      <section className="py-20 border-y border-border/50 bg-secondary/20" id="venft-marketplace">
         <div className="container">
           <div className="text-center mb-4">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
