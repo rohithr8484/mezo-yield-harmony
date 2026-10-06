@@ -469,10 +469,10 @@ export const VeNFTMarketplace = () => {
     }
   };
 
-  const handleLock = async () => {
+  const handleLock = async (weeks: 1 | 52) => {
     const LOCK_AMOUNT = "2";
     const WEEK = 7 * 24 * 60 * 60;
-    const LOCK_DURATION = 52 * WEEK;
+    const LOCK_DURATION = weeks * WEEK;
 
     const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
     if (!eth) {
@@ -580,7 +580,7 @@ export const VeNFTMarketplace = () => {
           </div>
         </div>
         <button
-          onClick={handleLock}
+          onClick={() => handleLock(52)}
           disabled={locking}
           className="px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-bitcoin/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
         >
@@ -589,10 +589,10 @@ export const VeNFTMarketplace = () => {
         </button>
       </div>
 
-      <div title="One-week lock option is not enabled yet; this change only renames the button.">
-        <Button variant="outline" disabled className="h-auto min-h-10 max-w-full whitespace-normal text-left">
-          <Lock className="h-4 w-4 shrink-0" />
-          Lock 2 MEZO for 1 week
+      <div title="The contract rounds expiry down to the next weekly boundary, so the actual lock may be shorter than seven days.">
+        <Button variant="outline" onClick={() => handleLock(1)} disabled={locking} className="h-auto min-h-10 max-w-full whitespace-normal text-left">
+          {locking ? <Loader2 className="h-4 w-4 shrink-0 animate-spin" /> : <Lock className="h-4 w-4 shrink-0" />}
+          {locking ? "Locking…" : "Lock 2 MEZO for 1 week"}
         </Button>
       </div>
 
