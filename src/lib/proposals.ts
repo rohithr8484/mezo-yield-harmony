@@ -1889,8 +1889,6 @@ export const proposals: Proposal[] = [
 
 export const statusStyles: Record<ProposalStatus, string> = {
   "Active": "border-blue-500/40 text-blue-500 bg-blue-500/5",
-  "Accepted": "border-emerald-500/40 text-emerald-600 bg-emerald-500/5",
-  "Rejected": "border-destructive/40 text-destructive bg-destructive/5",
   "Finished": "border-muted-foreground/40 text-muted-foreground bg-muted/50",
 };
 
