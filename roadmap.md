@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Match AML result references and load native plus token observations; four tests pass. Real wallet screening shows 50 token legs, six counterparties and the 0.0005 MUSD reward; transaction-hash screening stays scoped to its transaction, refresh restores gating, and disconnected sanctions/media remain Not screened.
+
 - [x] Remove legacy paid-unlock bypass for Analytics/AML and require controls on each Analyze/Screen click; verified exhausted allowances and saved paid flags show payment-only controls. Real AML wallet lookup returned 50 sampled transactions and six counterparties; sanctions/media providers remain disconnected.
 
 - [x] Show Analyze/Screen first, then the existing free-entry/payment controls; verified no lookups/results before unlock, automatic results after free entry, and restored gating with usage retained after refresh using controlled explorer fixtures; seven analytics tests pass.

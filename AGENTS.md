@@ -1,6 +1,6 @@
 # Project Rules
 
-- AML screening must distinguish public wallet observations from provider-backed compliance checks; disconnected sanctions and adverse-media providers show not screened, and the transaction graph covers only loaded native-value records, not traced funds or full AML clearance.
+- AML screening must distinguish public wallet observations from provider-backed compliance checks; disconnected sanctions and adverse-media providers show not screened. Derive payment metrics and graphs from loaded native movements and token events, separate assets by contract, and label incomplete coverage; transaction-hash queries stay scoped to that transaction, never traced funds or full AML clearance.
 - Keep AML access on the shared PaymentGate, preserving the legacy allowance key so renaming does not reset usage.
 - Analytics and AML render inputs before access controls; each valid Analyze/Screen submission mounts a fresh AnalysisAccessGate requiring PaymentGate unlock before lookups/results. Never use persisted API paid flags to bypass these per-request gates; preserve payment logic and allowance keys.
 

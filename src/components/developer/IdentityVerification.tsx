@@ -1,44 +1,32 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Search, Loader2, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AMLScreeningPanel } from "./AMLScreeningPanel";
 import { AnalysisAccessGate } from "./AnalysisAccessGate";
-import { type ExplorerTransaction } from "@/lib/onchainAnalytics";
-
-const API = "https://api.explorer.test.mezo.org/api/v2";
-
-interface Result {
-  address: string;
-  txs: ExplorerTransaction[];
-}
-
-const getJson = async (url: string) => {
-  try {
-    const response = await fetch(url);
-    return response.ok ? await response.json() : null;
-  } catch {
-    return null;
-  }
-};
+import { loadAMLObservations, type AMLResult } from "@/lib/amlExplorer";
 
 export const IdentityVerification = () => {
   const [requestId, setRequestId] = useState(0);
   const [requested, setRequested] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [input, setInput] = useState("");
-  const [res, setRes] = useState<Result | null>(null);
+  const [res, setRes] = useState<AMLResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [submittedInput, setSubmittedInput] = useState("");
+  const activeRequest = useRef<AbortController | null>(null);
+  useEffect(() => () => activeRequest.current?.abort(), []);
 
   const screen = async (unlocked = false) => {
-    const value = input.trim();
+    const value = unlocked ? submittedInput : input.trim();
     if (!value || loading) return;
     if (!/^0x([0-9a-fA-F]{40}|[0-9a-fA-F]{64})$/.test(value)) {
       setError("Enter a wallet address (0x… 40 hex) or a transaction hash.");
       return;
     }
     if (!unlocked) {
+      setSubmittedInput(value);
       setAuthorized(false);
       setRes(null);
       setRequestId(previous => previous + 1);
@@ -49,27 +37,19 @@ export const IdentityVerification = () => {
     setLoading(true);
     setError("");
     setRes(null);
+    activeRequest.current?.abort();
+    const controller = new AbortController();
+    activeRequest.current = controller;
+    const timeout = window.setTimeout(() => controller.abort(), 30000);
     try {
-      let address = value;
-      if (/^0x[0-9a-fA-F]{64}$/.test(value)) {
-        const transaction = await getJson(`${API}/transactions/${value}`);
-        if (!transaction?.from?.hash) {
-          setError("Transaction not found or API unavailable.");
-          return;
-        }
-        address = transaction.from.hash;
-      } else if (!/^0x[0-9a-fA-F]{40}$/.test(value)) {
-        setError("Enter a wallet address (0x… 40 hex) or a transaction hash.");
-        return;
-      }
-      const transactions = await getJson(`${API}/addresses/${address}/transactions`);
-      if (!Array.isArray(transactions?.items)) {
-        setError("Wallet transaction records unavailable. Please try again.");
-        return;
-      }
-      setRes({ address, txs: transactions.items });
+      const result = await loadAMLObservations(value, controller.signal);
+      if (controller.signal.aborted) throw new Error("Request timed out.");
+      if (activeRequest.current === controller) setRes(result);
+    } catch (err) {
+      if (activeRequest.current === controller) setError(controller.signal.aborted ? "The explorer request timed out. Please try again." : err instanceof Error ? err.message : "Unable to load wallet records.");
     } finally {
-      setLoading(false);
+      window.clearTimeout(timeout);
+      if (activeRequest.current === controller) setLoading(false);
     }
   };
 
@@ -102,6 +82,7 @@ export const IdentityVerification = () => {
           <XCircle className="h-4 w-4 shrink-0" /> {error}
         </div>
       )}
+      {loading && <div role="status" className="flex items-center gap-2 py-6 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Loading transaction and token payment records…</div>}
       {requested && <AnalysisAccessGate
         key={requestId}
         serviceName="Identity Verification"
@@ -109,7 +90,7 @@ export const IdentityVerification = () => {
         onPaymentSuccess={() => {}}
         onUnlock={() => setAuthorized(true)}
       >
-        {res && <AMLScreeningPanel address={res.address} transactions={res.txs} />}
+        {res && <AMLScreeningPanel result={res} />}
       </AnalysisAccessGate>}
     </div>
   );
