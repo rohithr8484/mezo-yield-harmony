@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Search, ExternalLink, Loader2, XCircle, CheckCircle2, Circle, ShieldCheck, Coins, History, FileCode, Droplets, Landmark, Wallet, AlertTriangle, TrendingUp, TrendingDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { AMLScreeningPanel } from "./AMLScreeningPanel";
+import { type ExplorerTransaction } from "@/lib/onchainAnalytics";
 
 const API = "https://api.explorer.test.mezo.org/api/v2";
 const EXPLORER = "https://explorer.test.mezo.org";
@@ -32,7 +35,7 @@ interface Result {
   info: Any | null;
   counters: Any | null;
   tokens: Any[];
-  txs: Any[];
+  txs: ExplorerTransaction[];
   sourceTx?: Any | null;
 }
 
@@ -93,7 +96,7 @@ export const IdentityVerification = () => {
   const lastSeen = times.length ? new Date(Math.max(...times)) : null;
   const oldestSeen = times.length ? new Date(Math.min(...times)) : null;
   const outgoing = (res?.txs ?? []).filter((t) => t.from?.hash?.toLowerCase() === res?.address.toLowerCase()).length;
-  const failed = (res?.txs ?? []).filter((t) => t.status && t.status !== "ok").length;
+  const failed = (res?.txs ?? []).filter((t) => t.status === "error").length;
   const counterparties = new Set((res?.txs ?? []).flatMap((t) => [t.from?.hash, t.to?.hash]).filter((a) => a && a.toLowerCase() !== res?.address.toLowerCase()));
 
   const checks = res
@@ -111,7 +114,7 @@ export const IdentityVerification = () => {
     : [];
   const passed = checks.filter((c) => c.ok).length;
   const score = checks.length ? Math.round((passed / checks.length) * 100) : 0;
-  const tier = score >= 75 ? "Verified" : score >= 45 ? "Partially verified" : "Unverified";
+  const tier = "Wallet activity checks";
 
   // ---- Wallet behavior: large-holder movements & activity change ----
   const txs = res?.txs ?? [];
@@ -139,12 +142,12 @@ export const IdentityVerification = () => {
   const risks: { level: "high" | "medium" | "low"; text: string }[] = [];
   if (res) {
     if (isContract && !res.info?.is_verified) risks.push({ level: "high", text: "Unverified contract — source code cannot be audited on the explorer." });
-    if (liquidationHits > 0) risks.push({ level: "high", text: `${liquidationHits} liquidation-related call${liquidationHits === 1 ? "" : "s"} in recent history — collateral was forcibly closed.` });
-    if (failed > 2) risks.push({ level: "medium", text: `${failed} failed transactions recently — possible bot activity or misconfigured integrations.` });
-    if (isLargeHolder && largeMovements.length > 0) risks.push({ level: "medium", text: `Large holder with ${largeMovements.length} sizable movement${largeMovements.length === 1 ? "" : "s"} recently — watch for market impact.` });
-    if (txCount === 0) risks.push({ level: "medium", text: "No transaction history — identity cannot be established from on-chain activity." });
+    if (liquidationHits > 0) risks.push({ level: "medium", text: `${liquidationHits} liquidation-related method name${liquidationHits === 1 ? "" : "s"} in loaded history; protocol events are needed to confirm liquidation.` });
+    if (failed > 2) risks.push({ level: "medium", text: `${failed} failed transactions in loaded history; this alone does not establish suspicious activity.` });
+    if (isLargeHolder && largeMovements.length > 0) risks.push({ level: "low", text: `${largeMovements.length} native movements at or above 0.01 BTC in loaded history; movement size alone is not an AML red flag.` });
+    if (txCount === 0) risks.push({ level: "low", text: "No transaction history reported; identity and AML status remain unassessed." });
     if (activityTrend === "down" && txCount > 0) risks.push({ level: "low", text: "Activity is declining week-over-week — wallet may be going dormant." });
-    if (!risks.length) risks.push({ level: "low", text: "No elevated risk signals detected for this wallet." });
+    if (!risks.length) risks.push({ level: "low", text: "No wallet heuristics triggered in loaded records. This is not AML clearance." });
   }
 
   return (
@@ -157,15 +160,17 @@ export const IdentityVerification = () => {
           className="border-border bg-secondary/60 font-mono text-xs"
           onKeyDown={(e) => e.key === "Enter" && verify()}
         />
-        <button
+        <Button
           onClick={verify}
           disabled={loading || !input.trim()}
           className="flex shrink-0 items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
           {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-          Verify
-        </button>
+          Screen
+        </Button>
       </div>
+
+      <AMLScreeningPanel address={res?.address} transactions={res?.txs} />
 
       {error && (
         <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
@@ -178,18 +183,18 @@ export const IdentityVerification = () => {
           {/* Identity header */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-[10px] font-bold uppercase text-muted-foreground">Wallet identity</p>
+              <p className="text-[10px] font-bold uppercase text-muted-foreground">Wallet activity profile</p>
               <a href={`${EXPLORER}/address/${res.address}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 break-all font-mono text-xs text-primary hover:underline">
                 {res.address} <ExternalLink className="h-3 w-3 shrink-0" />
               </a>
               {(res.info?.name || res.info?.ens_domain_name) && <p className="mt-1 text-xs text-foreground">{res.info?.ens_domain_name || res.info?.name}</p>}
-              {res.sourceTx && <p className="mt-1 text-[11px] text-muted-foreground">Resolved from signer of tx {short(res.sourceTx.hash)}</p>}
+              {res.sourceTx && <p className="mt-1 text-[11px] text-muted-foreground">Resolved from sender of tx {short(res.sourceTx.hash)}</p>}
             </div>
             <div className="text-right">
               <p className={`flex items-center justify-end gap-1 text-sm font-bold ${score >= 75 ? "text-accent" : score >= 45 ? "text-primary" : "text-muted-foreground"}`}>
                 <ShieldCheck className="h-4 w-4" /> {tier}
               </p>
-              <p className="font-mono text-xs text-muted-foreground">Trust score {score}/100 · {passed}/{checks.length} checks</p>
+              <p className="font-mono text-xs text-muted-foreground">Activity coverage {score}% · {passed}/{checks.length} checks</p>
             </div>
           </div>
           <div className="h-2 overflow-hidden rounded-full bg-secondary">
@@ -198,7 +203,7 @@ export const IdentityVerification = () => {
 
           {/* Attestation checks */}
           <div>
-            <SectionTitle icon={ShieldCheck}>On-chain attestation checks</SectionTitle>
+            <SectionTitle icon={ShieldCheck}>Observed wallet checks · not identity verification</SectionTitle>
             <div className="grid gap-1.5 sm:grid-cols-2">
               {checks.map((c) => (
                 <div key={c.label} className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-2 text-xs">
@@ -343,7 +348,7 @@ export const IdentityVerification = () => {
 
           {/* Verification records */}
           <div>
-            <SectionTitle icon={History}>Verification records (latest {Math.min(5, res.txs.length)}{failed ? ` · ${failed} failed` : ""})</SectionTitle>
+            <SectionTitle icon={History}>Recent transaction records (latest {Math.min(5, res.txs.length)}{failed ? ` · ${failed} failed` : ""})</SectionTitle>
             {res.txs.length === 0 ? (
               <p className="rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground">No transaction records found.</p>
             ) : (
@@ -365,7 +370,7 @@ export const IdentityVerification = () => {
               </div>
             )}
           </div>
-          <p className="text-[11px] text-muted-foreground">Checks are computed live from public Mezo Testnet explorer data.</p>
+          <p className="text-[11px] text-muted-foreground">Wallet observations use public Mezo Testnet explorer data. Sanctions, adverse media and FATF screening have not been performed.</p>
         </div>
       )}
     </div>

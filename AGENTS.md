@@ -1,5 +1,7 @@
 # Project Rules
 
+- AML screening must distinguish public wallet observations from provider-backed compliance checks; disconnected sanctions and adverse-media providers show not screened, and the transaction graph covers only loaded native-value records, not traced funds or full AML clearance.
+
 - Derive transaction analytics from explorer observations in a shared pure module; label method-based inferences and incomplete or unavailable data, and never aggregate quantities across different tokens or present heuristics as proven safety.
 
 - Route both supported veMEZO lock durations through the same approval, simulation, and confirmation flow; respect the deployed contract's weekly expiry rounding and never submit one-minute locks.

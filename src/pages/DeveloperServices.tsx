@@ -211,7 +211,7 @@ const DeveloperServices = () => {
                 </div>
                 <h2 className="text-3xl font-display font-bold text-foreground sm:text-4xl">API Marketplace</h2>
                 <p className="mt-3 max-w-2xl text-base text-muted-foreground">
-                  Production-ready services for intelligence, analytics, identity, and contract security.
+                  Services for intelligence, analytics, AML screening, and contract security.
                 </p>
               </div>
               <div className="grid grid-cols-3 overflow-hidden rounded-lg border border-border/70 bg-background/60 text-center">
@@ -251,10 +251,11 @@ const DeveloperServices = () => {
                 },
                 {
                   key: "identity",
+                  // Preserve the existing service identity so the rename does not reset allowances.
                   serviceName: "Identity Verification",
-                  label: "IDENTITY / ATTESTATION",
-                  title: "Identity Verification API",
-                  description: "Verify wallet identity through on-chain attestations and inspect verification records.",
+                  label: "COMPLIANCE / AML",
+                  title: "AML Screening API",
+                  description: "Inspect wallet activity and payment flows, with sanctions and adverse-media screening status.",
                   icon: Database,
                   content: <IdentityVerification />,
                 },
@@ -293,6 +294,7 @@ const DeveloperServices = () => {
                     <div className="mt-auto border-t border-border/60 pt-2">
                       <PaymentGate
                         serviceName={service.serviceName}
+                        displayName={service.key === "identity" ? "AML Screening API" : service.serviceName}
                         onPaymentSuccess={() => markPaid(service.key)}
                         isPaid={!!paidServices[service.key]}
                         compact
