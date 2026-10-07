@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Remove legacy paid-unlock bypass for Analytics/AML and require controls on each Analyze/Screen click; verified exhausted allowances and saved paid flags show payment-only controls. Real AML wallet lookup returned 50 sampled transactions and six counterparties; sanctions/media providers remain disconnected.
+
 - [x] Show Analyze/Screen first, then the existing free-entry/payment controls; verified no lookups/results before unlock, automatic results after free entry, and restored gating with usage retained after refresh using controlled explorer fixtures; seven analytics tests pass.
 
 - [x] Restrict AML to the four requested screening sections; verified free-entry refresh parity and saved paid-access parity with AI Text Summarization. Explorer wallet lookup was unavailable during the check; provider-backed sanctions/media remain not screened.
