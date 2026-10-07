@@ -1,6 +1,7 @@
 # Project Rules
 
 - AML screening must distinguish public wallet observations from provider-backed compliance checks; disconnected sanctions and adverse-media providers show not screened, and the transaction graph covers only loaded native-value records, not traced funds or full AML clearance.
+- Keep AML access on the same shared PaymentGate and API persistence path as AI Text Summarization, preserving the legacy allowance key so renaming does not reset usage.
 
 - Derive transaction analytics from explorer observations in a shared pure module; label method-based inferences and incomplete or unavailable data, and never aggregate quantities across different tokens or present heuristics as proven safety.
 
