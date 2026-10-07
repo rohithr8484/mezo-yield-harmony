@@ -22,7 +22,8 @@ const getJson = async (url: string) => {
   }
 };
 
-export const IdentityVerification = ({ isPaid = false, onPaymentSuccess = () => {} }: { isPaid?: boolean; onPaymentSuccess?: () => void }) => {
+export const IdentityVerification = () => {
+  const [requestId, setRequestId] = useState(0);
   const [requested, setRequested] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [input, setInput] = useState("");
@@ -30,14 +31,17 @@ export const IdentityVerification = ({ isPaid = false, onPaymentSuccess = () => 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const screen = async () => {
+  const screen = async (unlocked = false) => {
     const value = input.trim();
     if (!value || loading) return;
     if (!/^0x([0-9a-fA-F]{40}|[0-9a-fA-F]{64})$/.test(value)) {
       setError("Enter a wallet address (0x… 40 hex) or a transaction hash.");
       return;
     }
-    if (!authorized) {
+    if (!unlocked) {
+      setAuthorized(false);
+      setRes(null);
+      setRequestId(previous => previous + 1);
       setError("");
       setRequested(true);
       return;
@@ -70,7 +74,7 @@ export const IdentityVerification = ({ isPaid = false, onPaymentSuccess = () => 
   };
 
   useEffect(() => {
-    if (authorized) void screen();
+    if (authorized) void screen(true);
   }, [authorized]);
 
   return (
@@ -85,7 +89,7 @@ export const IdentityVerification = ({ isPaid = false, onPaymentSuccess = () => 
           onKeyDown={(event) => event.key === "Enter" && screen()}
         />
         <Button
-          onClick={screen}
+          onClick={() => screen()}
           disabled={loading || !input.trim()}
           className="flex shrink-0 items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90"
         >
@@ -99,10 +103,10 @@ export const IdentityVerification = ({ isPaid = false, onPaymentSuccess = () => 
         </div>
       )}
       {requested && <AnalysisAccessGate
+        key={requestId}
         serviceName="Identity Verification"
         displayName="AML Screening API"
-        isPaid={isPaid}
-        onPaymentSuccess={onPaymentSuccess}
+        onPaymentSuccess={() => {}}
         onUnlock={() => setAuthorized(true)}
       >
         {res && <AMLScreeningPanel address={res.address} transactions={res.txs} />}

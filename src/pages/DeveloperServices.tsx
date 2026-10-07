@@ -247,7 +247,7 @@ const DeveloperServices = () => {
                   title: "On-chain Analytics API",
                   description: "Inspect transaction status, gas usage, token transfers, and decoded input from one hash.",
                   icon: Activity,
-                  content: <OnchainAnalytics isPaid={!!paidServices.analytics} onPaymentSuccess={() => markPaid("analytics")} />,
+                  content: <OnchainAnalytics />,
                 },
                 {
                   key: "identity",
@@ -257,7 +257,7 @@ const DeveloperServices = () => {
                   title: "AML Screening API",
                   description: "Inspect wallet activity and payment flows, with sanctions and adverse-media screening status.",
                   icon: Database,
-                  content: <IdentityVerification isPaid={!!paidServices.identity} onPaymentSuccess={() => markPaid("identity")} />,
+                  content: <IdentityVerification />,
                 },
                 {
                   key: "run",

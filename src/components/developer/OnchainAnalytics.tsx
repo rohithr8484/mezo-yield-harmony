@@ -37,7 +37,8 @@ async function getJson<T>(path: string, signal: AbortSignal): Promise<T> {
 
 type Result = { tx: ExplorerTransaction; transfers: TokenTransfer[]; fromInfo: AddressInfo | null; toInfo: AddressInfo | null; counters: AddressCounters | null; transferComplete: boolean; addressComplete: boolean };
 
-export const OnchainAnalytics = ({ isPaid = false, onPaymentSuccess = () => {} }: { isPaid?: boolean; onPaymentSuccess?: () => void }) => {
+export const OnchainAnalytics = () => {
+  const [requestId, setRequestId] = useState(0);
   const [requested, setRequested] = useState(false);
   const [authorized, setAuthorized] = useState(false);
   const [hash, setHash] = useState("");
@@ -48,10 +49,10 @@ export const OnchainAnalytics = ({ isPaid = false, onPaymentSuccess = () => {} }
   const activeRequest = useRef<AbortController | null>(null);
   useEffect(() => () => activeRequest.current?.abort(), []);
 
-  const lookup = async () => {
+  const lookup = async (unlocked = false) => {
     const h = hash.trim();
     if (!/^0x[0-9a-f]{64}$/i.test(h)) { setError("Enter a valid transaction hash: 0x followed by 64 hexadecimal characters."); return; }
-    if (!authorized) { setError(""); setRequested(true); return; }
+    if (!unlocked) { setAuthorized(false); setResult(null); setRequestId(previous => previous + 1); setError(""); setRequested(true); return; }
     activeRequest.current?.abort();
     const controller = new AbortController();
     activeRequest.current = controller;
@@ -93,7 +94,7 @@ export const OnchainAnalytics = ({ isPaid = false, onPaymentSuccess = () => {} }
   };
 
   useEffect(() => {
-    if (authorized) void lookup();
+    if (authorized) void lookup(true);
   }, [authorized]);
 
   const data = result ? deriveAnalytics(result.tx, result.transfers, result.toInfo) : null;
@@ -116,7 +117,7 @@ export const OnchainAnalytics = ({ isPaid = false, onPaymentSuccess = () => {} }
       </form>
       {error && <div role="alert" className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"><XCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
       {loading && <div role="status" className="flex items-center gap-2 py-8 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Retrieving explorer records…</div>}
-      {requested && <AnalysisAccessGate serviceName="On-chain Analytics" displayName="On-chain Analytics API" isPaid={isPaid} onPaymentSuccess={onPaymentSuccess} onUnlock={() => setAuthorized(true)}>
+      {requested && <AnalysisAccessGate key={requestId} serviceName="On-chain Analytics" displayName="On-chain Analytics API" onPaymentSuccess={() => {}} onUnlock={() => setAuthorized(true)}>
       {result && data && authorized && (
         <div aria-live="polite" className="min-w-0">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-l-2 border-accent bg-accent/5 px-4 py-3">

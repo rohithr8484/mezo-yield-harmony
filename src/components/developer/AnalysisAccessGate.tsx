@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { PaymentGate } from "./PaymentGate";
 
 function AuthorizedResult({ onUnlock, children }: { onUnlock: () => void; children: ReactNode }) {
@@ -11,15 +11,15 @@ function AuthorizedResult({ onUnlock, children }: { onUnlock: () => void; childr
   return <>{children}</>;
 }
 
-export function AnalysisAccessGate({ serviceName, displayName, isPaid, onPaymentSuccess, onUnlock, children }: {
+export function AnalysisAccessGate({ serviceName, displayName, onPaymentSuccess, onUnlock, children }: {
   serviceName: string;
   displayName: string;
-  isPaid: boolean;
   onPaymentSuccess: () => void;
   onUnlock: () => void;
   children: ReactNode;
 }) {
-  return <PaymentGate serviceName={serviceName} displayName={displayName} isPaid={isPaid} onPaymentSuccess={onPaymentSuccess} compact>
+  const [paid, setPaid] = useState(false);
+  return <PaymentGate serviceName={serviceName} displayName={displayName} isPaid={paid} onPaymentSuccess={() => { setPaid(true); onPaymentSuccess(); }} compact>
     <AuthorizedResult onUnlock={onUnlock}>{children}</AuthorizedResult>
   </PaymentGate>;
 }
