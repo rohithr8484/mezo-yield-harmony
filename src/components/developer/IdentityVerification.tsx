@@ -3,6 +3,7 @@ import { Search, ExternalLink, Loader2, XCircle, CheckCircle2, Circle, ShieldChe
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AMLScreeningPanel } from "./AMLScreeningPanel";
+import { type ExplorerTransaction } from "@/lib/onchainAnalytics";
 
 const API = "https://api.explorer.test.mezo.org/api/v2";
 const EXPLORER = "https://explorer.test.mezo.org";
@@ -34,7 +35,7 @@ interface Result {
   info: Any | null;
   counters: Any | null;
   tokens: Any[];
-  txs: Any[];
+  txs: ExplorerTransaction[];
   sourceTx?: Any | null;
 }
 
@@ -95,7 +96,7 @@ export const IdentityVerification = () => {
   const lastSeen = times.length ? new Date(Math.max(...times)) : null;
   const oldestSeen = times.length ? new Date(Math.min(...times)) : null;
   const outgoing = (res?.txs ?? []).filter((t) => t.from?.hash?.toLowerCase() === res?.address.toLowerCase()).length;
-  const failed = (res?.txs ?? []).filter((t) => t.status && t.status !== "ok").length;
+  const failed = (res?.txs ?? []).filter((t) => t.status === "error").length;
   const counterparties = new Set((res?.txs ?? []).flatMap((t) => [t.from?.hash, t.to?.hash]).filter((a) => a && a.toLowerCase() !== res?.address.toLowerCase()));
 
   const checks = res
