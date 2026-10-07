@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Rename the wallet service to AML Screening API, add honest screening parameters and an observed transaction flow graph, preserving access allowances.
+
 - [x] Enhance On-chain Analytics with behavior-derived metrics for all nine sections, preserving service payments; five tests pass and a real mint transaction was verified through free entry on desktop and mobile.
 
 - [x] Match veMEZO marketplace unlock controls to API services and restore its controls after refresh without resetting free-entry usage or NFT positions.
