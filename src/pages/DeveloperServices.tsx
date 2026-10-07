@@ -294,6 +294,7 @@ const DeveloperServices = () => {
                     <div className="mt-auto border-t border-border/60 pt-2">
                       <PaymentGate
                         serviceName={service.serviceName}
+                        displayName={service.key === "identity" ? "AML Screening API" : service.serviceName}
                         onPaymentSuccess={() => markPaid(service.key)}
                         isPaid={!!paidServices[service.key]}
                         compact

@@ -11,7 +11,7 @@ function Metric({ label, value }: { label: string; value: string | number }) {
   return <div className="min-w-0 border-l-2 border-border pl-3"><dt className="text-[11px] text-muted-foreground">{label}</dt><dd className="mt-1 break-words font-mono text-sm font-semibold text-foreground">{value}</dd></div>;
 }
 function Address({ address, selected }: { address: string; selected: boolean }) {
-  return <a href={`${EXPLORER}/address/${address}`} target="_blank" rel="noopener noreferrer" title={address} className={`min-w-0 break-all font-mono text-[11px] hover:underline ${selected ? "font-semibold text-accent" : "text-primary"}`}>{shortAddress(address)}{selected && <span className="mt-1 block font-sans text-[10px] font-normal text-muted-foreground">Screened wallet</span>}</a>;
+  return <a href={`${EXPLORER}/address/${address}`} target="_blank" rel="noopener noreferrer" title={address} className={`min-w-0 break-all font-mono text-[11px] hover:underline ${selected ? "font-semibold text-accent" : "text-primary"}`}>{shortAddress(address)}{selected && <span className="mt-1 block font-sans text-[10px] font-normal text-muted-foreground">Selected wallet</span>}</a>;
 }
 
 export function AMLScreeningPanel({ address, transactions }: { address?: string; transactions?: ExplorerTransaction[] }) {

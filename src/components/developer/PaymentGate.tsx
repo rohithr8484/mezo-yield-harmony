@@ -16,6 +16,7 @@ const FREE_ENTRY_LIMIT = 4;
 
 interface PaymentGateProps {
   serviceName: string;
+  displayName?: string;
   onPaymentSuccess: () => void;
   isPaid: boolean;
   children: React.ReactNode;
@@ -24,7 +25,7 @@ interface PaymentGateProps {
   extraButton?: React.ReactNode;
 }
 
-export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, uniform = false, compact = false, extraButton }: PaymentGateProps) => {
+export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentSuccess, isPaid, children, uniform = false, compact = false, extraButton }: PaymentGateProps) => {
   const { isConnected, chainId, connector, address } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync, isPending: isSwitching } = useSwitchChain();
@@ -59,7 +60,7 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
         const { stakeHash } = await payWithMEZO(parseUnits("0.2", 18));
         txHash = stakeHash as `0x${string}`;
       }
-      toast.success(`Payment for ${serviceName} confirmed via ${connectedWalletName}. Tx: ${txHash.slice(0, 10)}...`);
+      toast.success(`Payment for ${displayName} confirmed via ${connectedWalletName}. Tx: ${txHash.slice(0, 10)}...`);
       onPaymentSuccess();
     } catch (error) {
       const msg = error instanceof Error ? error.message.toLowerCase() : "";
@@ -106,7 +107,7 @@ export const PaymentGate = ({ serviceName, onPaymentSuccess, isPaid, children, u
     } catch {
       // Ignore storage errors and keep the in-session free entry active.
     }
-    toast.success(`Free entry activated for ${serviceName}. ${FREE_ENTRY_LIMIT - nextUsed} left.`);
+    toast.success(`Free entry activated for ${displayName}. ${FREE_ENTRY_LIMIT - nextUsed} left.`);
   };
 
   const isProcessing = isSubmitting || isSwitching;
