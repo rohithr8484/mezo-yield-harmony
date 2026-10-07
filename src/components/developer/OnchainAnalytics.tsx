@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Search, ExternalLink, Loader2, CheckCircle, XCircle, Clock, Fuel, Gauge, Layers, User, FileCode, Droplets, Landmark, Wallet, AlertTriangle, ArrowRight, Activity, Copy, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { AnalysisAccessGate } from "./AnalysisAccessGate";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { deriveAnalytics, finiteNumber, formatNumber, formatUnits, shortAddress, type ExplorerTransaction, type TokenTransfer, type AddressInfo, type AddressCounters } from "@/lib/onchainAnalytics";
 
@@ -36,7 +37,9 @@ async function getJson<T>(path: string, signal: AbortSignal): Promise<T> {
 
 type Result = { tx: ExplorerTransaction; transfers: TokenTransfer[]; fromInfo: AddressInfo | null; toInfo: AddressInfo | null; counters: AddressCounters | null; transferComplete: boolean; addressComplete: boolean };
 
-export const OnchainAnalytics = () => {
+export const OnchainAnalytics = ({ isPaid = false, onPaymentSuccess = () => {} }: { isPaid?: boolean; onPaymentSuccess?: () => void }) => {
+  const [requested, setRequested] = useState(false);
+  const [authorized, setAuthorized] = useState(false);
   const [hash, setHash] = useState("");
   const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,6 +51,7 @@ export const OnchainAnalytics = () => {
   const lookup = async () => {
     const h = hash.trim();
     if (!/^0x[0-9a-f]{64}$/i.test(h)) { setError("Enter a valid transaction hash: 0x followed by 64 hexadecimal characters."); return; }
+    if (!authorized) { setError(""); setRequested(true); return; }
     activeRequest.current?.abort();
     const controller = new AbortController();
     activeRequest.current = controller;
@@ -108,7 +112,8 @@ export const OnchainAnalytics = () => {
       </form>
       {error && <div role="alert" className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"><XCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
       {loading && <div role="status" className="flex items-center gap-2 py-8 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Retrieving explorer records…</div>}
-      {result && data && (
+      {requested && <AnalysisAccessGate serviceName="On-chain Analytics" displayName="On-chain Analytics API" isPaid={isPaid} onPaymentSuccess={onPaymentSuccess} onUnlock={() => setAuthorized(true)}>
+      {result && data && authorized && (
         <div aria-live="polite" className="min-w-0">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-l-2 border-accent bg-accent/5 px-4 py-3">
             <div className="min-w-0">
@@ -214,6 +219,7 @@ export const OnchainAnalytics = () => {
           </Section>
         </div>
       )}
+      </AnalysisAccessGate>}
     </div>
   );
 };

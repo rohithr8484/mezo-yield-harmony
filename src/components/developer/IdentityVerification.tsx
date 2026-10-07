@@ -3,6 +3,7 @@ import { Search, Loader2, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AMLScreeningPanel } from "./AMLScreeningPanel";
+import { AnalysisAccessGate } from "./AnalysisAccessGate";
 import { type ExplorerTransaction } from "@/lib/onchainAnalytics";
 
 const API = "https://api.explorer.test.mezo.org/api/v2";
@@ -21,7 +22,9 @@ const getJson = async (url: string) => {
   }
 };
 
-export const IdentityVerification = () => {
+export const IdentityVerification = ({ isPaid = false, onPaymentSuccess = () => {} }: { isPaid?: boolean; onPaymentSuccess?: () => void }) => {
+  const [requested, setRequested] = useState(false);
+  const [authorized, setAuthorized] = useState(false);
   const [input, setInput] = useState("");
   const [res, setRes] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
@@ -30,6 +33,15 @@ export const IdentityVerification = () => {
   const screen = async () => {
     const value = input.trim();
     if (!value || loading) return;
+    if (!/^0x([0-9a-fA-F]{40}|[0-9a-fA-F]{64})$/.test(value)) {
+      setError("Enter a wallet address (0x… 40 hex) or a transaction hash.");
+      return;
+    }
+    if (!authorized) {
+      setError("");
+      setRequested(true);
+      return;
+    }
     setLoading(true);
     setError("");
     setRes(null);
@@ -82,7 +94,15 @@ export const IdentityVerification = () => {
           <XCircle className="h-4 w-4 shrink-0" /> {error}
         </div>
       )}
-      <AMLScreeningPanel address={res?.address} transactions={res?.txs} />
+      {requested && <AnalysisAccessGate
+        serviceName="Identity Verification"
+        displayName="AML Screening API"
+        isPaid={isPaid}
+        onPaymentSuccess={onPaymentSuccess}
+        onUnlock={() => setAuthorized(true)}
+      >
+        {res && <AMLScreeningPanel address={res.address} transactions={res.txs} />}
+      </AnalysisAccessGate>}
     </div>
   );
 };
