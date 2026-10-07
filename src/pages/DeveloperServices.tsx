@@ -247,7 +247,7 @@ const DeveloperServices = () => {
                   title: "On-chain Analytics API",
                   description: "Inspect transaction status, gas usage, token transfers, and decoded input from one hash.",
                   icon: Activity,
-                  content: <OnchainAnalytics />,
+                  content: <OnchainAnalytics isPaid={!!paidServices.analytics} onPaymentSuccess={() => markPaid("analytics")} />,
                 },
                 {
                   key: "identity",
@@ -257,7 +257,7 @@ const DeveloperServices = () => {
                   title: "AML Screening API",
                   description: "Inspect wallet activity and payment flows, with sanctions and adverse-media screening status.",
                   icon: Database,
-                  content: <IdentityVerification />,
+                  content: <IdentityVerification isPaid={!!paidServices.identity} onPaymentSuccess={() => markPaid("identity")} />,
                 },
                 {
                   key: "run",
@@ -292,6 +292,7 @@ const DeveloperServices = () => {
                     </div>
                     <p className="mb-5 max-w-xl text-sm leading-relaxed text-muted-foreground">{service.description}</p>
                     <div className="mt-auto border-t border-border/60 pt-2">
+                      {service.key === "analytics" || service.key === "identity" ? service.content : (
                       <PaymentGate
                         serviceName={service.serviceName}
                         displayName={service.key === "identity" ? "AML Screening API" : service.serviceName}
@@ -301,6 +302,7 @@ const DeveloperServices = () => {
                       >
                         {service.content}
                       </PaymentGate>
+                      )}
                     </div>
                   </div>
                 </article>
