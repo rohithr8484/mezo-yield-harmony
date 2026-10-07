@@ -317,6 +317,7 @@ export const VeNFTMarketplace = () => {
           [
             "function balanceOf(address owner) view returns (uint256)",
             "function tokenOfOwnerByIndex(address owner,uint256 index) view returns (uint256)",
+            "function ownerToNFTokenIdList(address owner,uint256 index) view returns (uint256)",
             "function ownerOf(uint256 tokenId) view returns (address)",
           ],
           provider,
@@ -324,7 +325,9 @@ export const VeNFTMarketplace = () => {
         const balance = Number(await veMEZO.balanceOf(address));
         const restored = await Promise.all(
           Array.from({ length: balance }, async (_, index) => {
-            const id = Number(await veMEZO.tokenOfOwnerByIndex(address, index));
+            // The deployed veMEZO exposes ownerToNFTokenIdList; tokenOfOwnerByIndex reverts.
+            const raw = await veMEZO.ownerToNFTokenIdList(address, index).catch(() => veMEZO.tokenOfOwnerByIndex(address, index));
+            const id = Number(raw);
             return { id, owner: address, balance: 2, source: "chain" as const };
           }),
         );
