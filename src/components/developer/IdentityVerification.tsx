@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Search, Loader2, XCircle } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -68,6 +68,10 @@ export const IdentityVerification = ({ isPaid = false, onPaymentSuccess = () => 
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (authorized) void screen();
+  }, [authorized]);
 
   return (
     <div className="space-y-4">

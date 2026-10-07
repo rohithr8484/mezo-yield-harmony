@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Show Analyze/Screen first, then the existing free-entry/payment controls; block lookups and results until unlocked and verify refresh behavior.
+
 - [x] Restrict AML to the four requested screening sections; verified free-entry refresh parity and saved paid-access parity with AI Text Summarization. Explorer wallet lookup was unavailable during the check; provider-backed sanctions/media remain not screened.
 
 - [x] Rename the wallet service to AML Screening API, add honest screening parameters and an observed transaction flow graph, preserving access allowances; tests and real wallet checks pass on desktop/mobile.

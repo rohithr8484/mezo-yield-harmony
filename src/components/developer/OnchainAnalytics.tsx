@@ -92,6 +92,10 @@ export const OnchainAnalytics = ({ isPaid = false, onPaymentSuccess = () => {} }
     }
   };
 
+  useEffect(() => {
+    if (authorized) void lookup();
+  }, [authorized]);
+
   const data = result ? deriveAnalytics(result.tx, result.transfers, result.toInfo) : null;
   const copyHash = async () => {
     if (!result) return;
