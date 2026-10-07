@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Restrict AML to the four requested screening sections and verify unlock/refresh parity with AI Text Summarization.
+
 - [x] Rename the wallet service to AML Screening API, add honest screening parameters and an observed transaction flow graph, preserving access allowances; tests and real wallet checks pass on desktop/mobile.
 
 - [x] Enhance On-chain Analytics with behavior-derived metrics for all nine sections, preserving service payments; five tests pass and a real mint transaction was verified through free entry on desktop and mobile.
