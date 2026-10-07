@@ -1,326 +1,217 @@
-import { useState } from "react";
-import { Search, ExternalLink, Loader2, CheckCircle, XCircle, Clock, Fuel, Gauge, Layers, ArrowRightLeft, User, FileCode, Droplets, Landmark, Wallet, AlertTriangle } from "lucide-react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { Search, ExternalLink, Loader2, CheckCircle, XCircle, Clock, Fuel, Gauge, Layers, User, FileCode, Droplets, Landmark, Wallet, AlertTriangle, ArrowRight, Activity, Copy, Check } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { deriveAnalytics, finiteNumber, formatNumber, formatUnits, shortAddress, type ExplorerTransaction, type TokenTransfer, type AddressInfo, type AddressCounters } from "@/lib/onchainAnalytics";
 
 const API = "https://api.explorer.test.mezo.org/api/v2";
 const EXPLORER = "https://explorer.test.mezo.org";
-const MUSD = "0x94ff830f078eb9c6e77bade29fb46b1a249a5fd3";
-const MEZO = "0x7b7c000000000000000000000000000000000001";
 
-type Any = Record<string, any>;
-
-const fmt = (val?: string | number | null, decimals = 18) => {
-  if (val === undefined || val === null || val === "") return "—";
-  const num = Number(val) / Math.pow(10, decimals);
-  if (num === 0) return "0";
-  return num < 0.0001 ? num.toExponential(3) : num.toLocaleString(undefined, { maximumFractionDigits: 6 });
-};
-const gwei = (v?: string | null) => (v ? `${(Number(v) / 1e9).toLocaleString(undefined, { maximumFractionDigits: 4 })} gwei` : "—");
-const short = (a?: string) => (a ? `${a.slice(0, 8)}…${a.slice(-6)}` : "—");
-
-const LENDING_METHODS = ["borrow", "repay", "supply", "deposit", "withdraw", "liquidat", "collateral", "openTrove", "closeTrove", "adjustTrove", "redeem"];
-const LIQUIDITY_METHODS = ["addLiquidity", "removeLiquidity", "swap", "mint", "burn", "stake", "unstake"];
-
-const Stat = ({ label, value, mono = true }: { label: string; value: React.ReactNode; mono?: boolean }) => (
-  <div className="rounded-lg border border-border bg-card p-3">
-    <p className="mb-1 text-[10px] font-bold uppercase text-muted-foreground">{label}</p>
-    <p className={`break-all text-xs text-foreground ${mono ? "font-mono" : ""}`}>{value}</p>
+const Metric = ({ label, value, detail }: { label: string; value: ReactNode; detail?: string }) => (
+  <div className="min-w-0 border-l-2 border-border px-3 py-1">
+    <dt className="text-[11px] font-medium text-muted-foreground">{label}</dt>
+    <dd className="mt-1 break-words font-mono text-sm font-semibold text-foreground">{value}</dd>
+    {detail && <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{detail}</p>}
   </div>
 );
-
-const SectionTitle = ({ icon: Icon, children }: { icon: any; children: React.ReactNode }) => (
-  <p className="mb-2 flex items-center gap-1.5 text-xs font-semibold text-muted-foreground"><Icon className="h-3.5 w-3.5" /> {children}</p>
+const Metrics = ({ children }: { children: ReactNode }) => <dl className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4">{children}</dl>;
+const Section = ({ icon: Icon, title, index, children, badge }: { icon: typeof Layers; title: string; index: string; children: ReactNode; badge?: string }) => (
+  <section aria-label={title} className="min-w-0 border-t border-border py-6">
+    <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
+      <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground"><span className="mr-1 font-mono text-[10px] text-muted-foreground">{index}</span><Icon className="h-4 w-4 text-accent" />{title}</h4>
+      {badge && <span className="text-[10px] font-medium uppercase text-muted-foreground">{badge}</span>}
+    </div>
+    {children}
+  </section>
 );
+const AddressLink = ({ address }: { address?: string }) => address ? <a title={address} href={`${EXPLORER}/address/${address}`} target="_blank" rel="noopener noreferrer" className="inline-flex max-w-full items-center gap-1 break-all font-mono text-xs text-primary hover:underline">{shortAddress(address)}<ExternalLink className="h-3 w-3 shrink-0" /></a> : <span>—</span>;
+const Note = ({ children }: { children: ReactNode }) => <p className="mt-4 text-xs leading-relaxed text-muted-foreground">{children}</p>;
+
+async function getJson<T>(path: string, signal: AbortSignal): Promise<T> {
+  const response = await fetch(`${API}${path}`, { signal });
+  if (!response.ok) throw new Error(response.status === 404 ? "Transaction not found on Mezo Testnet." : "Explorer is unavailable. Please try again.");
+  return response.json();
+}
+
+type Result = { tx: ExplorerTransaction; transfers: TokenTransfer[]; fromInfo: AddressInfo | null; toInfo: AddressInfo | null; counters: AddressCounters | null; transferComplete: boolean; addressComplete: boolean };
 
 export const OnchainAnalytics = () => {
   const [hash, setHash] = useState("");
-  const [tx, setTx] = useState<Any | null>(null);
-  const [fromInfo, setFromInfo] = useState<Any | null>(null);
-  const [toInfo, setToInfo] = useState<Any | null>(null);
-  const [fromCounters, setFromCounters] = useState<Any | null>(null);
+  const [result, setResult] = useState<Result | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const getJson = async (url: string) => {
-    try {
-      const r = await fetch(url);
-      return r.ok ? await r.json() : null;
-    } catch {
-      return null;
-    }
-  };
+  const [copied, setCopied] = useState(false);
+  const activeRequest = useRef<AbortController | null>(null);
+  useEffect(() => () => activeRequest.current?.abort(), []);
 
   const lookup = async () => {
     const h = hash.trim();
-    if (!h) return;
-    setLoading(true);
-    setError("");
-    setTx(null);
-    setFromInfo(null);
-    setToInfo(null);
-    setFromCounters(null);
-    const data = await getJson(`${API}/transactions/${h}`);
-    if (!data) {
-      setError("Transaction not found or API unavailable.");
-      setLoading(false);
-      return;
+    if (!/^0x[0-9a-f]{64}$/i.test(h)) { setError("Enter a valid transaction hash: 0x followed by 64 hexadecimal characters."); return; }
+    activeRequest.current?.abort();
+    const controller = new AbortController();
+    activeRequest.current = controller;
+    const timeout = window.setTimeout(() => controller.abort(), 30000);
+    setLoading(true); setError(""); setResult(null); setCopied(false);
+    try {
+      const tx = await getJson<ExplorerTransaction & { token_transfers_overflow?: boolean }>(`/transactions/${h}`, controller.signal);
+      const optional = async <T,>(path: string): Promise<T | null> => {
+        try { return await getJson<T>(path, controller.signal); } catch { return null; }
+      };
+      const [fromInfo, toInfo, counters] = await Promise.all([
+        tx.from?.hash ? optional<AddressInfo>(`/addresses/${tx.from.hash}`) : null,
+        tx.to?.hash ? optional<AddressInfo>(`/addresses/${tx.to.hash}`) : null,
+        tx.from?.hash ? optional<AddressCounters>(`/addresses/${tx.from.hash}/counters`) : null,
+      ]);
+      let transfers = tx.token_transfers ?? [];
+      let transferComplete = !tx.token_transfers_overflow && Array.isArray(tx.token_transfers);
+      if (!transferComplete) {
+        const collected: TokenTransfer[] = [];
+        let query = "";
+        for (let page = 0; page < 10; page++) {
+          const batch = await optional<{ items: TokenTransfer[]; next_page_params?: Record<string, string | number> | null }>(`/transactions/${h}/token-transfers${query}`);
+          if (!batch || !Array.isArray(batch.items)) break;
+          collected.push(...batch.items);
+          if (!batch.next_page_params) { transferComplete = true; break; }
+          query = `?${new URLSearchParams(Object.entries(batch.next_page_params).map(([key, value]) => [key, String(value)]))}`;
+        }
+        if (collected.length || transferComplete) transfers = collected;
+      }
+      if (activeRequest.current !== controller) return;
+      if (controller.signal.aborted) throw new Error("The explorer request timed out. Please try again.");
+      setResult({ tx, transfers, fromInfo, toInfo, counters, transferComplete, addressComplete: Boolean(fromInfo && counters && (!tx.to?.hash || toInfo)) });
+    } catch (err) {
+      if (activeRequest.current === controller) setError(controller.signal.aborted ? "The explorer request timed out. Please try again." : err instanceof Error ? err.message : "Unable to retrieve transaction data.");
+    } finally {
+      window.clearTimeout(timeout);
+      if (activeRequest.current === controller) setLoading(false);
     }
-    setTx(data);
-    const [f, t, fc] = await Promise.all([
-      data.from?.hash ? getJson(`${API}/addresses/${data.from.hash}`) : null,
-      data.to?.hash ? getJson(`${API}/addresses/${data.to.hash}`) : null,
-      data.from?.hash ? getJson(`${API}/addresses/${data.from.hash}/counters`) : null,
-    ]);
-    setFromInfo(f);
-    setToInfo(t);
-    setFromCounters(fc);
-    setLoading(false);
   };
 
-  const gasUsed = Number(tx?.gas_used ?? 0);
-  const gasLimit = Number(tx?.gas_limit ?? 0);
-  const gasPct = gasLimit ? Math.min(100, (gasUsed / gasLimit) * 100) : 0;
-  const fee = Number(tx?.fee?.value ?? 0);
-  const value = Number(tx?.value ?? 0);
-  const transfers: Any[] = tx?.token_transfers ?? [];
-  const tokenSymbols = Array.from(new Set(transfers.map((t) => t.token?.symbol).filter(Boolean)));
-
-  // ---- Liquidity / Lending / Behavior / Risk derivation ----
-  const method = (tx?.method || tx?.decoded_input?.method_call || "").toString();
-  const methodLower = method.toLowerCase();
-  const lendingHit = LENDING_METHODS.find((m) => methodLower.includes(m.toLowerCase()));
-  const liquidityHit = LIQUIDITY_METHODS.find((m) => methodLower.includes(m.toLowerCase()));
-
-  const transferValue = (t: Any) => Number(t.total?.value ?? 0) / Math.pow(10, Number(t.total?.decimals ?? 18));
-  const isToken = (t: Any, addr: string) => (t.token?.address || t.token?.address_hash || "").toLowerCase() === addr;
-  const musdTransfers = transfers.filter((t) => isToken(t, MUSD));
-  const mezoTransfers = transfers.filter((t) => isToken(t, MEZO));
-  const musdVolume = musdTransfers.reduce((s, t) => s + transferValue(t), 0);
-  const mezoVolume = mezoTransfers.reduce((s, t) => s + transferValue(t), 0);
-  const largestTransfer = transfers.length ? transfers.reduce((a, b) => (transferValue(a) >= transferValue(b) ? a : b)) : null;
-  const nativeBtc = value / 1e18;
-  const isLargeMovement = nativeBtc >= 0.01 || musdVolume >= 100 || mezoVolume >= 100;
-
-  const risks: { level: "high" | "medium" | "low"; text: string }[] = [];
-  if (tx) {
-    if (tx.status && tx.status !== "ok") risks.push({ level: "high", text: `Transaction reverted (${tx.result || "failed"}) — funds not moved, gas still consumed.` });
-    if (gasPct > 95) risks.push({ level: "high", text: "Gas used near the limit — a slightly more complex path would run out of gas." });
-    if (tx.to?.is_contract && !tx.to?.is_verified) risks.push({ level: "medium", text: "Interacting contract is not source-verified on the explorer — code cannot be audited publicly." });
-    if (methodLower.includes("liquidat")) risks.push({ level: "high", text: "Liquidation call — a collateralized position was forcibly closed." });
-    if (value > 0 && fee / value > 0.05) risks.push({ level: "medium", text: "Fee is over 5% of the transferred value — inefficient transfer size." });
-    if (isLargeMovement) risks.push({ level: "low", text: "Large-holder sized movement — worth watching for market impact." });
-    if (!risks.length) risks.push({ level: "low", text: "No elevated risk signals detected for this transaction." });
-  }
+  const data = result ? deriveAnalytics(result.tx, result.transfers, result.toInfo) : null;
+  const copyHash = async () => {
+    if (!result) return;
+    try { await navigator.clipboard.writeText(result.tx.hash); setCopied(true); } catch { setCopied(false); }
+  };
+  const native = (value: unknown) => finiteNumber(value) === null ? "—" : `${formatUnits(value)} BTC`;
+  const gwei = (value: unknown) => finiteNumber(value) === null ? "—" : `${formatUnits(value, 9)} gwei`;
 
   return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
-        <Input
-          placeholder="Enter transaction hash (0x...)"
-          value={hash}
-          onChange={(e) => setHash(e.target.value)}
-          className="border-border bg-secondary/60 font-mono text-xs"
-          onKeyDown={(e) => e.key === "Enter" && lookup()}
-        />
-        <button
-          onClick={lookup}
-          disabled={loading || !hash.trim()}
-          className="flex shrink-0 items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-accent px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
-        >
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
-          Analyze
-        </button>
-      </div>
-
-      {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-          <XCircle className="h-4 w-4" /> {error}
-        </div>
-      )}
-
-      {tx && (
-        <div className="space-y-4 rounded-xl border border-border bg-secondary/40 p-4 animate-in fade-in duration-300">
-          <div className="flex flex-wrap items-center justify-between gap-2">
+    <div className="min-w-0 space-y-5">
+      <form onSubmit={e => { e.preventDefault(); void lookup(); }} className="flex flex-col gap-2 sm:flex-row">
+        <label className="relative min-w-0 flex-1">
+          <span className="sr-only">Transaction hash</span>
+          <Search className="absolute left-3 top-3.5 h-4 w-4 text-muted-foreground" />
+          <Input placeholder="Transaction hash · 0x…" value={hash} onChange={e => setHash(e.target.value)} className="h-11 bg-background pl-9 font-mono text-xs" />
+        </label>
+        <Button type="submit" disabled={loading || !hash.trim()} className="h-11 shrink-0 px-5">{loading ? <Loader2 className="animate-spin" /> : <Activity />} {loading ? "Analyzing…" : "Analyze"}</Button>
+      </form>
+      {error && <div role="alert" className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"><XCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
+      {loading && <div role="status" className="flex items-center gap-2 py-8 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Retrieving explorer records…</div>}
+      {result && data && (
+        <div aria-live="polite" className="min-w-0">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-l-2 border-accent bg-accent/5 px-4 py-3">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                {data.status === "Success" ? <CheckCircle className="h-4 w-4 text-accent" /> : data.status === "Failed" ? <XCircle className="h-4 w-4 text-destructive" /> : <Clock className="h-4 w-4 text-muted-foreground" />}
+                <span className={data.status === "Failed" ? "text-destructive" : "text-foreground"}>{data.status}</span><span className="text-xs font-normal text-muted-foreground">· Mezo Testnet</span>
+              </div>
+              <p className="mt-1 break-all font-mono text-[11px] text-muted-foreground">{result.tx.hash}</p>
+            </div>
             <div className="flex items-center gap-2">
-              {tx.status === "ok" ? <CheckCircle className="h-5 w-5 text-accent" /> : <XCircle className="h-5 w-5 text-destructive" />}
-              <span className={`text-sm font-bold ${tx.status === "ok" ? "text-accent" : "text-destructive"}`}>
-                {tx.status === "ok" ? "Success" : tx.status === null ? "Pending" : "Failed"}
-              </span>
-              {tx.result && tx.result !== "success" && <span className="text-xs text-muted-foreground">({tx.result})</span>}
-            </div>
-            <a href={`${EXPLORER}/tx/${tx.hash}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-primary hover:underline">
-              Explorer <ExternalLink className="h-3 w-3" />
-            </a>
-          </div>
-
-          {/* Overview */}
-          <div>
-            <SectionTitle icon={Layers}>Overview</SectionTitle>
-            <div className="grid grid-cols-2 gap-2">
-              <Stat label="Block" value={tx.block ?? tx.block_number ?? "—"} />
-              <Stat label="Confirmations" value={tx.confirmations?.toLocaleString() ?? "—"} />
-              <Stat label="Timestamp" value={<span className="flex items-center gap-1"><Clock className="h-3 w-3" />{tx.timestamp ? new Date(tx.timestamp).toLocaleString() : "—"}</span>} mono={false} />
-              <Stat label="Confirmation time" value={tx.confirmation_duration?.length ? `${(tx.confirmation_duration[tx.confirmation_duration.length - 1] / 1000).toFixed(1)}s` : "—"} />
-              <Stat label="Tx type" value={`${tx.type ?? "—"}${tx.tx_types?.length ? ` · ${tx.tx_types.join(", ")}` : ""}`} />
-              <Stat label="Nonce / Position" value={`${tx.nonce ?? "—"} / ${tx.position ?? "—"}`} />
-              <Stat label="Method" value={method || (tx.raw_input === "0x" ? "Native transfer" : "—")} />
-              <Stat label="Value" value={`${fmt(tx.value)} BTC`} />
+              <Tooltip><TooltipTrigger asChild><Button type="button" size="icon" variant="ghost" onClick={copyHash} aria-label={copied ? "Hash copied" : "Copy transaction hash"}>{copied ? <Check /> : <Copy />}</Button></TooltipTrigger><TooltipContent>{copied ? "Copied" : "Copy hash"}</TooltipContent></Tooltip>
+              <Button variant="outline" size="sm" asChild><a href={`${EXPLORER}/tx/${result.tx.hash}`} target="_blank" rel="noopener noreferrer">Explorer<ExternalLink /></a></Button>
             </div>
           </div>
+          {(!result.transferComplete || !result.addressComplete) && <div role="status" className="mb-5 flex items-start gap-2 text-xs text-muted-foreground"><AlertTriangle className="h-4 w-4 shrink-0 text-bitcoin" /><span>{!result.transferComplete ? "Transfer data is incomplete; all transfer-derived metrics use only the loaded records. " : ""}{!result.addressComplete ? "Some wallet records are unavailable." : ""}</span></div>}
 
-          {/* Gas analytics */}
-          <div>
-            <SectionTitle icon={Fuel}>Gas & fee analytics</SectionTitle>
-            <div className="mb-2 rounded-lg border border-border bg-card p-3">
-              <div className="mb-1.5 flex justify-between text-xs">
-                <span className="text-muted-foreground">Gas efficiency</span>
-                <span className="font-mono text-foreground">{gasUsed.toLocaleString()} / {gasLimit.toLocaleString()} ({gasPct.toFixed(1)}%)</span>
-              </div>
-              <div className="h-2 overflow-hidden rounded-full bg-secondary">
-                <div className="h-full rounded-full bg-gradient-to-r from-primary to-accent" style={{ width: `${gasPct}%` }} />
-              </div>
-              <p className="mt-1.5 text-[11px] text-muted-foreground">
-                {gasPct > 95 ? "Near limit — risk of out-of-gas." : gasPct < 40 ? "Gas limit much higher than needed." : "Well-sized gas limit."} Unused: {(gasLimit - gasUsed).toLocaleString()}
-              </p>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <Stat label="Fee paid" value={`${fmt(tx.fee?.value)} BTC`} />
-              <Stat label="Gas price" value={gwei(tx.gas_price)} />
-              <Stat label="Base fee" value={gwei(tx.base_fee_per_gas)} />
-              <Stat label="Priority fee" value={tx.priority_fee ? `${fmt(tx.priority_fee)} BTC` : "—"} />
-              <Stat label="Max fee / gas" value={gwei(tx.max_fee_per_gas)} />
-              <Stat label="Fee / value ratio" value={value > 0 ? `${((fee / value) * 100).toFixed(4)}%` : "n/a"} />
-            </div>
-          </div>
-
-          {/* Liquidity */}
-          <div>
-            <SectionTitle icon={Droplets}>Liquidity</SectionTitle>
-            <div className="grid grid-cols-2 gap-2">
-              <Stat label="MUSD moved" value={`${musdVolume.toLocaleString(undefined, { maximumFractionDigits: 4 })} MUSD`} />
-              <Stat label="MEZO moved" value={`${mezoVolume.toLocaleString(undefined, { maximumFractionDigits: 4 })} MEZO`} />
-              <Stat label="Native BTC moved" value={`${fmt(tx.value)} BTC`} />
-              <Stat label="Pool / swap action" value={liquidityHit ? `${liquidityHit} detected` : "None detected"} />
-            </div>
-            <p className="mt-2 rounded-lg border border-border bg-card p-3 text-[11px] text-muted-foreground">
-              {transfers.length
-                ? `This transaction moved ${transfers.length} token transfer${transfers.length === 1 ? "" : "s"} across ${tokenSymbols.join(", ") || "unknown tokens"}. ${liquidityHit ? "The method call matches a liquidity action (swap / add / remove / stake), so it likely changed pool balances." : "No pool interaction detected — this looks like a plain transfer rather than a liquidity event."}`
-                : "No token transfers — no liquidity impact from this transaction."}
-            </p>
-          </div>
-
-          {/* Lending */}
-          <div>
-            <SectionTitle icon={Landmark}>Lending</SectionTitle>
-            <div className="grid grid-cols-2 gap-2">
-              <Stat label="Borrowing demand signal" value={lendingHit ? `Method: ${lendingHit}` : "No lending method detected"} />
-              <Stat label="Collateral asset" value={value > 0 ? `${fmt(tx.value)} BTC posted/moved` : musdVolume > 0 ? "MUSD flow" : "—"} />
-              <Stat label="Liquidation event" value={methodLower.includes("liquidat") ? "Yes — position liquidated" : "No"} />
-              <Stat label="Utilization signal" value={lendingHit ? "Active lending interaction" : "n/a (single-tx view)"} />
-            </div>
-            <p className="mt-2 rounded-lg border border-border bg-card p-3 text-[11px] text-muted-foreground">
-              {lendingHit
-                ? `The method "${method}" matches a lending action (${lendingHit}). On Mezo, borrowing demand is expressed through MUSD troves backed by BTC collateral — check the MUSD and BTC amounts above for the size of the position touched.`
-                : "No borrow / repay / supply / liquidation method in this transaction. Utilization and liquidation data require pool-level views — this panel reports what a single transaction reveals."}
-            </p>
-          </div>
-
-          {/* Wallet behavior */}
-          <div>
-            <SectionTitle icon={Wallet}>Wallet behavior</SectionTitle>
-            <div className="grid grid-cols-2 gap-2">
-              <Stat label="Movement size" value={isLargeMovement ? "Large-holder sized" : "Standard"} />
-              <Stat label="Sender lifetime txs" value={fromCounters ? Number(fromCounters.transactions_count ?? 0).toLocaleString() : "—"} />
-              <Stat label="Sender token transfers" value={fromCounters ? Number(fromCounters.token_transfers_count ?? 0).toLocaleString() : "—"} />
-              <Stat label="Sender BTC balance" value={`${fmt(fromInfo?.coin_balance)} BTC`} />
-            </div>
-            {largestTransfer && (
-              <p className="mt-2 rounded-lg border border-border bg-card p-3 text-[11px] text-muted-foreground">
-                Largest movement: <span className="font-semibold text-primary">{largestTransfer.token?.symbol ?? "?"}</span>{" "}
-                <span className="font-mono text-foreground">{transferValue(largestTransfer).toLocaleString(undefined, { maximumFractionDigits: 4 })}</span>{" "}
-                from <span className="font-mono">{short(largestTransfer.from?.hash)}</span> to <span className="font-mono">{short(largestTransfer.to?.hash)}</span>.
-                {isLargeMovement ? " Movements of this size from a single wallet can signal accumulation, distribution, or position rebalancing." : ""}
-              </p>
-            )}
-          </div>
-
-          {/* Risks */}
-          <div>
-            <SectionTitle icon={AlertTriangle}>Risk signals</SectionTitle>
-            <div className="space-y-1.5">
-              {risks.map((r, i) => (
-                <div key={i} className={`flex items-start gap-2 rounded-lg border p-3 text-xs ${
-                  r.level === "high" ? "border-destructive/30 bg-destructive/10 text-destructive"
-                  : r.level === "medium" ? "border-primary/30 bg-primary/5 text-foreground"
-                  : "border-border bg-card text-muted-foreground"
-                }`}>
-                  <AlertTriangle className={`mt-0.5 h-3.5 w-3.5 shrink-0 ${r.level === "high" ? "text-destructive" : r.level === "medium" ? "text-primary" : "text-muted-foreground"}`} />
-                  <span><span className="font-bold uppercase">{r.level}</span> — {r.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Participants */}
-          <div>
-            <SectionTitle icon={User}>Participants</SectionTitle>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {[{ label: "From", a: tx.from, info: fromInfo, counters: fromCounters }, { label: "To", a: tx.to, info: toInfo, counters: null }].map((p) => (
-                <div key={p.label} className="rounded-lg border border-border bg-card p-3 text-xs">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-[10px] font-bold uppercase text-muted-foreground">{p.label}</span>
-                    <span className="flex items-center gap-1 rounded bg-secondary px-1.5 py-0.5 text-[10px] font-semibold text-foreground">
-                      {p.a?.is_contract ? <><FileCode className="h-3 w-3" /> Contract</> : "Wallet"}
-                    </span>
-                  </div>
-                  <a href={`${EXPLORER}/address/${p.a?.hash}`} target="_blank" rel="noopener noreferrer" className="font-mono text-primary hover:underline">{short(p.a?.hash)}</a>
-                  {p.a?.name && <p className="mt-1 text-muted-foreground">{p.a.name}</p>}
-                  <div className="mt-2 space-y-0.5 text-muted-foreground">
-                    <p>Balance: <span className="font-mono text-foreground">{fmt(p.info?.coin_balance)} BTC</span></p>
-                    {p.counters && <p>Total txs: <span className="font-mono text-foreground">{Number(p.counters.transactions_count ?? 0).toLocaleString()}</span></p>}
-                    {p.counters && <p>Token transfers: <span className="font-mono text-foreground">{Number(p.counters.token_transfers_count ?? 0).toLocaleString()}</span></p>}
-                    {p.a?.is_contract && <p>Verified: <span className="text-foreground">{p.a?.is_verified ? "Yes" : "No"}</span></p>}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Token flow */}
-          <div>
-            <SectionTitle icon={ArrowRightLeft}>Token flow ({transfers.length} transfer{transfers.length === 1 ? "" : "s"}{tokenSymbols.length ? ` · ${tokenSymbols.join(", ")}` : ""})</SectionTitle>
-            {transfers.length === 0 ? (
-              <p className="rounded-lg border border-border bg-card p-3 text-xs text-muted-foreground">No token transfers in this transaction.</p>
-            ) : (
-              <div className="space-y-2">
-                {transfers.map((t, i) => (
-                  <div key={i} className="rounded-lg border border-border bg-card p-3 text-xs">
-                    <span className="font-semibold text-primary">{t.token?.symbol ?? "?"}</span>
-                    <span className="text-foreground"> {fmt(t.total?.value, Number(t.total?.decimals ?? 18))}</span>
-                    <span className="text-muted-foreground"> · {t.type ?? "transfer"} · </span>
-                    <span className="font-mono">{short(t.from?.hash)}</span>
-                    <span className="text-muted-foreground"> → </span>
-                    <span className="font-mono">{short(t.to?.hash)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {tx.decoded_input && (
-            <div>
-              <SectionTitle icon={Gauge}>Decoded input</SectionTitle>
-              <div className="rounded-lg border border-border bg-card p-3">
-                <p className="mb-2 font-mono text-xs text-primary">{tx.decoded_input.method_call}</p>
-                {tx.decoded_input.parameters?.map((p: Any, i: number) => (
-                  <div key={i} className="mb-1 flex gap-2 text-xs">
-                    <span className="text-muted-foreground">{p.name} ({p.type}):</span>
-                    <span className="break-all font-mono text-foreground">{typeof p.value === "object" ? JSON.stringify(p.value) : String(p.value)}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <Section index="01" icon={Layers} title="Overview" badge="Transaction record">
+            <Metrics>
+              <Metric label="Interaction" value={data.interaction} />
+              <Metric label="Confirmations" value={formatNumber(finiteNumber(result.tx.confirmations), 0)} detail={`Block ${result.tx.block ?? result.tx.block_number ?? "—"}`} />
+              <Metric label="Native value sent" value={native(result.tx.value)} />
+              <Metric label="Unique addresses" value={data.participants} detail="Sender, recipient and loaded transfer endpoints" />
+            </Metrics>
+            <Note>{result.tx.timestamp ? new Date(result.tx.timestamp).toLocaleString() : "Timestamp unavailable"} · Nonce {result.tx.nonce ?? "—"} · Position {result.tx.position ?? "—"}{result.tx.result ? ` · ${result.tx.result}` : ""}</Note>
+          </Section>
+          <Section index="02" icon={Fuel} title="Gas & fee analytics" badge="Observed usage">
+            <Metrics>
+              <Metric label="Gas utilization" value={data.gasPct === null ? "—" : `${formatNumber(data.gasPct, 1)}%`} detail={data.gasPct === null ? "Usage unavailable" : data.gasPct > 95 ? "Near submitted limit" : "Within submitted limit"} />
+              <Metric label="Unused gas allowance" value={formatNumber(data.gasHeadroom, 0)} detail={`${formatNumber(data.gasUsed, 0)} used / ${formatNumber(data.gasLimit, 0)} limit`} />
+              <Metric label={result.tx.fee?.type === "maximum" ? "Maximum network fee" : "Network fee"} value={native(result.tx.fee?.value)} detail={`Gas price ${gwei(result.tx.gas_price)}`} />
+              <Metric label="Fee / native value" value={data.feeRatio === null ? "N/A" : `${formatNumber(data.feeRatio, 4)}%`} detail="Excludes token valuations" />
+            </Metrics>
+            {data.gasPct !== null && <progress aria-label="Gas utilization" value={Math.min(100, data.gasPct)} max={100} className="mt-5 h-1.5 w-full overflow-hidden rounded-full [&::-webkit-progress-bar]:bg-secondary [&::-webkit-progress-value]:bg-accent [&::-moz-progress-bar]:bg-accent" />}
+            <Note>Base fee {gwei(result.tx.base_fee_per_gas)} · {result.tx.fee?.type === "maximum" ? "Estimated" : "Effective"} gas price {data.effectiveGasPrice === null ? "—" : `${formatNumber(data.effectiveGasPrice)} gwei`}</Note>
+          </Section>
+          <Section index="03" icon={Droplets} title="Liquidity" badge="Method-based inference">
+            <Metrics>
+              <Metric label="Liquidity method hint" value={data.liquidity ? "Match detected" : "No match"} />
+              <Metric label="Assets observed" value={data.assets.length} detail="Distinct token addresses" />
+              <Metric label="Transfer events" value={result.transfers.length} />
+              <Metric label="Native BTC sent" value={native(result.tx.value)} />
+            </Metrics>
+            <Note>{data.liquidity ? `“${data.method}” matches a liquidity-related name; mint, burn and stake can also be unrelated to pools.` : "No liquidity-related method name was identified."} Pool reserves, depth and price impact are unavailable from this transaction record.</Note>
+          </Section>
+          <Section index="04" icon={Landmark} title="Lending" badge="Method-based inference">
+            <Metrics>
+              <Metric label="Lending method hint" value={data.lending ? "Match detected" : "No match"} />
+              <Metric label="Liquidation hint" value={/liquidat/i.test(data.method) ? "Method match" : "No match"} />
+              <Metric label="Collateral ratio" value="Unavailable" detail="Requires position-level reads" />
+              <Metric label="Pool utilization" value="Unavailable" detail="Requires pool-level reads" />
+            </Metrics>
+            <Note>{data.lending ? `“${data.method}” matches a lending-related name, not proof of borrowing or collateral changes.` : "No lending-related method name was identified."} Transfers alone do not establish collateral, debt or repayment amounts.</Note>
+          </Section>
+          <Section index="05" icon={Wallet} title="Wallet behavior" badge="Sender activity">
+            <Metrics>
+              <Metric label="Lifetime transactions" value={formatNumber(finiteNumber(result.counters?.transactions_count), 0)} />
+              <Metric label="Lifetime token transfers" value={formatNumber(finiteNumber(result.counters?.token_transfers_count), 0)} />
+              <Metric label="Current BTC balance" value={native(result.fromInfo?.coin_balance)} detail="Current balance, not at transaction time" />
+              <Metric label="Observed flow direction" value={data.assets.some(a => a.outgoing > 0) && data.assets.some(a => a.incoming > 0) ? "Two-way" : data.assets.some(a => a.outgoing > 0) ? "Outgoing" : data.assets.some(a => a.incoming > 0) ? "Incoming" : "No quantified token flow"} />
+            </Metrics>
+            <Note>Sender {shortAddress(result.tx.from?.hash)} · Activity totals are current explorer counters; a single transaction does not establish accumulation or distribution trends.</Note>
+          </Section>
+          <Section index="06" icon={AlertTriangle} title="Risk signals" badge="Heuristic checks · not a safety rating">
+            <Metrics>
+              <Metric label="Triggered signals" value={data.risks.length} />
+              <Metric label="High-priority signals" value={data.risks.filter(r => r.level === "high").length} />
+              <Metric label="Review signals" value={data.risks.filter(r => r.level === "review").length} />
+              <Metric label="Recipient verification" value={(result.toInfo?.is_contract ?? result.tx.to?.is_contract) ? (result.toInfo?.is_verified ?? result.tx.to?.is_verified) === true ? "Verified" : (result.toInfo?.is_verified ?? result.tx.to?.is_verified) === false ? "Unverified" : "Unknown" : result.tx.to ? "Not a contract / unknown" : "Creation"} />
+            </Metrics>
+            <div className="mt-4 space-y-2">{data.risks.map((risk, i) => <div key={i} className={`flex items-start gap-2 border-l-2 px-3 py-2 text-xs leading-relaxed ${risk.level === "high" ? "border-destructive bg-destructive/5 text-destructive" : "border-bitcoin bg-bitcoin/5 text-foreground"}`}><AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" /><span><strong>{risk.level === "high" ? "High" : "Review"}</strong> · {risk.text}</span></div>)}</div>
+            <Note>{data.risks.length === 0 ? "No signals triggered in the available records. " : ""}Missing data is not a passed check; verified source and low gas usage do not establish contract safety.</Note>
+          </Section>
+          <Section index="07" icon={User} title="Participants" badge="Addresses observed">
+            <Metrics>
+              <Metric label="Unique addresses" value={data.participants} />
+              <Metric label="Sender type" value={result.fromInfo?.is_contract ?? result.tx.from?.is_contract ? "Contract" : "Wallet / unknown"} />
+              <Metric label="Recipient type" value={data.interaction === "Contract creation" ? "New contract" : (result.toInfo?.is_contract ?? result.tx.to?.is_contract) ? "Contract" : "Wallet / unknown"} />
+              <Metric label="Additional endpoints" value={Math.max(0, data.participants - new Set([result.tx.from?.hash, result.tx.to?.hash].filter(Boolean).map(a => a?.toLowerCase())).size)} detail="Beyond transaction sender and recipient" />
+            </Metrics>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">{[{ label: "Sender", address: result.tx.from, info: result.fromInfo }, { label: "Recipient", address: result.tx.to, info: result.toInfo }].map(p => <div key={p.label} className="min-w-0 border-l border-border pl-3"><p className="mb-1 text-[11px] text-muted-foreground">{p.label}</p><AddressLink address={p.address?.hash} />{p.address?.name && <p className="mt-1 break-words text-xs text-foreground">{p.address.name}</p>}<p className="mt-1 text-xs text-muted-foreground">Current balance {native(p.info?.coin_balance)}</p></div>)}</div>
+          </Section>
+          <Section index="08" icon={Activity} title="Token flow" badge={result.transferComplete ? "Loaded transfer records" : "Partial transfer records"}>
+            <Metrics>
+              <Metric label="Transfer events" value={result.transfers.length} />
+              <Metric label="Distinct assets" value={data.assets.length} />
+              <Metric label="Sender outgoing events" value={result.transfers.filter(t => result.tx.from?.hash && t.from?.hash?.toLowerCase() === result.tx.from.hash.toLowerCase()).length} />
+              <Metric label="Sender incoming events" value={result.transfers.filter(t => result.tx.from?.hash && t.to?.hash?.toLowerCase() === result.tx.from.hash.toLowerCase()).length} />
+            </Metrics>
+            {data.assets.length > 0 && <div className="mt-5 divide-y divide-border border-y border-border">{data.assets.map(asset => <div key={asset.key} className="grid min-w-0 gap-2 py-3 sm:grid-cols-3"><div><p className="text-xs font-semibold text-foreground">{asset.symbol}</p><p className="break-all font-mono text-[10px] text-muted-foreground">{asset.key.startsWith("unknown-") ? "Token address unavailable" : shortAddress(asset.key)}</p></div><div className="text-xs"><p className="text-muted-foreground">Gross event volume</p><p className="mt-1 font-mono text-foreground">{asset.known ? formatNumber(asset.volume) : "Unavailable"}</p></div><div className="text-xs"><p className="text-muted-foreground">Sender out / in</p><p className="mt-1 font-mono text-foreground">{asset.known ? `${formatNumber(asset.outgoing)} / ${formatNumber(asset.incoming)}` : "Unavailable"}</p></div></div>)}</div>}
+            <div className="mt-4 max-h-72 space-y-2 overflow-y-auto">{result.transfers.map((t, i) => <div key={i} className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-border/50 py-2 text-xs"><span className="font-mono font-semibold text-foreground">{finiteNumber(t.total?.decimals ?? t.token?.decimals) === null ? "—" : formatUnits(t.total?.value, Number(t.total?.decimals ?? t.token?.decimals))} {t.token?.symbol || "Unknown"}</span><AddressLink address={t.from?.hash} /><ArrowRight className="h-3 w-3 text-muted-foreground" /><AddressLink address={t.to?.hash} /><span className="text-muted-foreground">{t.type || "Transfer"}</span></div>)}</div>
+            <Note>{result.transfers.length === 0 ? result.transferComplete ? "No token transfer events recorded. " : "Token transfer records unavailable. " : ""}Volumes stay separate per asset and sum transfer events, not net economic value; repeated movements can count more than once.{data.status !== "Success" ? " Execution is not confirmed successful; these records do not establish settled movement." : ""}</Note>
+          </Section>
+          <Section index="09" icon={Gauge} title="Decoded input" badge="Explorer decoding">
+            <Metrics>
+              <Metric label="Decode status" value={result.tx.decoded_input?.method_call ? "Decoded" : result.tx.raw_input === "0x" ? "No call data" : "Not decoded"} />
+              <Metric label="Input size" value={data.inputBytes === null ? "—" : `${data.inputBytes} bytes`} />
+              <Metric label="Function selector" value={result.tx.raw_input && result.tx.raw_input.length >= 10 ? result.tx.raw_input.slice(0, 10) : "N/A"} />
+              <Metric label="Decoded parameters" value={result.tx.decoded_input?.parameters?.length ?? "—"} />
+            </Metrics>
+            {data.method && <p className="mt-5 flex items-start gap-2 break-all font-mono text-xs text-primary"><FileCode className="h-4 w-4 shrink-0" />{data.method}</p>}
+            <div className="mt-3 divide-y divide-border">{result.tx.decoded_input?.parameters?.map((parameter, i) => <div key={i} className="grid min-w-0 gap-1 py-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]"><p className="break-words text-xs text-muted-foreground">{parameter.name || `Parameter ${i + 1}`} <span className="font-mono">({parameter.type})</span></p><p className="break-all font-mono text-xs text-foreground">{typeof parameter.value === "object" ? JSON.stringify(parameter.value) : String(parameter.value)}</p></div>)}</div>
+            {!result.tx.decoded_input && <Note>{result.tx.raw_input === "0x" ? "No encoded function call in this transaction." : "The explorer has not decoded this input; function behavior cannot be confirmed."}</Note>}
+          </Section>
         </div>
       )}
     </div>
