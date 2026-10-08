@@ -12,7 +12,8 @@ const watchlists = [
 ];
 const mediaCategories = ["Money Laundering", "Terrorist Financing", "Fraud / Ponzi Scheme", "Bribery & Corruption", "Cybercrime / Ransomware", "Tax Evasion", "Regulatory Action"];
 
-function Section({ index, icon: Icon, title, subtitle, status, children }: { index: string; icon: LucideIcon; title: string; subtitle: string; status: string; children: ReactNode }) {
+function Section({ index, icon: Icon, title, subtitle, status, children, hidden = false }: { index: string; icon: LucideIcon; title: string; subtitle: string; status: string; children: ReactNode; hidden?: boolean }) {
+  if (hidden) return null;
   return <section aria-label={title} className="min-w-0 border-b border-border py-6 last:border-b-0">
     <header className="mb-5 flex flex-wrap items-start justify-between gap-4 border-b border-border bg-secondary/25 p-4 sm:p-5">
       <div className="flex min-w-0 flex-1 items-start gap-3">
@@ -50,7 +51,7 @@ export function AMLScreeningPanel({ result }: { result: AMLResult }) {
       {selected && <a href={`${EXPLORER}/tx/${selected.hash}`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{shortAddress(selected.hash)}<ExternalLink className="h-3 w-3" /></a>}
     </div>
     {(!result.complete || !result.nativeLoaded || !result.tokensLoaded) && <p role="status" className="mt-3 text-xs leading-relaxed text-muted-foreground">Partial observation: {result.scope === "wallet" ? "recent explorer pages only; not the complete wallet history. " : "some transfer records may be missing. "}{!result.nativeLoaded && "Native transaction records could not be loaded. "}{!result.tokensLoaded && "Token transfer records could not be loaded."}</p>}
-    <Section index="01" icon={ShieldAlert} title="Sanctions Checks" status="Not screened" subtitle="Requested coverage: 6 global watchlists · provider not connected">
+    <Section hidden index="01" icon={ShieldAlert} title="Sanctions Checks" status="Not screened" subtitle="Requested coverage: 6 global watchlists · provider not connected">
       <div className="grid gap-3 md:grid-cols-2">{watchlists.map(([name, region]) => <div key={name} className="rounded-lg border border-border bg-secondary/15 p-4"><div className="flex items-start justify-between gap-2"><h5 className="flex items-start gap-2 text-sm font-semibold"><CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />{name}</h5><span className="shrink-0 text-[10px] text-muted-foreground">Not screened</span></div><p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground"><Globe2 className="h-3 w-3" />{region}</p><p className="mt-2 text-xs text-muted-foreground">No list lookup performed; matches are unknown.</p></div>)}</div>
       <p className="text-xs leading-relaxed text-muted-foreground">No sanctions clearance, PEP check or darknet-exposure check has been performed. Public transaction records cannot establish these results.</p>
     </Section>
@@ -63,7 +64,7 @@ export function AMLScreeningPanel({ result }: { result: AMLResult }) {
       <p className="text-xs leading-relaxed text-muted-foreground">Amounts count observed payment legs, not net wealth or traced funds. Native BTC movements and token transfer events are separate assets. Activity frequency or transfers alone do not prove laundering.</p>
       <div><h5 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Top payment legs · loaded records</h5>{observation.flows.slice(0, 6).map(flow => <div key={flow.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-border py-3 text-xs"><div className="flex items-center gap-2"><AddressLink address={flow.from} /><ArrowRight className="h-3 w-3 text-muted-foreground" /><AddressLink address={flow.to} /></div><span className="font-mono">{formatNumber(flow.amount)} {flow.symbol}</span></div>)}{observation.flows.length === 0 && <p className="text-xs text-muted-foreground">No supported payment legs in the loaded records; this is not an AML clearance.</p>}</div>
     </Section>
-    <Section index="03" icon={FileSearch} title="Adverse Media Screening" status="Not screened" subtitle="Requested coverage: NLP scan across 40,000+ news, regulatory and enforcement sources">
+    <Section hidden index="03" icon={FileSearch} title="Adverse Media Screening" status="Not screened" subtitle="Requested coverage: NLP scan across 40,000+ news, regulatory and enforcement sources">
       <div className="space-y-2">{mediaCategories.map(category => <div key={category} className="flex items-start justify-between gap-3 rounded-lg border border-border bg-secondary/15 p-4"><div className="min-w-0"><h5 className="flex items-start gap-2 text-sm font-semibold"><CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />{category}</h5><p className="mt-2 text-xs text-muted-foreground">No source search performed; mentions are unknown.</p></div><span className="shrink-0 text-[10px] text-muted-foreground">Not screened</span></div>)}</div>
       <p className="text-xs leading-relaxed text-muted-foreground">No media provider is connected. A wallet address alone does not resolve a person or entity; there is no verified source coverage or NLP result.</p>
     </Section>
