@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Rename only the AML flow graph and add evidence-backed ML structuring assessment without changing access or other screening checks.
+- [x] Rename only the AML flow graph and add evidence-backed ML structuring assessment without changing access or other screening checks; 13 tests pass and real-wallet screening through free entry shows the assessment and renamed graph.
 
 - [x] Assess supported AML payment patterns from loaded observations only; nine tests pass. Real wallet results verified through free entry with evidence-backed behavior rows; sanctions/media remain unperformed and refresh restores input-only access.
 
