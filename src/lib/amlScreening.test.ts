@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assessAMLBehavior, deriveAMLPayments, derivePaymentScreening } from "./amlScreening";
+import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments, derivePaymentScreening } from "./amlScreening";
 
 describe("AML wallet observations", () => {
   const leg = (hash: string, from: string, to: string, minute: number, asset = "token") => ({ transaction_hash: hash, from: { hash: from }, to: { hash: to }, timestamp: new Date(Date.UTC(2026, 0, 1, 0, minute)).toISOString(), token: { address_hash: asset, decimals: "0" }, total: { value: "2" } });
@@ -21,7 +21,7 @@ describe("AML wallet observations", () => {
   });
   it("keeps unavailable label and reporting checks undetermined", () => {
     const rows = assess([]);
-    expect([rows[0].status, rows[2].status, rows[3].status]).toEqual(["Cannot determine", "Cannot determine", "Cannot determine"]);
+    expect([rows[0].status, rows[2].status, rows[3].status]).toEqual(["Insufficient data", "Cannot determine", "Cannot determine"]);
     expect(rows[1].status).toBe("Insufficient timed activity");
   });
   it("graphs only successful native movements involving the selected wallet", () => {

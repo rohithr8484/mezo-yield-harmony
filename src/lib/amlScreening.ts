@@ -1,5 +1,54 @@
 import { finiteNumber, type ExplorerTransaction } from "./onchainAnalytics";
 import type { AMLTransfer } from "./amlExplorer";
+import { kmeans } from "ml-kmeans";
+
+export function assessStructuringRisk(observation: ReturnType<typeof deriveAMLPayments>, address: string) {
+  const wallet = address.toLowerCase();
+  const groups = new Map<string, typeof observation.flows>();
+  for (const flow of observation.flows) {
+    if (flow.from.toLowerCase() !== wallet || flow.to.toLowerCase() === wallet || flow.to.toLowerCase() === "0x0000000000000000000000000000000000000000" || flow.amount === null || !Number.isFinite(flow.amount) || flow.amount <= 0 || !Number.isFinite(Date.parse(flow.timestamp ?? "")) || flow.asset.startsWith("unknown-")) continue;
+    const group = groups.get(flow.asset) ?? [];
+    group.push(flow);
+    groups.set(flow.asset, group);
+  }
+  let assessed = 0;
+  let candidate: typeof observation.flows = [];
+  for (const group of groups.values()) {
+    // One point per transaction: multiple logs from a single payment are not a burst.
+    const distinct = [...new Map(group.map(flow => [flow.hash.toLowerCase(), flow])).values()]
+      .sort((a, b) => Date.parse(a.timestamp ?? "") - Date.parse(b.timestamp ?? "") || a.hash.localeCompare(b.hash));
+    if (distinct.length < 6) continue;
+    assessed++;
+    const amounts = distinct.map(flow => Math.log10(flow.amount ?? 1));
+    const times = distinct.map(flow => Date.parse(flow.timestamp ?? ""));
+    const scale = (values: number[]) => {
+      const min = Math.min(...values), range = Math.max(...values) - min;
+      return values.map(value => range > 0 ? (value - min) / range : 0);
+    };
+    const scaledAmounts = scale(amounts), scaledTimes = scale(times);
+    const points = distinct.map((_, i) => [scaledAmounts[i], scaledTimes[i]]);
+    const uniquePoints = new Set(points.map(point => point.join(","))).size;
+    const assignments = uniquePoints > 1 ? kmeans(points, Math.min(2, uniquePoints), { seed: 42, maxIterations: 50 }).clusters : points.map(() => 0);
+    for (const cluster of new Set(assignments)) {
+      const members = distinct.filter((_, i) => assignments[i] === cluster);
+      for (const start of members) {
+        const burst = members.filter(flow => {
+          const elapsed = Date.parse(flow.timestamp ?? "") - Date.parse(start.timestamp ?? "");
+          const ratio = (flow.amount ?? 0) / (start.amount ?? 1);
+          return elapsed >= 0 && elapsed <= 3600000 && ratio >= 0.9 && ratio <= 1.1;
+        });
+        if (burst.length >= 3 && new Set(burst.map(flow => flow.to.toLowerCase())).size >= 2 && burst.length > candidate.length) candidate = burst;
+      }
+    }
+  }
+  const limits = "Exploratory unsupervised ML (k-means), not a calibrated laundering probability. No fiat reporting threshold or jurisdiction supplied; repeated payments can be legitimate. Recent loaded records only; missing amounts/times and same-transaction logs are excluded.";
+  const status = candidate.length ? "Review pattern" : assessed ? "No cluster flagged" : "Insufficient data";
+  const evidence = candidate.length
+    ? `${candidate.length} distinct outgoing ${candidate[0]?.symbol ?? "asset"} transactions in an ML cluster have similar amounts (±10%) within 60 minutes to ${new Set(candidate.map(flow => flow.to.toLowerCase())).size} recipients.`
+    : assessed ? `${assessed} asset sample(s) assessed; no ML cluster met the repeated-payment review criteria. This does not establish low risk.`
+      : "ML needs at least 6 distinct outgoing transactions with known amounts and timestamps in the same asset. A single transaction cannot establish structuring.";
+  return { status, evidence, limits, hashes: candidate.map(flow => flow.hash), assessedAssets: assessed };
+}
 
 export function derivePaymentScreening(address: string, transactions: ExplorerTransaction[]) {
   const wallet = address.toLowerCase();
@@ -48,7 +97,7 @@ export function assessAMLBehavior(observation: ReturnType<typeof deriveAMLPaymen
   const dispersals = mints.filter(a => outgoing.some(b => paired(a, b))).length;
   const outcome = (count: number) => count > 0 ? "Pattern observed" : timed.length > 1 ? "No matching pattern in sample" : "Insufficient timed activity";
   return [
-    { name: "Structuring (smurfing) below reporting threshold", status: "Cannot determine", evidence: "No fiat valuation, reporting jurisdiction or calibrated threshold; small amounts alone are not structuring." },
+    { name: "Structuring (smurfing) below reporting threshold", status: assessStructuringRisk(observation, address).status, evidence: `${assessStructuringRisk(observation, address).evidence} Below-threshold intent cannot be determined without fiat valuation and jurisdiction.` },
     { name: "Rapid pass-through / peeling chain", status: outcome(passThrough), evidence: `${passThrough} incoming leg(s) followed by an equal-amount outgoing leg of the same asset within 60 minutes. A peeling chain is not established.` },
     { name: "Mixer / tumbler exposure", status: "Cannot determine", evidence: "No verified mixer-address labels or downstream tracing available." },
     { name: "Cross-chain bridge layering", status: "Cannot determine", evidence: "No verified bridge labels or cross-chain records; contract interaction alone does not establish layering." },
