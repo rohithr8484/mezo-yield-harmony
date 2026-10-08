@@ -1,6 +1,6 @@
 import { ArrowRight, ArrowUpRight, CircleHelp, ExternalLink, FileSearch, GitFork, Globe2, Landmark, ScanLine, ShieldAlert, Wallet, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { deriveAMLPayments } from "@/lib/amlScreening";
+import { assessAMLBehavior, deriveAMLPayments } from "@/lib/amlScreening";
 import type { AMLResult } from "@/lib/amlExplorer";
 import { formatNumber, shortAddress } from "@/lib/onchainAnalytics";
 
@@ -11,7 +11,6 @@ const watchlists = [
   ["UN Security Council 1267", "United Nations"], ["Chainalysis Sanctions Oracle", "On-chain oracle"],
 ];
 const mediaCategories = ["Money Laundering", "Terrorist Financing", "Fraud / Ponzi Scheme", "Bribery & Corruption", "Cybercrime / Ransomware", "Tax Evasion", "Regulatory Action"];
-const typologies = ["Structuring (smurfing) below reporting threshold", "Rapid pass-through / peeling chain", "Mixer / tumbler exposure", "Cross-chain bridge layering", "High-velocity round-trip transfers", "Token minting → instant dispersal"];
 
 function Section({ index, icon: Icon, title, subtitle, status, children }: { index: string; icon: LucideIcon; title: string; subtitle: string; status: string; children: ReactNode }) {
   return <section aria-label={title} className="min-w-0 border-b border-border py-6 last:border-b-0">
@@ -38,6 +37,7 @@ function Node({ address, contract, label }: { address: string; contract: boolean
 
 export function AMLScreeningPanel({ result }: { result: AMLResult }) {
   const observation = deriveAMLPayments(result.address, result.transactions, result.transfers);
+  const behaviors = assessAMLBehavior(observation, result.address);
   const selected = result.scope === "transaction" ? result.transactions[0] : undefined;
   const dominant = observation.assets.length === 1 ? observation.assets[0] : undefined;
   const total = dominant ? dominant.known ? formatNumber(dominant.total) : "Unknown" : observation.assets.length > 1 ? "Per asset" : "No movements";
@@ -58,7 +58,8 @@ export function AMLScreeningPanel({ result }: { result: AMLResult }) {
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4"><Metric label="Total value" value={total} detail={dominant?.symbol ?? "Assets are never combined"} /><Metric label="Avg / transfer" value={average} detail={dominant?.symbol ?? "See per-asset totals below"} /><Metric label="Velocity" value={observation.hourlyRate === null ? "Insufficient data" : `${formatNumber(observation.hourlyRate, 2)} / h`} detail="Successful native transaction records" /><Metric label="Structuring risk" value="Not assessed" detail="No calibrated rules engine" /></dl>
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4"><Metric label="Payment legs" value={observation.flows.length} /><Metric label="Token events" value={observation.tokenCount} /><Metric label="Flow counterparties" value={observation.flowCounterparties} /><Metric label="Failed transactions" value={result.nativeLoaded ? observation.failed : "Unknown"} /></dl>
       {observation.assets.length > 0 && <div className="divide-y divide-border">{observation.assets.map(asset => <div key={asset.asset} className="flex flex-wrap justify-between gap-2 py-3 text-xs"><span className="font-semibold">{asset.symbol} <span className="font-normal text-muted-foreground">· {asset.count} payment leg(s)</span></span><span className="font-mono">{asset.known ? formatNumber(asset.total) : "Unknown amount"} {asset.symbol} total · avg {asset.known ? formatNumber(asset.total / asset.count) : "—"}</span></div>)}</div>}
-      <div className="space-y-2">{typologies.map(name => <div key={name} className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-secondary/30 px-3 py-3 text-xs"><span className="flex min-w-0 flex-1 items-start gap-2"><CircleHelp className="h-4 w-4 shrink-0 text-muted-foreground" />{name}</span><span className="font-medium text-muted-foreground">Not assessed</span></div>)}</div>
+      <div className="space-y-2">{behaviors.map(item => <div key={item.name} className="rounded-md bg-secondary/30 px-3 py-3 text-xs"><div className="flex flex-wrap items-start justify-between gap-2"><span className="flex min-w-0 flex-1 items-start gap-2"><CircleHelp className="h-4 w-4 shrink-0 text-muted-foreground" />{item.name}</span><span className={item.status === "Pattern observed" ? "font-medium text-bitcoin" : "font-medium text-muted-foreground"}>{item.status}</span></div><p className="mt-2 leading-relaxed text-muted-foreground">{item.evidence}</p></div>)}</div>
+      <p className="text-xs leading-relaxed text-muted-foreground">Sample-based pattern checks only · separate assets · distinct transactions · 60-minute observation window. Missing timestamps or unloaded records limit detection; no matching pattern is not a clean AML result.</p>
       <p className="text-xs leading-relaxed text-muted-foreground">Amounts count observed payment legs, not net wealth or traced funds. Native BTC movements and token transfer events are separate assets. Activity frequency or transfers alone do not prove laundering.</p>
       <div><h5 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Top payment legs · loaded records</h5>{observation.flows.slice(0, 6).map(flow => <div key={flow.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-border py-3 text-xs"><div className="flex items-center gap-2"><AddressLink address={flow.from} /><ArrowRight className="h-3 w-3 text-muted-foreground" /><AddressLink address={flow.to} /></div><span className="font-mono">{formatNumber(flow.amount)} {flow.symbol}</span></div>)}{observation.flows.length === 0 && <p className="text-xs text-muted-foreground">No supported payment legs in the loaded records; this is not an AML clearance.</p>}</div>
     </Section>

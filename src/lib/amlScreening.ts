@@ -34,6 +34,29 @@ export function derivePaymentScreening(address: string, transactions: ExplorerTr
   };
 }
 
+export function assessAMLBehavior(observation: ReturnType<typeof deriveAMLPayments>, address: string) {
+  const wallet = address.toLowerCase();
+  const timed = observation.flows.filter(f => f.amount !== null && f.amount > 0 && Number.isFinite(Date.parse(f.timestamp ?? "")));
+  const time = (f: typeof timed[number]) => Date.parse(f.timestamp ?? "");
+  const paired = (a: typeof timed[number], b: typeof timed[number]) => a.asset === b.asset && a.hash !== b.hash && time(b) >= time(a) && time(b) - time(a) <= 3600000;
+  const incoming = timed.filter(f => f.to.toLowerCase() === wallet && f.from.toLowerCase() !== wallet);
+  const outgoing = timed.filter(f => f.from.toLowerCase() === wallet && f.to.toLowerCase() !== wallet);
+  const passThrough = incoming.filter(a => outgoing.some(b => paired(a, b) && a.amount === b.amount)).length;
+  const roundTrips = outgoing.filter(a => incoming.some(b => paired(a, b) && a.to.toLowerCase() === b.from.toLowerCase() && a.amount === b.amount)).length;
+  const zero = "0x0000000000000000000000000000000000000000";
+  const mints = incoming.filter(f => f.kind === "token" && f.from.toLowerCase() === zero);
+  const dispersals = mints.filter(a => outgoing.some(b => paired(a, b))).length;
+  const outcome = (count: number) => count > 0 ? "Pattern observed" : timed.length > 1 ? "No matching pattern in sample" : "Insufficient timed activity";
+  return [
+    { name: "Structuring (smurfing) below reporting threshold", status: "Cannot determine", evidence: "No fiat valuation, reporting jurisdiction or calibrated threshold; small amounts alone are not structuring." },
+    { name: "Rapid pass-through / peeling chain", status: outcome(passThrough), evidence: `${passThrough} incoming leg(s) followed by an equal-amount outgoing leg of the same asset within 60 minutes. A peeling chain is not established.` },
+    { name: "Mixer / tumbler exposure", status: "Cannot determine", evidence: "No verified mixer-address labels or downstream tracing available." },
+    { name: "Cross-chain bridge layering", status: "Cannot determine", evidence: "No verified bridge labels or cross-chain records; contract interaction alone does not establish layering." },
+    { name: "High-velocity round-trip transfers", status: outcome(roundTrips), evidence: `${roundTrips} outgoing leg(s) followed by an equal-amount return from the same counterparty in the same asset within 60 minutes; not proof of laundering.` },
+    { name: "Token minting → instant dispersal", status: outcome(dispersals), evidence: `${dispersals} zero-address token receipt(s) followed by an outgoing leg of that asset within 60 minutes; not traced provenance or proof of abuse.` },
+  ];
+}
+
 export function deriveAMLPayments(address: string, transactions: ExplorerTransaction[], transfers: AMLTransfer[]) {
   const native = derivePaymentScreening(address, transactions);
   const failedHashes = new Set(transactions.filter(t => t.status !== "ok").map(t => t.hash.toLowerCase()));
