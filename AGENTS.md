@@ -3,6 +3,7 @@
 - AML screening must distinguish public wallet observations from provider-backed compliance checks; disconnected sanctions and adverse-media providers show not screened. Derive payment metrics and graphs from loaded native movements and token events, separate assets by contract, and label incomplete coverage; transaction-hash queries stay scoped to that transaction, never traced funds or full AML clearance.
 - Keep AML access on the shared PaymentGate, preserving the legacy allowance key so renaming does not reset usage.
 - Derive AML behavior checks in the shared pure observations module with explicit evidence and data limits; this keeps heuristic patterns distinct from provider-backed compliance determinations.
+- Keep ML structuring assessment in the shared pure observations module using deterministic per-asset unsupervised clustering and transaction evidence; exploratory patterns are not calibrated laundering probabilities, and missing samples must remain insufficient data.
 - Analytics and AML render inputs before access controls; each valid Analyze/Screen submission mounts a fresh AnalysisAccessGate requiring PaymentGate unlock before lookups/results. Never use persisted API paid flags to bypass these per-request gates; preserve payment logic and allowance keys.
 
 - Derive transaction analytics from explorer observations in a shared pure module; label method-based inferences and incomplete or unavailable data, and never aggregate quantities across different tokens or present heuristics as proven safety.

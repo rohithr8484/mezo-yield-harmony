@@ -96,8 +96,9 @@ export function assessAMLBehavior(observation: ReturnType<typeof deriveAMLPaymen
   const mints = incoming.filter(f => f.kind === "token" && f.from.toLowerCase() === zero);
   const dispersals = mints.filter(a => outgoing.some(b => paired(a, b))).length;
   const outcome = (count: number) => count > 0 ? "Pattern observed" : timed.length > 1 ? "No matching pattern in sample" : "Insufficient timed activity";
+  const structuring = assessStructuringRisk(observation, address);
   return [
-    { name: "Structuring (smurfing) below reporting threshold", status: assessStructuringRisk(observation, address).status, evidence: `${assessStructuringRisk(observation, address).evidence} Below-threshold intent cannot be determined without fiat valuation and jurisdiction.` },
+    { name: "Structuring (smurfing) below reporting threshold", status: structuring.status, evidence: `${structuring.evidence} Below-threshold intent cannot be determined without fiat valuation and jurisdiction.` },
     { name: "Rapid pass-through / peeling chain", status: outcome(passThrough), evidence: `${passThrough} incoming leg(s) followed by an equal-amount outgoing leg of the same asset within 60 minutes. A peeling chain is not established.` },
     { name: "Mixer / tumbler exposure", status: "Cannot determine", evidence: "No verified mixer-address labels or downstream tracing available." },
     { name: "Cross-chain bridge layering", status: "Cannot determine", evidence: "No verified bridge labels or cross-chain records; contract interaction alone does not establish layering." },

@@ -4,6 +4,28 @@ import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments, derivePaym
 describe("AML wallet observations", () => {
   const leg = (hash: string, from: string, to: string, minute: number, asset = "token") => ({ transaction_hash: hash, from: { hash: from }, to: { hash: to }, timestamp: new Date(Date.UTC(2026, 0, 1, 0, minute)).toISOString(), token: { address_hash: asset, decimals: "0" }, total: { value: "2" } });
   const assess = (legs: ReturnType<typeof leg>[]) => assessAMLBehavior(deriveAMLPayments("0xa", [], legs), "0xa");
+  const structure = (legs: ReturnType<typeof leg>[]) => assessStructuringRisk(deriveAMLPayments("0xa", [], legs), "0xa");
+  it("uses deterministic ML clusters to flag repeated same-asset outgoing bursts", () => {
+    const legs = [0, 1, 2, 180, 360, 540].map((minute, i) => leg(`tx${i}`, "0xa", i % 2 ? "0xb" : "0xc", minute));
+    const result = structure(legs);
+    expect(result.status).toBe("Review pattern");
+    expect(result.hashes).toEqual(["tx0", "tx1", "tx2"]);
+    expect(structure([...legs].reverse())).toEqual(result);
+  });
+  it("does not cluster different assets or duplicate logs as distinct payments", () => {
+    expect(structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xa", "0xb", i, `asset${i}`))).status).toBe("Insufficient data");
+    expect(structure(Array.from({ length: 6 }, (_, i) => leg("same", "0xa", "0xb", i))).status).toBe("Insufficient data");
+  });
+  it("reports no flag for spaced activity without claiming low risk", () => {
+    const result = structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xa", i % 2 ? "0xb" : "0xc", i * 120)));
+    expect(result.status).toBe("No cluster flagged");
+    expect(result.hashes).toEqual([]);
+    expect(result.assessedAssets).toBe(1);
+  });
+  it("does not infer structuring from missing timestamps or inbound receipts", () => {
+    expect(structure(Array.from({ length: 6 }, (_, i) => ({ ...leg(`tx${i}`, "0xa", "0xb", i), timestamp: "" }))).status).toBe("Insufficient data");
+    expect(structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xb", "0xa", i))).status).toBe("Insufficient data");
+  });
   it("observes equal same-asset pass-through within 60 minutes", () => {
     expect(assess([leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 60)])[1].status).toBe("Pattern observed");
     expect(assess([leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 61)])[1].status).toBe("No matching pattern in sample");
