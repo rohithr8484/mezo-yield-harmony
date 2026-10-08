@@ -58,6 +58,7 @@
     "events": "^3.3.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
+    "ml-kmeans": "^7.0.1",
     "next-themes": "^0.3.0",
     "process": "^0.11.10",
     "react": "^18.3.1",
