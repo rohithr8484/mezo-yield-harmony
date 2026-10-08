@@ -1,7 +1,29 @@
 import { describe, expect, it } from "vitest";
-import { deriveAMLPayments, derivePaymentScreening } from "./amlScreening";
+import { assessAMLBehavior, deriveAMLPayments, derivePaymentScreening } from "./amlScreening";
 
 describe("AML wallet observations", () => {
+  const leg = (hash: string, from: string, to: string, minute: number, asset = "token") => ({ transaction_hash: hash, from: { hash: from }, to: { hash: to }, timestamp: new Date(Date.UTC(2026, 0, 1, 0, minute)).toISOString(), token: { address_hash: asset, decimals: "0" }, total: { value: "2" } });
+  const assess = (legs: ReturnType<typeof leg>[]) => assessAMLBehavior(deriveAMLPayments("0xa", [], legs), "0xa");
+  it("observes equal same-asset pass-through within 60 minutes", () => {
+    expect(assess([leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 60)])[1].status).toBe("Pattern observed");
+    expect(assess([leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 61)])[1].status).toBe("No matching pattern in sample");
+  });
+  it("never matches pass-through across assets or in the same transaction", () => {
+    expect(assess([leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 1, "other")])[1].status).not.toBe("Pattern observed");
+    expect(assess([leg("same", "0xb", "0xa", 0), leg("same", "0xa", "0xc", 0)])[1].status).not.toBe("Pattern observed");
+  });
+  it("observes a same-counterparty equal-amount round trip", () => {
+    expect(assess([leg("out", "0xa", "0xb", 0), leg("in", "0xb", "0xa", 1)])[4].status).toBe("Pattern observed");
+    expect(assess([leg("out", "0xa", "0xb", 0), leg("in", "0xc", "0xa", 1)])[4].status).not.toBe("Pattern observed");
+  });
+  it("observes mint receipt followed by same-asset outgoing activity", () => {
+    expect(assess([leg("mint", "0x0000000000000000000000000000000000000000", "0xa", 0), leg("out", "0xa", "0xb", 1)])[5].status).toBe("Pattern observed");
+  });
+  it("keeps unavailable label and reporting checks undetermined", () => {
+    const rows = assess([]);
+    expect([rows[0].status, rows[2].status, rows[3].status]).toEqual(["Cannot determine", "Cannot determine", "Cannot determine"]);
+    expect(rows[1].status).toBe("Insufficient timed activity");
+  });
   it("graphs only successful native movements involving the selected wallet", () => {
     const data = derivePaymentScreening("0xA", [
       { hash: "out", status: "ok", from: { hash: "0xa" }, to: { hash: "0xb" }, value: "1000000000000000000" },
