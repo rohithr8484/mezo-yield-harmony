@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Assess supported AML payment patterns from loaded observations only; preserve provider disclaimers and per-request access.
+- [x] Assess supported AML payment patterns from loaded observations only; nine tests pass. Real wallet results verified through free entry with evidence-backed behavior rows; sanctions/media remain unperformed and refresh restores input-only access.
 
 - [x] Match AML result references and load native plus token observations; four tests pass. Real wallet screening shows 50 token legs, six counterparties and the 0.0005 MUSD reward; transaction-hash screening stays scoped to its transaction, refresh restores gating, and disconnected sanctions/media remain Not screened.
 
