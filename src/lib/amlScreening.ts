@@ -1,6 +1,26 @@
 import { finiteNumber, type ExplorerTransaction } from "./onchainAnalytics";
 import type { AMLTransfer } from "./amlExplorer";
 import { kmeans } from "ml-kmeans";
+import { summarizeObservationScore } from "./observationScore";
+
+export function deriveAMLScreeningScore(observation: ReturnType<typeof deriveAMLPayments>, address: string) {
+  const rows = assessAMLBehavior(observation, address);
+  const wallet = address.toLowerCase();
+  const timedByAsset = new Map<string, Set<string>>();
+  for (const flow of observation.flows) {
+    if (flow.amount === null || !Number.isFinite(flow.amount) || flow.amount <= 0 || !Number.isFinite(Date.parse(flow.timestamp ?? "")) || flow.asset.startsWith("unknown-") || (flow.from.toLowerCase() !== wallet && flow.to.toLowerCase() !== wallet)) continue;
+    const hashes = timedByAsset.get(flow.asset) ?? new Set<string>();
+    hashes.add(flow.hash.toLowerCase());
+    timedByAsset.set(flow.asset, hashes);
+  }
+  const canCompare = [...timedByAsset.values()].some(hashes => hashes.size >= 2);
+  return summarizeObservationScore([
+    { index: 0, weight: 40 }, { index: 1, weight: 25 }, { index: 4, weight: 25 }, { index: 5, weight: 10 },
+  ].map(({ index, weight }) => {
+    const row = rows[index];
+    return { name: row?.name ?? "Unavailable check", weight, available: index === 0 ? row?.status !== "Insufficient data" : canCompare, triggered: row?.status === "Pattern observed" || row?.status === "Review pattern", evidence: row?.evidence ?? "No evidence available." };
+  }));
+}
 
 export function assessStructuringRisk(observation: ReturnType<typeof deriveAMLPayments>, address: string) {
   const wallet = address.toLowerCase();

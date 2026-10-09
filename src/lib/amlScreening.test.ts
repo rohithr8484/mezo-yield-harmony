@@ -1,10 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments, derivePaymentScreening } from "./amlScreening";
+import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments, derivePaymentScreening, deriveAMLScreeningScore } from "./amlScreening";
 
 describe("AML wallet observations", () => {
   const leg = (hash: string, from: string, to: string, minute: number, asset = "token") => ({ transaction_hash: hash, from: { hash: from }, to: { hash: to }, timestamp: new Date(Date.UTC(2026, 0, 1, 0, minute)).toISOString(), token: { address_hash: asset, decimals: "0" }, total: { value: "2" } });
   const assess = (legs: ReturnType<typeof leg>[]) => assessAMLBehavior(deriveAMLPayments("0xa", [], legs), "0xa");
   const structure = (legs: ReturnType<typeof leg>[]) => assessStructuringRisk(deriveAMLPayments("0xa", [], legs), "0xa");
+  it("scores observed AML pass-through at 25 of 100 without normalizing unknown checks", () => {
+    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 1)]), "0xa")).toMatchObject({ score: 25, assessed: 3, total: 4, upperBound: 65 });
+  });
+  it("keeps single-transaction and cross-asset AML scoring insufficient", () => {
+    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("one", "0xa", "0xb", 0)]), "0xa").score).toBeNull();
+    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("one", "0xa", "0xb", 0), leg("two", "0xb", "0xa", 1, "other")]), "0xa").score).toBeNull();
+  });
   it("uses deterministic ML clusters to flag repeated same-asset outgoing bursts", () => {
     const legs = [0, 1, 2, 180, 360, 540].map((minute, i) => leg(`tx${i}`, "0xa", i % 2 ? "0xb" : "0xc", minute));
     const result = structure(legs);
