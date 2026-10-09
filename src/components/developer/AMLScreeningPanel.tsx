@@ -1,7 +1,6 @@
 import { ArrowRight, ArrowUpRight, CircleHelp, ExternalLink, FileSearch, GitFork, Globe2, Landmark, ScanLine, ShieldAlert, Wallet, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments, deriveAMLScreeningScore } from "@/lib/amlScreening";
-import { ObservationScorePanel } from "./ObservationScorePanel";
+import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments } from "@/lib/amlScreening";
 import type { AMLResult } from "@/lib/amlExplorer";
 import { formatNumber, shortAddress } from "@/lib/onchainAnalytics";
 
@@ -53,7 +52,6 @@ export function AMLScreeningPanel({ result }: { result: AMLResult }) {
       {selected && <a href={`${EXPLORER}/tx/${selected.hash}`} target="_blank" rel="noopener noreferrer" className="mt-2 inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{shortAddress(selected.hash)}<ExternalLink className="h-3 w-3" /></a>}
     </div>
     {(!result.complete || !result.nativeLoaded || !result.tokensLoaded) && <p role="status" className="mt-3 text-xs leading-relaxed text-muted-foreground">Partial observation: {result.scope === "wallet" ? "recent explorer pages only; not the complete wallet history. " : "some transfer records may be missing. "}{!result.nativeLoaded && "Native transaction records could not be loaded. "}{!result.tokensLoaded && "Token transfer records could not be loaded."}</p>}
-    <ObservationScorePanel title="Anti-Money Laundering (AML) screening score" result={deriveAMLScreeningScore(observation, result.address)} limits="Behavior observations only; sanctions, media, mixer and bridge checks are excluded and unperformed. No AML clearance or laundering probability. Scores use loaded records only, not complete wallet history." />
     <Section hidden index="01" icon={ShieldAlert} title="Sanctions Checks" status="Not screened" subtitle="Requested coverage: 6 global watchlists · provider not connected">
       <div className="grid gap-3 md:grid-cols-2">{watchlists.map(([name, region]) => <div key={name} className="rounded-lg border border-border bg-secondary/15 p-4"><div className="flex items-start justify-between gap-2"><h5 className="flex items-start gap-2 text-sm font-semibold"><CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />{name}</h5><span className="shrink-0 text-[10px] text-muted-foreground">Not screened</span></div><p className="mt-2 flex items-center gap-1 text-xs text-muted-foreground"><Globe2 className="h-3 w-3" />{region}</p><p className="mt-2 text-xs text-muted-foreground">No list lookup performed; matches are unknown.</p></div>)}</div>
       <p className="text-xs leading-relaxed text-muted-foreground">No sanctions clearance, PEP check or darknet-exposure check has been performed. Public transaction records cannot establish these results.</p>
