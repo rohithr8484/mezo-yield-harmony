@@ -1,5 +1,6 @@
 # Project Rules
 
+- Derive observation scores in pure modules using disclosed fixed weights, assessed-check counts and unresolved-weight bounds; missing data is never a passed check and scores never imply calibrated probability or compliance clearance.
 - AML screening must distinguish public wallet observations from provider-backed compliance checks; disconnected sanctions and adverse-media providers show not screened. Derive payment metrics and graphs from loaded native movements and token events, separate assets by contract, and label incomplete coverage; transaction-hash queries stay scoped to that transaction, never traced funds or full AML clearance.
 - Keep AML access on the shared PaymentGate, preserving the legacy allowance key so renaming does not reset usage.
 - Derive AML behavior checks in the shared pure observations module with explicit evidence and data limits; this keeps heuristic patterns distinct from provider-backed compliance determinations.

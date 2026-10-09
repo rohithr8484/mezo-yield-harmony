@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AnalysisAccessGate } from "./AnalysisAccessGate";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { deriveAnalytics, finiteNumber, formatNumber, formatUnits, shortAddress, type ExplorerTransaction, type TokenTransfer, type AddressInfo, type AddressCounters } from "@/lib/onchainAnalytics";
+import { deriveAnalytics, deriveAnalyticsRiskScore, finiteNumber, formatNumber, formatUnits, shortAddress, type ExplorerTransaction, type TokenTransfer, type AddressInfo, type AddressCounters } from "@/lib/onchainAnalytics";
+import { ObservationScorePanel } from "./ObservationScorePanel";
 
 const API = "https://api.explorer.test.mezo.org/api/v2";
 const EXPLORER = "https://explorer.test.mezo.org";
@@ -136,6 +137,7 @@ export const OnchainAnalytics = () => {
           {(!result.transferComplete || !result.addressComplete) && <div role="status" className="mb-5 flex items-start gap-2 text-xs text-muted-foreground"><AlertTriangle className="h-4 w-4 shrink-0 text-bitcoin" /><span>{!result.transferComplete ? "Transfer data is incomplete; all transfer-derived metrics use only the loaded records. " : ""}{!result.addressComplete ? "Some wallet records are unavailable." : ""}</span></div>}
 
           <Section index="01" icon={Layers} title="Overview" badge="Transaction record">
+            <ObservationScorePanel title="On-chain risk score" result={deriveAnalyticsRiskScore(result.tx, result.transfers, result.toInfo)} limits="Single-transaction operational and method-based signals only, not contract safety. Missing wallet and transfer records limit context; asset volumes, participant counts and activity totals are not scored as risk by themselves." />
             <Metrics>
               <Metric label="Interaction" value={data.interaction} />
               <Metric label="Confirmations" value={formatNumber(finiteNumber(result.tx.confirmations), 0)} detail={`Block ${result.tx.block ?? result.tx.block_number ?? "—"}`} />
