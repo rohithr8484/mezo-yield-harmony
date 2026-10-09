@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Add transparent out-of-100 observation scores to Analytics and AML and change the app background to light mint-gray; preserve all unlock behavior.
+- [x] Add transparent out-of-100 observation scores to Analytics and AML and change the app background to light mint-gray; 23 tests pass, real wallet/transaction results verified through free entry, and refresh keeps results gated.
 
 - [x] Rename only the AML flow graph and add evidence-backed ML structuring assessment without changing access or other screening checks; 13 tests pass and real-wallet screening through free entry shows the assessment and renamed graph.
 
