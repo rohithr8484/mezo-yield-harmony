@@ -1,9 +1,20 @@
 import { describe, expect, it } from "vitest";
-import { deriveAnalytics, finiteNumber, type ExplorerTransaction } from "./onchainAnalytics";
+import { deriveAnalytics, deriveAnalyticsRiskScore, finiteNumber, type ExplorerTransaction } from "./onchainAnalytics";
 
 const tx: ExplorerTransaction = { hash: "0x123", status: "ok", from: { hash: "0xA" }, to: { hash: "0xB", is_contract: true }, gas_used: "21000", gas_limit: "42000", fee: { value: "21000000000000" }, value: "1000000000000000000", raw_input: "0x12345678", decoded_input: { method_call: "swap(address,uint256)", parameters: [] } };
 
 describe("observed transaction analytics", () => {
+  it("scores observed concerns out of 100 using fixed disclosed weights", () => {
+    const score = deriveAnalyticsRiskScore({ ...tx, status: "error", gas_limit: "21000", decoded_input: { method_call: "liquidate()" }, fee: { value: "100000000000000000" } }, [], { is_contract: true, is_verified: false });
+    expect(score).toMatchObject({ score: 100, upperBound: 100, assessed: 5, total: 5 });
+  });
+  it("does not score missing data as a passed check", () => {
+    expect(deriveAnalyticsRiskScore({ hash: "pending", status: null, to: { hash: "0xb" } }, [], null)).toMatchObject({ score: null, assessed: 0, upperBound: 100 });
+    expect(deriveAnalyticsRiskScore({ ...tx, status: "error", gas_used: undefined, decoded_input: null, raw_input: undefined, fee: undefined }, [], null)).toMatchObject({ score: 30, assessed: 1, upperBound: 100 });
+  });
+  it("returns zero observed points only with explicit assessed coverage", () => {
+    expect(deriveAnalyticsRiskScore(tx, [], { is_contract: true, is_verified: true })).toMatchObject({ score: 0, assessed: 5, upperBound: 0 });
+  });
   it("calculates gas, input bytes and method hints from observations", () => {
     expect(deriveAnalytics(tx, [], null)).toMatchObject({ gasPct: 50, gasHeadroom: 21000, inputBytes: 4, liquidity: true, lending: false, effectiveGasPrice: 1, status: "Success" });
   });
