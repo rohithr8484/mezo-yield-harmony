@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Add an illustrated homepage service explanation, relevant images above each developer service, and rename the homepage heading to Developer services; preserve access and payments.
+- [x] Add an illustrated homepage service explanation, relevant images above each developer service, and rename the homepage heading to Developer services; verified seven homepage illustrations, nine developer-service images, service navigation and unchanged Analyze control; build OK.
 
 - [x] Add transparent out-of-100 observation scores to Analytics and AML and change the app background to light mint-gray; 23 tests pass, real wallet/transaction results verified through free entry, and refresh keeps results gated.
 
