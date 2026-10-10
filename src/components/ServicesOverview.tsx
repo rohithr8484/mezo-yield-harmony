@@ -5,8 +5,8 @@ import { ServiceImage, type ServiceImageKind } from "./ServiceImage";
 
 const services: { title: string; kind: ServiceImageKind; description: string; anchor: string }[] = [
   { title: "AI Text Summarization", kind: "summarization", description: "Turn long articles, documentation and discussions into concise summaries and key points.", anchor: "service-ai-summarize" },
-  { title: "On-chain Analytics API", kind: "analytics", description: "Inspect a transaction’s token movements, participants, decoded input and gas usage, with evidence-backed risk signals.", anchor: "service-analytics" },
-  { title: "AML Screening API", kind: "aml", description: "Examine observed payment patterns and transaction flows, including exploratory ML structuring analysis—not compliance clearance.", anchor: "service-identity" },
+  { title: "On Chain Analytics", kind: "analytics", description: "Inspect a transaction’s token movements, participants, decoded input and gas usage, with evidence-backed risk signals.", anchor: "service-analytics" },
+  { title: "AML Screening", kind: "aml", description: "Examine observed payment patterns and transaction flows, including exploratory ML structuring analysis—not compliance clearance.", anchor: "service-identity" },
   { title: "Smart Contract Analysis", kind: "contracts", description: "Review uploaded Solidity code with AI-assisted analysis of potential risks and attack vectors.", anchor: "service-run" },
   { title: "Data Feeds / Oracles", kind: "oracles", description: "View MUSD, BTC and cbBTC price feeds and their charts, with free-entry and pay-per-use access.", anchor: "data-feeds" },
   { title: "veMEZO Marketplace", kind: "vemezo", description: "Access vote-escrowed positions, create MEZO locks and manage eligible withdrawals through your connected wallet.", anchor: "venft-marketplace" },
