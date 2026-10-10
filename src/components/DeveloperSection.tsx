@@ -28,7 +28,7 @@ const DeveloperSection = () => {
     <section className="py-24 bg-secondary/50" id="developer">
       <div className="container">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-center text-foreground mb-4">
-          Developer Infrastructure
+          Developer services
         </h2>
         <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-16">
           Mezo's infrastructure mechanisms powering the next generation of Bitcoin applications.
