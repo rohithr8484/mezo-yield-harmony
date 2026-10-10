@@ -86,7 +86,7 @@ export const IdentityVerification = () => {
       {requested && <AnalysisAccessGate
         key={requestId}
         serviceName="Identity Verification"
-        displayName="AML Screening API"
+        displayName="AML Screening"
         onPaymentSuccess={() => {}}
         onUnlock={() => setAuthorized(true)}
       >

@@ -25,7 +25,7 @@ const MODES: { id: Mode; label: string; icon: React.ComponentType<{ className?: 
     label: "MEZO / MUSD & Dev Infra",
     icon: Coins,
     greet:
-      "💡 I'm your **MEZO & MUSD Financial + Developer Infra Assistant**. Ask me about MEZO/MUSD economics, BTC-backed yield, lending, savings strategies — *and* the Mezo Developer Infrastructure stack: API Marketplace, Data Feeds / Oracles, Governance Analytics, veBTC/veMEZO Marketplace, Passport, Boar RPC, payment flows (MUSD / MEZO / BTC), edge functions, and integration patterns.",
+      "💡 I'm your **MEZO & MUSD Financial + Developer Infra Assistant**. Ask me about MEZO/MUSD economics, BTC-backed yield, lending, savings strategies — *and* the Mezo Developer Infrastructure stack: AI Services Marketplace, Data Feeds / Oracles, Governance Analytics, veBTC/veMEZO Marketplace, Passport, Boar RPC, payment flows (MUSD / MEZO / BTC), edge functions, and integration patterns.",
     prompts: [
       "Explain MUSD: how it's minted, backed and redeemed",
       "Best way to earn yield on MUSD with low risk",

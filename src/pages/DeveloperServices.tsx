@@ -210,7 +210,7 @@ const DeveloperServices = () => {
                   <span className="ops-status-dot" />
                   01 / Service registry
                 </div>
-                <h2 className="text-3xl font-display font-bold text-foreground sm:text-4xl">API Marketplace</h2>
+                <h2 className="text-3xl font-display font-bold text-foreground sm:text-4xl">AI Services Marketplace</h2>
                 <p className="mt-3 max-w-2xl text-base text-muted-foreground">
                   Services for intelligence, analytics, AML screening, and contract security.
                 </p>
@@ -245,7 +245,7 @@ const DeveloperServices = () => {
                   key: "analytics",
                   serviceName: "On-chain Analytics",
                   label: "DATA / ON-CHAIN",
-                  title: "On-chain Analytics API",
+                  title: "On Chain Analytics",
                   description: "Inspect transaction status, gas usage, token transfers, and decoded input from one hash.",
                   icon: Activity,
                   content: <OnchainAnalytics />,
@@ -255,7 +255,7 @@ const DeveloperServices = () => {
                   // Preserve the existing service identity so the rename does not reset allowances.
                   serviceName: "Identity Verification",
                   label: "COMPLIANCE / AML",
-                  title: "AML Screening API",
+                  title: "AML Screening",
                   description: "Inspect wallet activity and payment flows, with sanctions and adverse-media screening status.",
                   icon: Database,
                   content: <IdentityVerification />,
@@ -298,7 +298,7 @@ const DeveloperServices = () => {
                       {service.key === "analytics" || service.key === "identity" ? service.content : (
                       <PaymentGate
                         serviceName={service.serviceName}
-                        displayName={service.key === "identity" ? "AML Screening API" : service.serviceName}
+                        displayName={service.key === "identity" ? "AML Screening" : service.serviceName}
                         onPaymentSuccess={() => markPaid(service.key)}
                         isPaid={!!paidServices[service.key]}
                         compact

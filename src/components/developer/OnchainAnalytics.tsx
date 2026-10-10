@@ -118,7 +118,7 @@ export const OnchainAnalytics = () => {
       </form>
       {error && <div role="alert" className="flex items-start gap-2 rounded-md border border-destructive/30 bg-destructive/5 p-3 text-sm text-destructive"><XCircle className="mt-0.5 h-4 w-4 shrink-0" />{error}</div>}
       {loading && <div role="status" className="flex items-center gap-2 py-8 text-sm text-muted-foreground"><Loader2 className="h-4 w-4 animate-spin" />Retrieving explorer records…</div>}
-      {requested && <AnalysisAccessGate key={requestId} serviceName="On-chain Analytics" displayName="On-chain Analytics API" onPaymentSuccess={() => {}} onUnlock={() => setAuthorized(true)}>
+      {requested && <AnalysisAccessGate key={requestId} serviceName="On-chain Analytics" displayName="On Chain Analytics" onPaymentSuccess={() => {}} onUnlock={() => setAuthorized(true)}>
       {result && data && authorized && (
         <div aria-live="polite" className="min-w-0">
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-l-2 border-accent bg-accent/5 px-4 py-3">
