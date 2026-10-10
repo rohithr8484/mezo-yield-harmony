@@ -10,6 +10,7 @@ import { payWithMEZO } from "@/lib/mezoPayment";
 import { payWithBTC } from "@/lib/btcPayment";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
+import { ServiceImage, type ServiceImageKind } from "@/components/ServiceImage";
 
 const GOV_CHAIN_ID = 31611;
 const GOV_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
@@ -271,11 +272,13 @@ const DeveloperServices = () => {
               ].map((service, index) => (
                 <article
                   key={service.key}
+                  id={`service-${service.key}`}
                   className={`ops-row group flex min-w-0 flex-col overflow-hidden p-6 md:p-8 ${
                     index === 3 ? "border-b-0" : ""
                   }`}
                 >
                   <div className="relative flex h-full flex-col">
+                    <ServiceImage kind={({ "ai-summarize": "summarization", analytics: "analytics", identity: "aml", run: "contracts" } as Record<string, ServiceImageKind>)[service.key]} alt={`${service.title} illustration`} className="mb-6 aspect-[2/1] max-w-xl" />
                     <div className="mb-5 flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/10 text-primary transition-colors group-hover:border-accent/40 group-hover:bg-accent/10 group-hover:text-accent">
@@ -333,6 +336,7 @@ const DeveloperServices = () => {
                 key={feed.name}
                  className="ops-card p-5 md:p-7"
               >
+                  <ServiceImage kind="oracles" alt={`${feed.name} price oracle illustration`} className="mb-6 aspect-[2/1] max-w-xl" />
                  <div className="mb-4 flex flex-col gap-4 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3">
                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/25 bg-primary/10">
@@ -389,6 +393,7 @@ const DeveloperServices = () => {
       {/* veNFT Marketplace */}
       <section className="py-20 border-y border-border/50 bg-secondary/20" id="venft-marketplace">
         <div className="container">
+          <ServiceImage kind="vemezo" alt="Vote-escrowed MEZO positions illustration" className="mx-auto mb-8 aspect-[2/1] max-w-xl" />
           <div className="text-center mb-4">
             <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold mb-4">
               <Lock className="h-3 w-3" /> Vote-Escrowed Positions
@@ -418,6 +423,7 @@ const DeveloperServices = () => {
       <section className="border-t border-border/60 bg-secondary/25 py-16" id="governance-analytics">
         <div className="container">
           <div className="mx-auto max-w-3xl rounded-lg border border-border/80 bg-card/85 p-6 text-center shadow-card md:p-10">
+          <ServiceImage kind="governance" alt="Governance proposals and participation illustration" className="mx-auto mb-8 aspect-[2/1] max-w-xl" />
           <p className="mb-3 text-xs font-bold uppercase text-accent">03 / Protocol participation</p>
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
             Governance
