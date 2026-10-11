@@ -278,7 +278,7 @@ const DeveloperServices = () => {
                   }`}
                 >
                   <div className="relative flex h-full flex-col">
-                    <ServiceImage kind={({ "ai-summarize": "summarization", analytics: "analytics", identity: "aml", run: "contracts" } as Record<string, ServiceImageKind>)[service.key]} alt={`${service.title} illustration`} className="mb-6 aspect-[2/1] max-w-xl" />
+                    <ServiceImage kind={({ "ai-summarize": "summarization", analytics: "analytics", identity: "aml", run: "contracts" } as Record<string, ServiceImageKind>)[service.key]} alt={`${service.title} illustration`} className="mx-auto mb-6 aspect-[2/1] max-w-xl" />
                     <div className="mb-5 flex items-start justify-between gap-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/10 text-primary transition-colors group-hover:border-accent/40 group-hover:bg-accent/10 group-hover:text-accent">
@@ -336,7 +336,7 @@ const DeveloperServices = () => {
                 key={feed.name}
                  className="ops-card p-5 md:p-7"
               >
-                  <ServiceImage kind="oracles" alt={`${feed.name} price oracle illustration`} className="mb-6 aspect-[2/1] max-w-xl" />
+                  <ServiceImage kind="oracles" alt={`${feed.name} price oracle illustration`} className="mx-auto mb-6 aspect-[2/1] max-w-xl" />
                  <div className="mb-4 flex flex-col gap-4 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3">
                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-primary/25 bg-primary/10">
