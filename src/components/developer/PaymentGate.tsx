@@ -153,7 +153,7 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
       </>
       )}
       {!isPaid && !freeUnlocked && (
-      <div className={compact ? "grid grid-cols-3 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
+      <div className={compact ? "grid grid-cols-2 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
         {!compact && extraButton}
         <Button
           onClick={() => handlePay("MUSD")}
@@ -172,9 +172,10 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
           {pending === "MEZO" && isProcessing ? "Wait..." : compact ? "MEZO" : "Pay with MEZO"}
         </Button>
         <Button
+          hidden
           onClick={() => handlePay("BTC")}
           disabled={isProcessing}
-          className={compact ? `${paymentButtonClass} min-w-0 rounded-lg px-2 text-xs` : paymentButtonClass}
+          className={compact ? `${paymentButtonClass} hidden min-w-0 rounded-lg px-2 text-xs` : `${paymentButtonClass} hidden`}
         >
           <Bitcoin className="h-4 w-4" />
           {pending === "BTC" && isProcessing ? "Wait..." : compact ? "BTC" : "Pay with BTC"}
