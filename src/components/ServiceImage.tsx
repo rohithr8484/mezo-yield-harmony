@@ -10,5 +10,5 @@ const images = { summarization, analytics, aml, contracts, oracles, vemezo, gove
 export type ServiceImageKind = keyof typeof images;
 
 export function ServiceImage({ kind, alt, className = "" }: { kind: ServiceImageKind; alt: string; className?: string }) {
-  return <img src={images[kind]} alt={alt} loading="lazy" width={1200} height={608} className={`w-full rounded-lg object-cover ${className}`} />;
+  return <img src={images[kind]} alt={alt} loading="lazy" width={1200} height={608} className={`service-image w-full rounded-lg object-cover ${className}`} />;
 }
