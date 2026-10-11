@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Preserve recorded governance votes per proposal after closure and refresh; four tests pass, browser check retains a recorded vote in final results after reload, and late votes are rejected.
+
 - [x] Rename only the three requested visible service labels and replace service imagery with realistic feature-related scenes; images load on both pages, service links and Analyze remain available, build OK; access, allowances and descriptions unchanged.
 
 - [x] Add an illustrated homepage service explanation, relevant images above each developer service, and rename the homepage heading to Developer services; verified seven homepage illustrations, nine developer-service images, service navigation and unchanged Analyze control; build OK.

@@ -38,7 +38,7 @@ export function findProposal(id: string): Proposal | undefined {
   return getAllProposals().find((p) => p.id.toLowerCase() === lower);
 }
 
-// In-memory JavaScript store for voting data (per proposal). Resets on page refresh.
+// JavaScript vote store with a browser backup so final results survive refresh.
 const votesMemory: VotesMap = {};
 
 // A fixed schedule is shared by all browsers; opening a page never starts a timer.
@@ -58,6 +58,25 @@ export function isVotingOpen(proposalId: string): boolean {
 }
 
 export function getVotes(): VotesMap {
+  try {
+    const raw = localStorage.getItem(VOTES_KEY);
+    if (raw) {
+      const stored: unknown = JSON.parse(raw);
+      if (stored && typeof stored === "object" && !Array.isArray(stored)) {
+        for (const [id, records] of Object.entries(stored)) {
+          if (!Array.isArray(records)) continue;
+          votesMemory[id] = records.filter((vote): vote is VoteRecord =>
+            vote && typeof vote.voter === "string" &&
+            ["FOR", "AGAINST", "ABSTAIN"].includes(vote.type) &&
+            typeof vote.weight === "number" && Number.isFinite(vote.weight) && vote.weight > 0 &&
+            typeof vote.ts === "number" && Number.isFinite(vote.ts)
+          );
+        }
+      }
+    }
+  } catch {
+    // Keep the current JavaScript votes if browser storage is unavailable.
+  }
   return votesMemory;
 }
 
@@ -67,7 +86,13 @@ export function getVotesFor(proposalId: string): VoteRecord[] {
 
 export function addVote(proposalId: string, vote: VoteRecord) {
   if (!isVotingOpen(proposalId)) return false;
+  getVotes();
   (votesMemory[proposalId] ??= []).push(vote);
+  try {
+    localStorage.setItem(VOTES_KEY, JSON.stringify(votesMemory));
+  } catch {
+    // The vote remains available in this session if saving is unavailable.
+  }
   window.dispatchEvent(new CustomEvent("mezo:votes-updated", { detail: { proposalId } }));
   return true;
 }

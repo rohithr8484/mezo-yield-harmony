@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { addVote, computeLiveTally, EXISTING_PROPOSALS_END_AT, findProposal, getVotingEndTime, isVotingOpen, saveUserProposal, USER_PROPOSALS_KEY, VOTING_WINDOW_MS } from "./proposalStore";
+import { addVote, computeLiveTally, EXISTING_PROPOSALS_END_AT, findProposal, getVotingEndTime, isVotingOpen, saveUserProposal, USER_PROPOSALS_KEY, VOTES_KEY, VOTING_WINDOW_MS } from "./proposalStore";
 
 afterEach(() => {
   vi.useRealTimers();
@@ -8,6 +8,26 @@ afterEach(() => {
 });
 
 describe("shared proposal deadlines", () => {
+  it("restores each proposal's recorded votes after reload and closure", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(EXISTING_PROPOSALS_END_AT - 1000);
+    vi.resetModules();
+    const store = await import("./proposalStore");
+    expect(store.addVote("MIP-046", { voter: "wallet-a", type: "FOR", weight: 1, ts: Date.now() })).toBe(true);
+    expect(store.addVote("MIP-047", { voter: "wallet-b", type: "AGAINST", weight: 1, ts: Date.now() })).toBe(true);
+    expect(JSON.parse(localStorage.getItem(VOTES_KEY) ?? "{}")["MIP-046"]).toHaveLength(1);
+    vi.setSystemTime(EXISTING_PROPOSALS_END_AT);
+    vi.resetModules();
+    const restored = await import("./proposalStore");
+    const first = restored.findProposal("MIP-046");
+    const second = restored.findProposal("MIP-047");
+    if (!first || !second) throw new Error("Missing proposals");
+    expect(first.status).toBe("Finished");
+    expect(restored.computeLiveTally(first).forVotes).toBe(1);
+    expect(restored.computeLiveTally(first).againstVotes).toBe(0);
+    expect(restored.computeLiveTally(second).againstVotes).toBe(1);
+    expect(restored.addVote(first.id, { voter: "late", type: "FOR", weight: 1, ts: Date.now() })).toBe(false);
+  });
   it("does not start or reset the existing deadline when a user opens a proposal", () => {
     vi.useFakeTimers();
     vi.setSystemTime(EXISTING_PROPOSALS_END_AT - 60000);
