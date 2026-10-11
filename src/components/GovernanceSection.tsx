@@ -49,8 +49,9 @@ const GovernanceSection = () => {
             Pay with MEZO
           </button>
           <button
+            hidden
             onClick={goToGovernance}
-            className="px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity flex items-center gap-2 shadow-card"
+            className="hidden px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity items-center gap-2 shadow-card"
           >
             <Bitcoin className="h-4 w-4" />
             Pay with BTC

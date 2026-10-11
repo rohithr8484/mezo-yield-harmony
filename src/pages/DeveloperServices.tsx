@@ -457,9 +457,10 @@ const DeveloperServices = () => {
               {govPending === "MEZO" ? "Confirming..." : "Pay with MEZO"}
             </Button>
             <Button
+              hidden
               onClick={() => handleGovPay("BTC")}
               disabled={!!govPending}
-              className={paymentButtonClass}
+              className={`${paymentButtonClass} hidden`}
             >
               <Bitcoin className="h-4 w-4" />
               {govPending === "BTC" ? "Confirming..." : "Pay with BTC"}
