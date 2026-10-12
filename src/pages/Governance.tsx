@@ -123,7 +123,7 @@ const Governance = () => {
         <div className="container">
           <div className="max-w-5xl mx-auto">
             {/* Header with filter & search */}
-            <div className="ops-section-heading mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="ops-section-heading relative z-20 mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <p className="mb-1 text-xs font-bold uppercase text-accent">Proposal registry</p>
                 <h2 className="text-3xl font-display font-bold text-foreground">All Proposals</h2>
