@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Refine Developer Services presentation with clearer section hierarchy, centered imagery, and polished controls; preserve all service access and payments.
+
 - [x] Check newly submitted proposals moving to Finished at their saved deadline and retaining recorded results after refresh; five tests pass, closure is persisted, and the Finished filter is no longer obstructed by proposal rows.
 
 - [x] Preserve recorded governance votes per proposal after closure and refresh; four tests pass, browser check retains a recorded vote in final results after reload, and late votes are rejected.
