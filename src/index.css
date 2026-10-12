@@ -220,6 +220,32 @@
   transition: filter 400ms ease, box-shadow 400ms ease;
 }
 
+.developer-workspace {
+  background-image: none;
+}
+
+.developer-workspace .developer-service {
+  transition: border-color 220ms ease, box-shadow 220ms ease;
+}
+
+.developer-workspace .developer-service:focus-within {
+  border-color: hsl(var(--accent) / 0.5);
+  box-shadow: var(--shadow-hover);
+}
+
+.developer-workspace .developer-service button {
+  border-radius: var(--radius);
+}
+
+.developer-workspace .developer-service button[class*="bg-gradient"] {
+  background-image: none;
+  background-color: hsl(var(--primary));
+}
+
+.developer-workspace .developer-service button[class*="bg-gradient"]:hover {
+  background-color: hsl(var(--primary) / 0.9);
+}
+
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .service-image:hover {
     filter: saturate(1.08);

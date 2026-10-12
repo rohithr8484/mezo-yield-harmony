@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Lock, Play, Wallet, Bitcoin, FileText, ShieldCheck, Radio, Layers3, Network, CheckCircle2, ExternalLink } from "lucide-react";
+import { Activity, Database, Lock, Play, Wallet, Bitcoin, FileText, ShieldCheck, Radio, Layers3, Network, CheckCircle2, ExternalLink, ArrowDownRight } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -76,7 +76,7 @@ const DeveloperServices = () => {
   const [govPending, setGovPending] = useState<"MUSD" | "MEZO" | "BTC" | null>(null);
   const [freeGovEntriesUsed, setFreeGovEntriesUsed] = useState(0);
   const paymentButtonClass =
-    "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity disabled:opacity-50 shadow-card";
+    "rounded-md bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-50";
   const governanceFreeKey = `developer_free_entries_v1:${address?.toLowerCase() ?? "guest"}:Governance`;
   const freeGovEntriesRemaining = Math.max(0, FREE_GOVERNANCE_ENTRIES - freeGovEntriesUsed);
 
@@ -162,49 +162,60 @@ const DeveloperServices = () => {
 
   return (
     <PageLayout>
-      <div className="ops-page">
+      <div className="ops-page developer-workspace">
       {/* Hero */}
-      <section className="relative overflow-hidden py-10 md:py-14">
+      <section className="relative overflow-hidden border-b border-border/70 py-6 md:py-12">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px ops-scan" />
         <div className="container">
-          <div className="ops-shell overflow-hidden rounded-lg">
-            <div className="grid lg:grid-cols-[1fr_auto]">
-              <div className="p-6 md:p-10">
+          <div>
+            <div className="grid gap-8 lg:grid-cols-[1fr_260px] lg:items-center">
+              <div>
                 <div className="ops-kicker mb-5">
                   <span className="ops-status-dot" />
                   Mezo Testnet operations online
                 </div>
-                <h1 className="max-w-4xl text-4xl font-display font-bold leading-tight md:text-6xl animate-fade-in-up">
+                <h1 className="max-w-4xl text-4xl font-display font-bold leading-tight md:text-5xl animate-fade-in-up">
                   Developer infrastructure <span className="text-gradient">control room</span>
                 </h1>
                 <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg animate-fade-in-up">
                   APIs, oracles, compute, analytics, and governance access from one live workspace.
                 </p>
               </div>
-              <div className="grid min-w-[290px] grid-cols-2 border-t border-border/70 bg-secondary/30 lg:grid-cols-1 lg:border-l lg:border-t-0">
-                <div className="flex items-center gap-3 border-b border-r border-border/70 p-5 lg:border-r-0">
+              <div className="grid min-w-0 grid-cols-2 border-y border-border/70 lg:grid-cols-1 lg:divide-y lg:divide-border lg:border-y-0 lg:border-l lg:pl-6">
+                <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Network className="h-5 w-5 text-accent" />
                   <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Network</p><p className="font-display font-semibold">Chain 31611</p></div>
                 </div>
-                <div className="flex items-center gap-3 border-b border-border/70 p-5">
+                <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Layers3 className="h-5 w-5 text-primary" />
                   <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Access</p><p className="font-display font-semibold">4 free entries</p></div>
                 </div>
-                <div className="col-span-2 flex items-center gap-3 p-5 lg:col-span-1">
+                <div className="col-span-2 flex items-center gap-3 border-t border-border/70 py-3 lg:col-span-1 lg:border-t-0 lg:py-4">
                   <Radio className="h-5 w-5 text-bitcoin" />
                   <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Settlement</p><p className="font-display font-semibold">MUSD · MEZO · BTC</p></div>
                 </div>
               </div>
             </div>
+            <nav aria-label="Developer service sections" className="mt-8 flex flex-wrap gap-2 border-t border-border/70 pt-5">
+              {[
+                { href: "#api-marketplace", label: "AI Services Marketplace", icon: Layers3 },
+                { href: "#data-feeds", label: "Data Feeds / Oracles", icon: Radio },
+                { href: "#governance-analytics", label: "Governance", icon: ShieldCheck },
+              ].map((item) => (
+                <Button key={item.href} variant="outline" asChild className="h-auto min-h-10 whitespace-normal border-border bg-card px-4 py-2 text-foreground hover:bg-secondary hover:text-primary">
+                  <a href={item.href}><item.icon className="h-4 w-4 text-accent" />{item.label}<ArrowDownRight className="ml-2 h-4 w-4 text-muted-foreground" /></a>
+                </Button>
+              ))}
+            </nav>
           </div>
         </div>
       </section>
 
       {/* API Marketplace */}
-      <section className="relative py-12 md:py-16" id="api-marketplace">
+      <section className="relative scroll-mt-24 py-10 md:py-12" id="api-marketplace">
         <div className="container">
-          <div className="overflow-hidden rounded-lg border border-border/80 bg-card/80 shadow-card backdrop-blur-xl">
-            <div className="flex flex-col gap-6 border-b border-border/70 bg-secondary/20 p-6 md:flex-row md:items-end md:justify-between md:p-8">
+          <div>
+            <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div>
                 <div className="ops-kicker mb-3">
                   <span className="ops-status-dot" />
@@ -215,7 +226,7 @@ const DeveloperServices = () => {
                   Services for intelligence, analytics, AML screening, and contract security.
                 </p>
               </div>
-              <div className="grid grid-cols-3 overflow-hidden rounded-lg border border-border/70 bg-background/60 text-center">
+              <div className="grid grid-cols-3 border-y border-border/70 text-center">
                 <div className="border-r border-border/70 px-4 py-3">
                   <p className="text-lg font-display font-bold text-foreground">4</p>
                   <p className="text-[10px] font-bold uppercase text-muted-foreground">Services</p>
@@ -230,7 +241,7 @@ const DeveloperServices = () => {
                 </div>
               </div>
             </div>
-            <div className="grid grid-cols-1">
+            <div className="grid grid-cols-1 gap-8">
               {[
                 {
                   key: "ai-summarize",
@@ -273,28 +284,26 @@ const DeveloperServices = () => {
                 <article
                   key={service.key}
                   id={`service-${service.key}`}
-                  className={`ops-row group flex min-w-0 flex-col overflow-hidden p-6 md:p-8 ${
-                    index === 3 ? "border-b-0" : ""
-                  }`}
+                  className="developer-service group flex min-w-0 scroll-mt-24 flex-col overflow-hidden rounded-lg border border-border bg-card p-5 shadow-card md:p-8"
                 >
                   <div className="relative flex h-full flex-col">
-                    <ServiceImage kind={({ "ai-summarize": "summarization", analytics: "analytics", identity: "aml", run: "contracts" } as Record<string, ServiceImageKind>)[service.key]} alt={`${service.title} illustration`} className="mx-auto mb-6 aspect-[2/1] max-w-xl" />
-                    <div className="mb-5 flex items-start justify-between gap-4">
+                    <ServiceImage kind={({ "ai-summarize": "summarization", analytics: "analytics", identity: "aml", run: "contracts" } as Record<string, ServiceImageKind>)[service.key]} alt={`${service.title} illustration`} className="mx-auto mb-7 aspect-[2/1] max-w-xl" />
+                    <div className="mx-auto mb-4 flex w-full max-w-3xl items-start justify-between gap-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/10 text-primary transition-colors group-hover:border-accent/40 group-hover:bg-accent/10 group-hover:text-accent">
                           <service.icon className="h-5 w-5" />
                         </div>
                         <div>
                           <p className="text-[10px] font-bold uppercase text-muted-foreground">{service.label}</p>
-                          <h3 className="mt-1 text-xl font-display font-semibold text-foreground">{service.title}</h3>
+                          <h3 className="mt-1 text-xl font-display font-semibold text-foreground sm:text-2xl">{service.title}</h3>
                         </div>
                       </div>
                       <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase text-accent">
                         <CheckCircle2 className="h-3 w-3" /> Live
                       </span>
                     </div>
-                    <p className="mb-5 max-w-xl text-sm leading-relaxed text-muted-foreground">{service.description}</p>
-                    <div className="mt-auto border-t border-border/60 pt-2">
+                    <p className="mx-auto mb-6 w-full max-w-3xl text-sm leading-relaxed text-muted-foreground">{service.description}</p>
+                    <div className="mx-auto mt-auto w-full max-w-3xl border-t border-border/60 pt-4">
                       {service.key === "analytics" || service.key === "identity" ? service.content : (
                       <PaymentGate
                         serviceName={service.serviceName}
@@ -316,7 +325,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* Data Feeds / Oracles */}
-      <section className="py-16" id="data-feeds">
+      <section className="scroll-mt-24 border-t border-border/70 bg-secondary/25 py-12 md:py-16" id="data-feeds">
         <div className="container">
           <div className="ops-section-heading mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
@@ -334,7 +343,7 @@ const DeveloperServices = () => {
               return (
                <div
                 key={feed.name}
-                 className="ops-card p-5 md:p-7"
+                 className="developer-service rounded-lg border border-border bg-card p-5 shadow-card md:p-7"
               >
                   <ServiceImage kind="oracles" alt={`${feed.name} price oracle illustration`} className="mx-auto mb-6 aspect-[2/1] max-w-xl" />
                  <div className="mb-4 flex flex-col gap-4 border-b border-border/60 pb-4 sm:flex-row sm:items-center sm:justify-between">
@@ -348,7 +357,7 @@ const DeveloperServices = () => {
                     <span className="ops-status-dot" /> Live oracle
                   </span>
                 </div>
-                 <div className="mb-4 rounded-lg border border-border/60 bg-secondary/40 p-3">
+                 <div className="mb-5 border-l-2 border-accent bg-secondary/40 px-4 py-3">
                   <p className="text-xs text-muted-foreground mb-1">Feed ID</p>
                   <p className="font-mono text-xs text-foreground break-all select-all">{feed.feedId}</p>
                 </div>
@@ -420,9 +429,9 @@ const DeveloperServices = () => {
       </section>
 
       {/* Governance intro */}
-      <section className="border-t border-border/60 bg-secondary/25 py-16" id="governance-analytics">
+      <section className="scroll-mt-24 border-t border-border/60 py-16" id="governance-analytics">
         <div className="container">
-          <div className="mx-auto max-w-3xl rounded-lg border border-border/80 bg-card/85 p-6 text-center shadow-card md:p-10">
+          <div className="mx-auto max-w-3xl text-center">
           <ServiceImage kind="governance" alt="Governance proposals and participation illustration" className="mx-auto mb-8 aspect-[2/1] max-w-xl" />
           <p className="mb-3 text-xs font-bold uppercase text-accent">03 / Protocol participation</p>
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
@@ -434,7 +443,8 @@ const DeveloperServices = () => {
           <div className="flex justify-center mb-4">
             <Button
               onClick={handleFreeGovernanceEntry}
-              className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-sm font-semibold shadow-card"
+              variant="secondary"
+              className="h-auto min-h-11 whitespace-normal rounded-md border border-border px-5 text-sm font-semibold"
             >
               Use free Governance entry ({freeGovEntriesRemaining} left)
             </Button>
