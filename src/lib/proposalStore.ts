@@ -15,22 +15,37 @@ export interface VoteRecord {
 
 export type VotesMap = Record<string, VoteRecord[]>;
 
+function withVotingStatus(proposal: Proposal, now: number): Proposal {
+  const deadline = proposal.votingEndsAt ?? EXISTING_PROPOSALS_END_AT;
+  return {
+    ...proposal,
+    status: proposal.status === "Finished" || now >= deadline ? "Finished" : "Active",
+  };
+}
+
 export function getUserProposals(): Proposal[] {
   try {
     const raw = localStorage.getItem(USER_PROPOSALS_KEY);
-    return raw ? (JSON.parse(raw) as Proposal[]).map((p) => ({ ...p, status: p.status === "Finished" ? "Finished" : "Active" })) : [];
+    if (!raw) return [];
+    const stored = JSON.parse(raw) as Proposal[];
+    const now = Date.now();
+    const proposals = stored.map((proposal) => withVotingStatus(proposal, now));
+    if (proposals.some((proposal, index) => proposal.status !== stored[index].status)) {
+      try {
+        localStorage.setItem(USER_PROPOSALS_KEY, JSON.stringify(proposals));
+      } catch {
+        // Return the derived status even when saving is unavailable.
+      }
+    }
+    return proposals;
   } catch {
     return [];
   }
 }
 
 export function getAllProposals(): Proposal[] {
-  return [...getUserProposals(), ...staticProposals].map((proposal) => ({
-    ...proposal,
-    status: proposal.status === "Finished" || Date.now() >= getVotingEndTime(proposal.id, proposal)
-      ? "Finished"
-      : "Active",
-  }));
+  const now = Date.now();
+  return [...getUserProposals(), ...staticProposals].map((proposal) => withVotingStatus(proposal, now));
 }
 
 export function findProposal(id: string): Proposal | undefined {
