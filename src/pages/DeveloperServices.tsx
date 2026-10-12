@@ -164,7 +164,7 @@ const DeveloperServices = () => {
     <PageLayout>
       <div className="ops-page developer-workspace">
       {/* Hero */}
-      <section className="relative overflow-hidden border-b border-border/70 py-10 md:py-12">
+      <section className="relative overflow-hidden border-b border-border/70 py-6 md:py-12">
         <div className="pointer-events-none absolute inset-x-0 top-0 h-px ops-scan" />
         <div className="container">
           <div>
@@ -181,16 +181,16 @@ const DeveloperServices = () => {
                   APIs, oracles, compute, analytics, and governance access from one live workspace.
                 </p>
               </div>
-              <div className="grid min-w-0 grid-cols-1 divide-y divide-border border-y border-border/70 lg:border-y-0 lg:border-l lg:pl-6">
-                <div className="flex items-center gap-3 py-4">
+              <div className="grid min-w-0 grid-cols-2 border-y border-border/70 lg:grid-cols-1 lg:divide-y lg:divide-border lg:border-y-0 lg:border-l lg:pl-6">
+                <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Network className="h-5 w-5 text-accent" />
                   <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Network</p><p className="font-display font-semibold">Chain 31611</p></div>
                 </div>
-                <div className="flex items-center gap-3 py-4">
+                <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Layers3 className="h-5 w-5 text-primary" />
                   <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Access</p><p className="font-display font-semibold">4 free entries</p></div>
                 </div>
-                <div className="flex items-center gap-3 py-4">
+                <div className="col-span-2 flex items-center gap-3 border-t border-border/70 py-3 lg:col-span-1 lg:border-t-0 lg:py-4">
                   <Radio className="h-5 w-5 text-bitcoin" />
                   <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Settlement</p><p className="font-display font-semibold">MUSD · MEZO · BTC</p></div>
                 </div>
