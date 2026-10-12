@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { addVote, computeLiveTally, EXISTING_PROPOSALS_END_AT, findProposal, getVotingEndTime, isVotingOpen, saveUserProposal, USER_PROPOSALS_KEY, VOTES_KEY, VOTING_WINDOW_MS } from "./proposalStore";
+import { addVote, computeLiveTally, EXISTING_PROPOSALS_END_AT, findProposal, getUserProposals, getVotingEndTime, isVotingOpen, saveUserProposal, USER_PROPOSALS_KEY, VOTES_KEY, VOTING_WINDOW_MS } from "./proposalStore";
 
 afterEach(() => {
   vi.useRealTimers();
@@ -8,6 +8,23 @@ afterEach(() => {
 });
 
 describe("shared proposal deadlines", () => {
+  it("returns newly submitted proposals as Finished from the user store when their saved deadline expires", () => {
+    vi.useFakeTimers();
+    const createdAt = EXISTING_PROPOSALS_END_AT + 60000;
+    vi.setSystemTime(createdAt);
+    const base = findProposal("MIP-045");
+    if (!base) throw new Error("Missing proposal");
+    saveUserProposal({ ...base, id: "TEST-CLOSURE", status: "Active", votingEndsAt: undefined });
+    expect(getUserProposals()[0].status).toBe("Active");
+    expect(addVote("TEST-CLOSURE", { voter: "new-voter", type: "FOR", weight: 1, ts: createdAt })).toBe(true);
+    vi.setSystemTime(createdAt + 25 * 60 * 1000);
+    const closed = getUserProposals()[0];
+    expect(closed.status).toBe("Finished");
+    expect(closed.votingEndsAt).toBe(createdAt + 25 * 60 * 1000);
+    expect(computeLiveTally(closed).forVotes).toBe(1);
+    expect(addVote(closed.id, { voter: "late-new-voter", type: "AGAINST", weight: 1, ts: Date.now() })).toBe(false);
+  });
+
   it("restores each proposal's recorded votes after reload and closure", async () => {
     vi.useFakeTimers();
     vi.setSystemTime(EXISTING_PROPOSALS_END_AT - 1000);

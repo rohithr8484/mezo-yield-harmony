@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Check newly submitted proposals moving to Finished at their saved deadline and retaining recorded results after refresh.
+
 - [x] Preserve recorded governance votes per proposal after closure and refresh; four tests pass, browser check retains a recorded vote in final results after reload, and late votes are rejected.
 
 - [x] Rename only the three requested visible service labels and replace service imagery with realistic feature-related scenes; images load on both pages, service links and Analyze remain available, build OK; access, allowances and descriptions unchanged.
