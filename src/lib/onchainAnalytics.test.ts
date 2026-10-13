@@ -6,7 +6,7 @@ const tx: ExplorerTransaction = { hash: "0x123", status: "ok", from: { hash: "0x
 describe("observed transaction analytics", () => {
   it("scores observed concerns out of 100 using fixed disclosed weights", () => {
     const score = deriveAnalyticsRiskScore({ ...tx, status: "error", gas_limit: "21000", decoded_input: { method_call: "liquidate()" }, fee: { value: "100000000000000000" } }, [], { is_contract: true, is_verified: false });
-    expect(score).toMatchObject({ score: 70, upperBound: 100, assessed: 8, total: 8 });
+    expect(score).toMatchObject({ score: 70, upperBound: 70, assessed: 8, total: 8 });
   });
   it("does not score missing data as a passed check", () => {
     expect(deriveAnalyticsRiskScore({ hash: "pending", status: null, to: { hash: "0xb" } }, [], null)).toMatchObject({ score: null, assessed: 0, upperBound: 100 });
