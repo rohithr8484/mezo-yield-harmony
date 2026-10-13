@@ -11,12 +11,17 @@ export function deriveAnalyticsRiskScore(tx: ExplorerTransaction, transfers: Tok
   const data = deriveAnalytics(tx, transfers, recipient);
   const contract = recipient?.is_contract ?? tx.to?.is_contract;
   const verified = recipient?.is_verified ?? tx.to?.is_verified;
+  const methodAvailable = Boolean(data.method) || tx.raw_input === "0x";
+  const methodEvidence = (label: string) => data.method ? `Method: ${data.method}; ${label} inference only, not a confirmed protocol state.` : "No decoded method; empty call data is assessed as no method hint.";
   return summarizeObservationScore([
-    { name: "Execution failure", weight: 30, available: tx.status === "ok" || tx.status === "error", triggered: tx.status === "error", evidence: `Execution: ${data.status}; failure is an operational concern, not proof of malicious behavior.` },
-    { name: "Gas near limit", weight: 20, available: data.gasPct !== null, triggered: (data.gasPct ?? 0) > 95, evidence: data.gasPct === null ? "Gas usage unavailable." : `${formatNumber(data.gasPct, 1)}% used; review threshold >95%.` },
-    { name: "Unverified contract", weight: 20, available: !tx.to || contract === false || (contract === true && typeof verified === "boolean"), triggered: contract === true && verified === false, evidence: contract === true ? verified === false ? "Recipient source unverified; this does not establish malicious code." : verified === true ? "Recipient source verified; this does not establish safety." : "Verification unavailable." : "No verified contract-risk finding; unknown address types remain unassessed." },
-    { name: "Liquidation method hint", weight: 15, available: Boolean(data.method) || tx.raw_input === "0x", triggered: /liquidat/i.test(data.method), evidence: data.method ? `Method: ${data.method}; inference only, not confirmed position liquidation.` : "No decoded method; empty call data is assessed as no method hint." },
-    { name: "Fee / native value", weight: 15, available: data.feeRatio !== null && tx.fee?.type !== "maximum", triggered: (data.feeRatio ?? 0) > 5, evidence: data.feeRatio === null || tx.fee?.type === "maximum" ? "No usable actual fee-to-native-value ratio; token values excluded." : `${formatNumber(data.feeRatio, 2)}%; review threshold >5%, token values excluded.` },
+    { name: "Execution failure", weight: 25, available: tx.status === "ok" || tx.status === "error", triggered: tx.status === "error", evidence: `Execution: ${data.status}; failure is an operational concern, not proof of malicious behavior.` },
+    { name: "Gas near limit", weight: 15, available: data.gasPct !== null, triggered: (data.gasPct ?? 0) > 95, evidence: data.gasPct === null ? "Gas usage unavailable." : `${formatNumber(data.gasPct, 1)}% used; review threshold >95%.` },
+    { name: "Unverified contract", weight: 15, available: !tx.to || contract === false || (contract === true && typeof verified === "boolean"), triggered: contract === true && verified === false, evidence: contract === true ? verified === false ? "Recipient source unverified; this does not establish malicious code." : verified === true ? "Recipient source verified; this does not establish safety." : "Verification unavailable." : "No verified contract-risk finding; unknown address types remain unassessed." },
+    { name: "Liquidation risk", weight: 10, available: methodAvailable, triggered: /liquidat/i.test(data.method), evidence: methodEvidence("liquidation") },
+    { name: "Redemption risk", weight: 10, available: methodAvailable, triggered: /redeem|withdraw|closetrove/i.test(data.method), evidence: methodEvidence("redemption / exit") },
+    { name: "Bridge & interoperability risk", weight: 10, available: methodAvailable, triggered: /bridge|relay|crosschain|teleport|message/i.test(data.method), evidence: methodEvidence("bridge / cross-chain") },
+    { name: "Yield sustainability risk", weight: 10, available: methodAvailable, triggered: /harvest|claimrewards|compound|reinvest|yield/i.test(data.method), evidence: methodEvidence("yield / reward") },
+    { name: "Fee / native value", weight: 5, available: data.feeRatio !== null && tx.fee?.type !== "maximum", triggered: (data.feeRatio ?? 0) > 5, evidence: data.feeRatio === null || tx.fee?.type === "maximum" ? "No usable actual fee-to-native-value ratio; token values excluded." : `${formatNumber(data.feeRatio, 2)}%; review threshold >5%, token values excluded.` },
   ]);
 }
 
