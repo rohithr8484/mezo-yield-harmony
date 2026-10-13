@@ -17,10 +17,10 @@ describe("shared proposal deadlines", () => {
     saveUserProposal({ ...base, id: "TEST-CLOSURE", status: "Active", votingEndsAt: undefined });
     expect(getUserProposals()[0].status).toBe("Active");
     expect(addVote("TEST-CLOSURE", { voter: "new-voter", type: "FOR", weight: 1, ts: createdAt })).toBe(true);
-    vi.setSystemTime(createdAt + 25 * 60 * 1000);
+    vi.setSystemTime(createdAt + VOTING_WINDOW_MS);
     const closed = getUserProposals()[0];
     expect(closed.status).toBe("Finished");
-    expect(closed.votingEndsAt).toBe(createdAt + 25 * 60 * 1000);
+    expect(closed.votingEndsAt).toBe(createdAt + VOTING_WINDOW_MS);
     expect(computeLiveTally(closed).forVotes).toBe(1);
     expect(addVote(closed.id, { voter: "late-new-voter", type: "AGAINST", weight: 1, ts: Date.now() })).toBe(false);
   });
@@ -77,5 +77,21 @@ describe("shared proposal deadlines", () => {
     expect(JSON.parse(localStorage.getItem(USER_PROPOSALS_KEY) ?? "[]")[0].votingEndsAt).toBe(createdAt + VOTING_WINDOW_MS);
     vi.setSystemTime(createdAt + VOTING_WINDOW_MS);
     expect(findProposal("TEST-NEW")?.status).toBe("Finished");
+  });
+
+  it("keeps a new proposal Active after a refresh within the 6-minute window", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(EXISTING_PROPOSALS_END_AT + 60000);
+    const base = findProposal("MIP-045");
+    if (!base) throw new Error("Missing proposal");
+    const createdAt = Date.now();
+    saveUserProposal({ ...base, id: "TEST-REFRESH", status: "Active" });
+    vi.setSystemTime(createdAt + 2 * 60 * 1000);
+    vi.resetModules();
+    const restored = await import("./proposalStore");
+    const proposal = restored.findProposal("TEST-REFRESH");
+    expect(proposal?.status).toBe("Active");
+    expect(restored.isVotingOpen("TEST-REFRESH")).toBe(true);
+    expect(proposal?.votingEndsAt).toBe(createdAt + restored.VOTING_WINDOW_MS);
   });
 });

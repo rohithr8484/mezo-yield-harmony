@@ -57,7 +57,7 @@ export function findProposal(id: string): Proposal | undefined {
 const votesMemory: VotesMap = {};
 
 // A fixed schedule is shared by all browsers; opening a page never starts a timer.
-export const VOTING_WINDOW_MS = 25 * 60 * 1000;
+export const VOTING_WINDOW_MS = 6 * 60 * 1000;
 export const EXISTING_PROPOSALS_END_AT = Date.parse("2026-10-06T17:10:31Z");
 const endTimes: Record<string, number> = {};
 
