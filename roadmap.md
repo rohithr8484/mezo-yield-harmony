@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Harden MEZO/MUSD sends with the connected wallet, preflight checks and successful receipt recovery; remove the false MEZO self-transfer reward. Eight tests and browser checks pass; a new wallet-authorized payment and the wallet's own failed-history label remain unverified.
+
 - [x] Refine Developer Services presentation with clearer section hierarchy, centered imagery, polished controls and section links; verified centered images, hidden BTC controls, oracle navigation and no narrow-screen overflow; payments and access unchanged.
 
 - [x] Check newly submitted proposals moving to Finished at their saved deadline and retaining recorded results after refresh; five tests pass, closure is persisted, and the Finished filter is no longer obstructed by proposal rows.
