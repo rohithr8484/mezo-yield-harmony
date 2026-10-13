@@ -17,10 +17,10 @@ describe("shared proposal deadlines", () => {
     saveUserProposal({ ...base, id: "TEST-CLOSURE", status: "Active", votingEndsAt: undefined });
     expect(getUserProposals()[0].status).toBe("Active");
     expect(addVote("TEST-CLOSURE", { voter: "new-voter", type: "FOR", weight: 1, ts: createdAt })).toBe(true);
-    vi.setSystemTime(createdAt + 25 * 60 * 1000);
+    vi.setSystemTime(createdAt + VOTING_WINDOW_MS);
     const closed = getUserProposals()[0];
     expect(closed.status).toBe("Finished");
-    expect(closed.votingEndsAt).toBe(createdAt + 25 * 60 * 1000);
+    expect(closed.votingEndsAt).toBe(createdAt + VOTING_WINDOW_MS);
     expect(computeLiveTally(closed).forVotes).toBe(1);
     expect(addVote(closed.id, { voter: "late-new-voter", type: "AGAINST", weight: 1, ts: Date.now() })).toBe(false);
   });
