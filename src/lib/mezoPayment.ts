@@ -1,11 +1,13 @@
 import { ethers } from "ethers";
 import { getPaymentSigner, sendTokenPayment } from "./tokenPayment";
 
-/**
- * MEZO token and existing payment recipient. Holding tokens here does not authorize a reward.
- */
+/** MEZO token contract on Mezo Testnet. */
 export const MEZO_TOKEN_ADDRESS =
   "0x7B7c000000000000000000000000000000000001";
+
+/** Fee payee. Never send tokens to the token contract itself. */
+export const MEZO_FEE_RECIPIENT =
+  "0x000000000000000000000000000000000000dEaD";
 
 const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
@@ -33,7 +35,7 @@ export const payWithMEZO = async (
   const mezo = new ethers.Contract(MEZO_TOKEN_ADDRESS, ERC20_ABI, signer);
 
   if (await mezo.balanceOf(user) < amountWei) throw new Error("Insufficient MEZO balance in your payment wallet on Mezo Testnet.");
-  const stakeHash = await sendTokenPayment(mezo.transfer, [MEZO_TOKEN_ADDRESS, amountWei]);
+  const stakeHash = await sendTokenPayment(mezo.transfer, [MEZO_FEE_RECIPIENT, amountWei]);
   return { stakeHash };
 };
 
