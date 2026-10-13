@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
 import { toast } from "sonner";
+import { getPaymentSigner, getTokenPaymentError, sendTokenPayment } from "./tokenPayment";
 
 /**
  * Contracts
@@ -15,6 +16,7 @@ export const PREDICTION_MUSD =
 const ERC20_ABI = [
   "function approve(address spender, uint256 amount) external returns (bool)",
   "function allowance(address owner, address spender) external view returns (uint256)",
+  "function balanceOf(address owner) external view returns (uint256)",
 ];
 
 const MARKET_ABI = [
@@ -34,14 +36,11 @@ export interface PayWithMUSDResult {
  */
 export const payWithMUSD = async (
   amountWei: bigint,
-  rewardMUSD: string = "0.0005"
+  rewardMUSD: string = "0.0005",
+  walletProvider?: ethers.Eip1193Provider,
 ): Promise<PayWithMUSDResult> => {
-  const eth = (window as any).ethereum;
-  if (!eth) throw new Error("No wallet found. Please install MetaMask.");
-
-  const provider = new ethers.BrowserProvider(eth);
-  await provider.send("eth_requestAccounts", []);
-  const signer = await provider.getSigner();
+  if (amountWei <= 0n) throw new Error("Payment amount must be greater than zero.");
+  const signer = await getPaymentSigner(walletProvider);
   const user = await signer.getAddress();
 
   const musd = new ethers.Contract(PREDICTION_MUSD, ERC20_ABI, signer);
@@ -51,26 +50,23 @@ export const payWithMUSD = async (
     signer
   );
 
+  if (await musd.balanceOf(user) < amountWei) throw new Error("Insufficient MUSD balance in your payment wallet on Mezo Testnet.");
   // 1. Allowance check
   const allowance: bigint = await musd.allowance(
     user,
     PREDICTION_MARKET_ADDRESS
   );
   if (allowance < amountWei) {
-    const approveTx = await musd.approve(PREDICTION_MARKET_ADDRESS, amountWei);
-    await approveTx.wait();
+    await sendTokenPayment(musd.approve, [PREDICTION_MARKET_ADDRESS, amountWei]);
   }
 
   // 2. Stake payment
-  const stakeTx = await market.fundMarket2(amountWei);
-  const stakeReceipt = await stakeTx.wait();
-  const stakeHash = stakeReceipt?.hash ?? stakeTx.hash;
+  const stakeHash = await sendTokenPayment(market.fundMarket2, [amountWei]);
 
   // 3. Reward payout
   try {
     const rewardAmount = ethers.parseEther(rewardMUSD);
-    const rewardTx = await market.adminWithdraw(user, rewardAmount);
-    const rewardReceipt = await rewardTx.wait();
+    const rewardHash = await sendTokenPayment(market.adminWithdraw, [user, rewardAmount]);
 
     toast.success(`🎁 ${rewardMUSD} MUSD reward sent to your wallet!`, {
       duration: 6000,
@@ -78,19 +74,17 @@ export const payWithMUSD = async (
 
     return {
       stakeHash,
-      rewardHash: rewardReceipt?.hash ?? rewardTx.hash,
+      rewardHash,
     };
-  } catch (err: any) {
-    console.error("Reward payout failed:", err);
+  } catch (err: unknown) {
     toast.warning(
       `Payment confirmed, but reward payout failed: ${
-        err?.shortMessage || err?.message || "Unknown error"
+        getTokenPaymentError(err)
       }`
     );
     return {
       stakeHash,
-      rewardError:
-        err?.shortMessage || err?.message || "Reward payout failed",
+      rewardError: getTokenPaymentError(err),
     };
   }
 };

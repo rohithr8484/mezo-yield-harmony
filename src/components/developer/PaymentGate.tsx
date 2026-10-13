@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
 import { payWithBTC } from "@/lib/btcPayment";
+import { getTokenPaymentError } from "@/lib/tokenPayment";
+import type { Eip1193Provider } from "ethers";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
@@ -54,18 +56,18 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
         const { stakeHash } = await payWithBTC(parseEther("0.0001"));
         txHash = stakeHash as `0x${string}`;
       } else if (token === "MUSD") {
-        const { stakeHash } = await payWithMUSD(parseUnits("0.2", 18), "0.0005");
+        const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
+        const { stakeHash } = await payWithMUSD(parseUnits("0.2", 18), "0.0005", walletProvider);
         txHash = stakeHash as `0x${string}`;
       } else {
-        const { stakeHash } = await payWithMEZO(parseUnits("0.2", 18));
+        const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
+        const { stakeHash } = await payWithMEZO(parseUnits("0.2", 18), walletProvider);
         txHash = stakeHash as `0x${string}`;
       }
       toast.success(`Payment for ${displayName} confirmed via ${connectedWalletName}. Tx: ${txHash.slice(0, 10)}...`);
       onPaymentSuccess();
     } catch (error) {
-      const msg = error instanceof Error ? error.message.toLowerCase() : "";
-      const rejected = msg.includes("rejected") || msg.includes("denied") || msg.includes("cancelled");
-      toast.error(rejected ? `Transfer cancelled in ${connectedWalletName}.` : `Payment failed. Please try again.`);
+      toast.error(getTokenPaymentError(error));
     } finally {
       setIsSubmitting(false);
       setPending(null);

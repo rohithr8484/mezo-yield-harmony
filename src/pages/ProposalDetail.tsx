@@ -22,6 +22,8 @@ function formatRelative(ts: number): string {
 }
 import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
+import { getTokenPaymentError } from "@/lib/tokenPayment";
+import type { Eip1193Provider } from "ethers";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
 
@@ -89,10 +91,12 @@ const ProposalDetail = () => {
 
       let txHash: string;
       if (payToken === "MUSD") {
-        const { stakeHash } = await payWithMUSD(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS), "0.0005");
+        const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
+        const { stakeHash } = await payWithMUSD(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS), "0.0005", walletProvider);
         txHash = stakeHash;
       } else {
-        const { stakeHash } = await payWithMEZO(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS));
+        const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
+        const { stakeHash } = await payWithMEZO(parseUnits(VOTING_FEE, VOTING_TOKEN_DECIMALS), walletProvider);
         txHash = stakeHash;
       }
 
@@ -116,14 +120,7 @@ const ProposalDetail = () => {
         { duration: 5000 }
       );
     } catch (error) {
-      const message = error instanceof Error ? error.message.toLowerCase() : "";
-      const rejected = message.includes("rejected") || message.includes("denied") || message.includes("cancelled");
-
-      toast.error(
-        rejected
-          ? `The ${payToken} transfer request was cancelled in ${connectedWalletName}.`
-          : `Couldn't complete the ${payToken} transfer request. Please connect ${connectedWalletName} on Mezo Testnet and try again.`
-      );
+      toast.error(getTokenPaymentError(error));
     } finally {
       setIsSubmittingVote(false);
       setPendingPayToken(null);
