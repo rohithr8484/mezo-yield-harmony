@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Add a separate seller service workflow from the homepage using templates, bind published listings to the connected wallet, and show them in the Developer infrastructure control room without changing existing services or payments.
+
 - [x] Harden MEZO/MUSD sends with the connected wallet, preflight checks and successful receipt recovery; remove the false MEZO self-transfer reward. Eight tests and browser checks pass; a new wallet-authorized payment and the wallet's own failed-history label remain unverified.
 
 - [x] Refine Developer Services presentation with clearer section hierarchy, centered imagery, polished controls and section links; verified centered images, hidden BTC controls, oracle navigation and no narrow-screen overflow; payments and access unchanged.

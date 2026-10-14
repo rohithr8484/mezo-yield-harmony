@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Activity, Database, Lock, Play, Wallet, Bitcoin, FileText, ShieldCheck, Radio, Layers3, Network, CheckCircle2, ExternalLink, ArrowDownRight } from "lucide-react";
+import { Activity, Database, Lock, Play, Wallet, Bitcoin, FileText, ShieldCheck, Radio, Layers3, Network, CheckCircle2, ExternalLink, ArrowDownRight, Store } from "lucide-react";
 import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits, parseEther } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -29,6 +29,7 @@ import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
 import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
 import { AITextSummarizer } from "@/components/developer/AITextSummarizer";
 import { X402Banner } from "@/components/developer/X402Banner";
+import { ServiceSellerStudio } from "@/components/developer/ServiceSellerStudio";
 
 const dataFeeds = [
   { name: "MUSD / USD", feedId: "0x0617a9b725011a126a2b9fd53563f4236501f32cf76d877644b943394606c6de" },
@@ -202,6 +203,7 @@ const DeveloperServices = () => {
               {[
                 { href: "#api-marketplace", label: "AI Services Marketplace", icon: Layers3 },
                 { href: "#data-feeds", label: "Data Feeds / Oracles", icon: Radio },
+                { href: "#seller-studio", label: "Sell a Service", icon: Store },
                 { href: "#governance-analytics", label: "Governance", icon: ShieldCheck },
               ].map((item) => (
                 <Button key={item.href} variant="outline" asChild className="h-auto min-h-10 whitespace-normal border-border bg-card px-4 py-2 text-foreground hover:bg-secondary hover:text-primary">
@@ -401,6 +403,17 @@ const DeveloperServices = () => {
         </div>
       </section>
 
+      <section className="scroll-mt-24 border-t border-border/70 py-12 md:py-16" id="seller-studio">
+        <div className="container">
+          <div className="ops-section-heading mb-8">
+            <p className="mb-2 text-xs font-bold uppercase text-primary">03 / Seller studio</p>
+            <h2 className="font-display text-3xl font-bold text-foreground sm:text-4xl">Provide your own service</h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground">Create a separate seller listing from a ready-made template. The connected wallet becomes the service owner.</p>
+          </div>
+          <ServiceSellerStudio />
+        </div>
+      </section>
+
       {/* veNFT Marketplace */}
       <section className="py-20 border-y border-border/50 bg-secondary/20" id="venft-marketplace">
         <div className="container">
@@ -435,7 +448,7 @@ const DeveloperServices = () => {
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">
           <ServiceImage kind="governance" alt="Governance proposals and participation illustration" className="mx-auto mb-8 aspect-[2/1] max-w-xl" />
-          <p className="mb-3 text-xs font-bold uppercase text-accent">03 / Protocol participation</p>
+          <p className="mb-3 text-xs font-bold uppercase text-accent">04 / Protocol participation</p>
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
             Governance
           </h2>
