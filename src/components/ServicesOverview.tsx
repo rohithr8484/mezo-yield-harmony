@@ -1,4 +1,4 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Store } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ServiceImage, type ServiceImageKind } from "./ServiceImage";
@@ -30,6 +30,17 @@ export default function ServicesOverview() {
             <Button asChild variant="link" className="mt-auto h-auto justify-start p-0 text-primary"><Link to={`/developer-services#${service.anchor}`}>Open service <ArrowUpRight className="ml-2 h-4 w-4" /></Link></Button>
           </div>
         </article>)}
+      </div>
+      <div className="mt-8 flex flex-col gap-5 border-l-2 border-accent bg-card px-6 py-7 shadow-card sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-start gap-4">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-accent/10 text-accent"><Store className="h-5 w-5" /></div>
+          <div>
+            <p className="text-xs font-semibold uppercase text-accent">For service sellers</p>
+            <h3 className="mt-1 font-display text-xl font-semibold text-foreground">Provide your own service</h3>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">Start with an existing service template, customize it, and publish it under your connected wallet address.</p>
+          </div>
+        </div>
+        <Button asChild className="shrink-0"><Link to="/developer-services#seller-studio">Create a service <ArrowUpRight className="h-4 w-4" /></Link></Button>
       </div>
     </div>
   </section>;

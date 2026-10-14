@@ -23,3 +23,4 @@
 - Keep veMEZO marketplace access session-only through the shared service payment gate; persist free-entry usage and NFT positions, but restore unlock controls on refresh.
 - Use a shared ServiceImage component for homepage and developer-service illustrations so the same service keeps consistent imagery without affecting its access controls.
 - Apply presentation-only motion through the shared page layout and global styles, with reduced-motion overrides; access and result visibility must never depend on animation completion.
+- Keep seller-created developer services separate from built-in paid services and bind each browser-stored listing to the connected wallet address; this prevents seller templates from altering existing access and payment flows.
