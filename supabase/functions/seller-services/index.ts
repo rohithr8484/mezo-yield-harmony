@@ -75,19 +75,40 @@ Deno.serve(async (req) => {
       if (!service) return json({ error: 'Service not found or not deployed.' }, 404);
 
       const instruction = templatePrompts[service.template_id] ?? `You are the developer service "${service.title}": ${service.description}. Respond to the input concisely.`;
-      const res = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+      const res = await fetch('https://ai.gateway.lovable.dev/v1/responses', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Lovable-API-Key': Deno.env.get('LOVABLE_API_KEY')! },
+        headers: { 'Content-Type': 'application/json', 'Lovable-API-Key': Deno.env.get('LOVABLE_API_KEY')!, 'X-Lovable-AIG-SDK': 'fetch' },
         body: JSON.stringify({
-          model: 'google/gemini-3-flash-preview',
-          messages: [{ role: 'system', content: instruction }, { role: 'user', content: input }],
+          model: 'openai/gpt-6-astra',
+          input: [{ role: 'system', content: instruction }, { role: 'user', content: input }],
+          reasoning: { effort: 'low' },
+          store: false,
+          stream: true,
         }),
       });
       if (res.status === 429) return json({ error: 'Too many requests, please try again shortly.' }, 429);
       if (res.status === 402) return json({ error: 'AI credits are exhausted for this workspace.' }, 402);
-      if (!res.ok) return json({ error: 'The service could not respond.' }, 502);
-      const data = await res.json();
-      return json({ service: service.title, output: data.choices?.[0]?.message?.content ?? '' });
+      if (!res.ok || !res.body) return json({ error: 'The service could not respond.' }, 502);
+      let output = '';
+      let buffer = '';
+      const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += value;
+        const lines = buffer.split('\n');
+        buffer = lines.pop() ?? '';
+        for (const line of lines) {
+          if (!line.startsWith('data:')) continue;
+          const payload = line.slice(5).trim();
+          if (!payload || payload === '[DONE]') continue;
+          try {
+            const event = JSON.parse(payload);
+            if (event.type === 'response.output_text.delta' && typeof event.delta === 'string') output += event.delta;
+          } catch { /* ignore partial */ }
+        }
+      }
+      return json({ service: service.title, output });
     }
 
     return json({ error: 'Unknown action.' }, 400);
