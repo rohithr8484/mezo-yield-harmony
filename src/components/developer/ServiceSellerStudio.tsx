@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Braces, CheckCircle2, Copy, Store, Wallet } from "lucide-react";
+import { Braces, CheckCircle2, Store, Wallet } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +60,8 @@ export function ServiceSellerStudio() {
                   type="button"
                   variant="outline"
                   onClick={() => chooseTemplate(template)}
-                  className={`h-auto min-h-20 justify-start whitespace-normal p-4 text-left ${active ? "border-accent bg-accent/10" : "bg-card"}`}
+                  aria-pressed={active}
+                  className={`h-auto min-h-20 justify-start whitespace-normal p-4 text-left hover:bg-secondary hover:text-foreground ${active ? "border-accent bg-accent/10" : "bg-card"}`}
                 >
                   <Braces className={active ? "text-accent" : "text-muted-foreground"} />
                   <span className="min-w-0">
@@ -106,7 +107,7 @@ export function ServiceSellerStudio() {
             <p className="text-xs font-bold uppercase text-accent">Seller registry</p>
             <h3 className="mt-1 font-display text-2xl font-bold text-foreground">Your published services</h3>
           </div>
-          <span className="text-sm text-muted-foreground">{ownServices.length} linked to this wallet</span>
+          <span className="text-sm text-muted-foreground">{ownServices.length} linked to this wallet · Saved in this browser</span>
         </div>
         {ownServices.length === 0 ? (
           <div className="border border-dashed border-border bg-secondary/25 px-5 py-8 text-center text-sm text-muted-foreground">
@@ -121,12 +122,13 @@ export function ServiceSellerStudio() {
                     <p className="text-[10px] font-bold uppercase text-accent">{service.category}</p>
                     <h4 className="mt-1 font-display text-lg font-semibold text-foreground">{service.title}</h4>
                   </div>
-                  <span className="rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase text-accent">Listed</span>
+                  <span className="shrink-0 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase text-accent">Template listing</span>
                 </div>
                 <p className="text-sm leading-relaxed text-muted-foreground">{service.description}</p>
                 <div className="mt-5 space-y-2 border-t border-border pt-4 text-xs">
-                  <p className="flex items-center gap-2 font-mono text-foreground"><Copy className="h-3.5 w-3.5 text-primary" />{service.endpoint}</p>
+                  <p className="break-all font-mono text-foreground">{service.endpoint}</p>
                   <p className="break-all text-muted-foreground">Seller: {service.sellerAddress}</p>
+                  <p className="text-muted-foreground">Deployment: Not deployed</p>
                 </div>
               </article>
             ))}
