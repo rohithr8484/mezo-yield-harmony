@@ -36,14 +36,25 @@ export const sellerServiceTemplates: SellerServiceTemplate[] = [
     description: "Review Solidity source for common risks and return a structured report.",
     endpoint: "/api/review",
   },
-  {
-    id: "custom-api",
-    title: "Custom Developer API",
-    category: "Developer Tool",
-    description: "Describe the input, output, and purpose of your developer service.",
-    endpoint: "/api/service",
-  },
 ];
+
+/** Message the seller wallet signs to deploy a listing. Must match the backend function. */
+export function buildDeployMessage(s: {
+  listingId: string;
+  title: string;
+  endpoint: string;
+  sellerAddress: string;
+  signedAt: number;
+}) {
+  return [
+    "Deploy Mezo seller service",
+    `Listing: ${s.listingId}`,
+    `Title: ${s.title}`,
+    `Endpoint: ${s.endpoint}`,
+    `Seller: ${s.sellerAddress.toLowerCase()}`,
+    `Signed at: ${s.signedAt}`,
+  ].join("\n");
+}
 
 export function readSellerServices(storage: Pick<Storage, "getItem"> = window.localStorage): SellerService[] {
   try {
