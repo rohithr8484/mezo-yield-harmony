@@ -14,7 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      seller_services: {
+        Row: {
+          category: string
+          deployed_at: string
+          description: string
+          endpoint: string
+          id: string
+          listing_id: string
+          seller_address: string
+          template_id: string
+          title: string
+        }
+        Insert: {
+          category: string
+          deployed_at?: string
+          description: string
+          endpoint: string
+          id?: string
+          listing_id: string
+          seller_address: string
+          template_id: string
+          title: string
+        }
+        Update: {
+          category?: string
+          deployed_at?: string
+          description?: string
+          endpoint?: string
+          id?: string
+          listing_id?: string
+          seller_address?: string
+          template_id?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
