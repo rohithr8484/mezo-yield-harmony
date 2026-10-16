@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Braces, CheckCircle2, Loader2, Play, Rocket, Store, Wallet } from "lucide-react";
+import { Braces, CheckCircle2, FileUp, Loader2, Play, Rocket, Store, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,10 @@ const shortAddress = (value: string) => `${value.slice(0, 6)}…${value.slice(-4
 export function ServiceSellerStudio() {
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
-  const [selected, setSelected] = useState<SellerServiceTemplate>(sellerServiceTemplates[0]);
+  const visibleTemplates = useMemo(() => sellerServiceTemplates.filter((t) => t.id !== "wallet-analytics"), []);
+  const [selected, setSelected] = useState<SellerServiceTemplate>(visibleTemplates[0]);
   const [draft, setDraft] = useState(selected);
+  const [contractFile, setContractFile] = useState<{ name: string; source: string } | null>(null);
   const [services, setServices] = useState(() => readSellerServices());
   const normalizedAddress = address?.toLowerCase();
   const ownServices = useMemo(
@@ -102,7 +104,8 @@ export function ServiceSellerStudio() {
     setBusy(`test:${service.listingId}`);
     try {
       const input = service.id === "contract-review"
-        ? "contract Vault { mapping(address=>uint) b; function withdraw() external { (bool ok,) = msg.sender.call{value:b[msg.sender]}(\"\"); require(ok); b[msg.sender]=0; } }"
+        ? contractFile?.source ||
+          "contract Vault { mapping(address=>uint) b; function withdraw() external { (bool ok,) = msg.sender.call{value:b[msg.sender]}(\"\"); require(ok); b[msg.sender]=0; } }"
         : service.id === "wallet-analytics"
           ? "0x9A220b677234BB18273aC031bE6CA405a950cA2e"
           : "Mezo lets bitcoin holders borrow MUSD against BTC, lock MEZO as veMEZO for governance, and pay developer services on the Mezo test network.";
@@ -121,6 +124,22 @@ export function ServiceSellerStudio() {
   const chooseTemplate = (template: SellerServiceTemplate) => {
     setSelected(template);
     setDraft(template);
+    setContractFile(null);
+  };
+
+  const uploadContract = (file: File | undefined) => {
+    if (!file) return;
+    if (!/\.sol$/i.test(file.name)) {
+      toast.error("Please choose a .sol Solidity file.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setContractFile({ name: file.name, source: String(reader.result ?? "") });
+      toast.success(`${file.name} is ready to review.`);
+    };
+    reader.onerror = () => toast.error("The file could not be read.");
+    reader.readAsText(file);
   };
 
   const publish = () => {
@@ -144,7 +163,7 @@ export function ServiceSellerStudio() {
         <div>
           <p className="mb-3 text-xs font-bold uppercase text-primary">Step 1 · Choose a starting point</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            {sellerServiceTemplates.map((template) => {
+            {visibleTemplates.map((template) => {
               const active = selected.id === template.id;
               return (
                 <Button
@@ -178,6 +197,28 @@ export function ServiceSellerStudio() {
               Description
               <Textarea className="mt-2 min-h-24" value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} maxLength={280} />
             </label>
+            {selected.id === "contract-review" && (
+              <div>
+                <input
+                  id="contract-upload"
+                  type="file"
+                  accept=".sol"
+                  className="hidden"
+                  onChange={(event) => {
+                    uploadContract(event.target.files?.[0]);
+                    event.target.value = "";
+                  }}
+                />
+                <Button type="button" variant="outline" size="sm" onClick={() => document.getElementById("contract-upload")?.click()}>
+                  <FileUp /> Upload Solidity file
+                </Button>
+                {contractFile && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Loaded <span className="font-mono font-semibold text-foreground">{contractFile.name}</span> — it will be used when you test the live service.
+                  </p>
+                )}
+              </div>
+            )}
             <label className="block text-sm font-semibold text-foreground">
               Service endpoint
               <Input className="mt-2 font-mono" value={draft.endpoint} onChange={(event) => setDraft({ ...draft, endpoint: event.target.value })} maxLength={160} />
