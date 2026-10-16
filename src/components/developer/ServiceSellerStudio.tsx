@@ -104,7 +104,8 @@ export function ServiceSellerStudio() {
     setBusy(`test:${service.listingId}`);
     try {
       const input = service.id === "contract-review"
-        ? "contract Vault { mapping(address=>uint) b; function withdraw() external { (bool ok,) = msg.sender.call{value:b[msg.sender]}(\"\"); require(ok); b[msg.sender]=0; } }"
+        ? contractFile?.source ||
+          "contract Vault { mapping(address=>uint) b; function withdraw() external { (bool ok,) = msg.sender.call{value:b[msg.sender]}(\"\"); require(ok); b[msg.sender]=0; } }"
         : service.id === "wallet-analytics"
           ? "0x9A220b677234BB18273aC031bE6CA405a950cA2e"
           : "Mezo lets bitcoin holders borrow MUSD against BTC, lock MEZO as veMEZO for governance, and pay developer services on the Mezo test network.";
@@ -196,6 +197,28 @@ export function ServiceSellerStudio() {
               Description
               <Textarea className="mt-2 min-h-24" value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} maxLength={280} />
             </label>
+            {selected.id === "contract-review" && (
+              <div>
+                <input
+                  id="contract-upload"
+                  type="file"
+                  accept=".sol"
+                  className="hidden"
+                  onChange={(event) => {
+                    uploadContract(event.target.files?.[0]);
+                    event.target.value = "";
+                  }}
+                />
+                <Button type="button" variant="outline" size="sm" onClick={() => document.getElementById("contract-upload")?.click()}>
+                  <FileUp /> Upload Solidity file
+                </Button>
+                {contractFile && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Loaded <span className="font-mono font-semibold text-foreground">{contractFile.name}</span> — it will be used when you test the live service.
+                  </p>
+                )}
+              </div>
+            )}
             <label className="block text-sm font-semibold text-foreground">
               Service endpoint
               <Input className="mt-2 font-mono" value={draft.endpoint} onChange={(event) => setDraft({ ...draft, endpoint: event.target.value })} maxLength={160} />
