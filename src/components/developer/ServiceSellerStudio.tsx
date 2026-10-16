@@ -324,6 +324,7 @@ export function ServiceSellerStudio() {
                     </pre>
                   )}
                 </div>
+                </div>
               </article>
             ))}
           </div>
