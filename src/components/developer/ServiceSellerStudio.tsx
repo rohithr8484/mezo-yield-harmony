@@ -123,6 +123,22 @@ export function ServiceSellerStudio() {
   const chooseTemplate = (template: SellerServiceTemplate) => {
     setSelected(template);
     setDraft(template);
+    setContractFile(null);
+  };
+
+  const uploadContract = (file: File | undefined) => {
+    if (!file) return;
+    if (!/\.sol$/i.test(file.name)) {
+      toast.error("Please choose a .sol Solidity file.");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setContractFile({ name: file.name, source: String(reader.result ?? "") });
+      toast.success(`${file.name} is ready to review.`);
+    };
+    reader.onerror = () => toast.error("The file could not be read.");
+    reader.readAsText(file);
   };
 
   const publish = () => {
@@ -146,7 +162,7 @@ export function ServiceSellerStudio() {
         <div>
           <p className="mb-3 text-xs font-bold uppercase text-primary">Step 1 · Choose a starting point</p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
-            {sellerServiceTemplates.map((template) => {
+            {visibleTemplates.map((template) => {
               const active = selected.id === template.id;
               return (
                 <Button
