@@ -19,3 +19,9 @@ describe("seller services", () => {
     expect(readSellerServices()).toEqual([]);
   });
 });
+describe("seller templates", () => {
+  it("does not offer the Custom Developer API template", () => {
+    expect(sellerServiceTemplates.map((t) => t.title)).not.toContain("Custom Developer API");
+    expect(sellerServiceTemplates).toHaveLength(3);
+  });
+});
