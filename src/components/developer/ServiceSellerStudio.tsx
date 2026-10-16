@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ServiceImage, type ServiceImageKind } from "@/components/ServiceImage";
 import {
   buildDeployMessage,
   createSellerService,
@@ -15,6 +16,13 @@ import {
   type SellerService,
   type SellerServiceTemplate,
 } from "@/lib/sellerServices";
+
+/** Same service keeps the same imagery as its built-in counterpart. */
+const templateImage: Record<string, ServiceImageKind> = {
+  "text-summarizer": "summarization",
+  "wallet-analytics": "analytics",
+  "contract-review": "contracts",
+};
 
 type DeployedService = { id: string; listing_id: string; deployed_at: string };
 const SERVICE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/seller-services`;
