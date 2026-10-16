@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { ServiceImage, type ServiceImageKind } from "@/components/ServiceImage";
 import {
   buildDeployMessage,
   createSellerService,
@@ -15,6 +16,13 @@ import {
   type SellerService,
   type SellerServiceTemplate,
 } from "@/lib/sellerServices";
+
+/** Same service keeps the same imagery as its built-in counterpart. */
+const templateImage: Record<string, ServiceImageKind> = {
+  "text-summarizer": "summarization",
+  "wallet-analytics": "analytics",
+  "contract-review": "contracts",
+};
 
 type DeployedService = { id: string; listing_id: string; deployed_at: string };
 const SERVICE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/seller-services`;
@@ -172,14 +180,19 @@ export function ServiceSellerStudio() {
                   variant="outline"
                   onClick={() => chooseTemplate(template)}
                   aria-pressed={active}
-                  className={`h-auto min-h-20 justify-start whitespace-normal p-4 text-left hover:bg-secondary hover:text-foreground ${active ? "border-accent bg-accent/10" : "bg-card"}`}
+                  className={`h-auto flex-col items-stretch overflow-hidden whitespace-normal p-0 text-left hover:bg-secondary hover:text-foreground ${active ? "border-accent bg-accent/10" : "bg-card"}`}
                 >
-                  <Braces className={active ? "text-accent" : "text-muted-foreground"} />
-                  <span className="min-w-0">
-                    <span className="block font-display font-semibold text-foreground">{template.title}</span>
-                    <span className="mt-1 block text-xs font-normal text-muted-foreground">{template.category}</span>
+                  {templateImage[template.id] && (
+                    <ServiceImage kind={templateImage[template.id]} alt={`${template.title} service`} className="mx-auto rounded-none" />
+                  )}
+                  <span className="flex w-full items-start gap-3 p-4">
+                    <Braces className={active ? "mt-0.5 text-accent" : "mt-0.5 text-muted-foreground"} />
+                    <span className="min-w-0">
+                      <span className="block font-display font-semibold text-foreground">{template.title}</span>
+                      <span className="mt-1 block text-xs font-normal text-muted-foreground">{template.category}</span>
+                    </span>
+                    {active && <CheckCircle2 className="ml-auto text-accent" />}
                   </span>
-                  {active && <CheckCircle2 className="ml-auto text-accent" />}
                 </Button>
               );
             })}
@@ -256,7 +269,11 @@ export function ServiceSellerStudio() {
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {ownServices.map((service) => (
-              <article key={service.listingId} className="rounded-lg border border-border bg-card p-5 shadow-card">
+              <article key={service.listingId} className="overflow-hidden rounded-lg border border-border bg-card shadow-card">
+                {templateImage[service.id] && (
+                  <ServiceImage kind={templateImage[service.id]} alt={`${service.title} service`} className="mx-auto rounded-none" />
+                )}
+                <div className="p-5">
                 <div className="mb-4 flex items-start justify-between gap-3">
                   <div>
                     <p className="text-[10px] font-bold uppercase text-accent">{service.category}</p>
@@ -306,6 +323,7 @@ export function ServiceSellerStudio() {
                       {testOutput[service.listingId]}
                     </pre>
                   )}
+                </div>
                 </div>
               </article>
             ))}
