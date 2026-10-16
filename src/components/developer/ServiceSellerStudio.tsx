@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useSignMessage } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { Braces, CheckCircle2, Loader2, Play, Rocket, Store, Wallet } from "lucide-react";
+import { Braces, CheckCircle2, FileUp, Loader2, Play, Rocket, Store, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -24,8 +24,10 @@ const shortAddress = (value: string) => `${value.slice(0, 6)}…${value.slice(-4
 export function ServiceSellerStudio() {
   const { address, isConnected } = useAccount();
   const { openConnectModal } = useConnectModal();
-  const [selected, setSelected] = useState<SellerServiceTemplate>(sellerServiceTemplates[0]);
+  const visibleTemplates = useMemo(() => sellerServiceTemplates.filter((t) => t.id !== "wallet-analytics"), []);
+  const [selected, setSelected] = useState<SellerServiceTemplate>(visibleTemplates[0]);
   const [draft, setDraft] = useState(selected);
+  const [contractFile, setContractFile] = useState<{ name: string; source: string } | null>(null);
   const [services, setServices] = useState(() => readSellerServices());
   const normalizedAddress = address?.toLowerCase();
   const ownServices = useMemo(
