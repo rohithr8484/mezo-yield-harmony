@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAccount, useSignMessage, useSwitchChain } from "wagmi";
 import { parseUnits } from "viem";
 import type { Eip1193Provider } from "ethers";
-import { payWithMUSD } from "@/lib/musdPayment";
-import { payWithMEZO } from "@/lib/mezoPayment";
+import { payWithMUSD, PREDICTION_MUSD } from "@/lib/musdPayment";
+import { payWithMEZO, MEZO_TOKEN_ADDRESS } from "@/lib/mezoPayment";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
@@ -184,15 +184,42 @@ export function ServiceSellerStudio() {
     try {
       if (chainId !== MEZO_TESTNET_CHAIN_ID) await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       const walletProvider = (await connector?.getProvider()) as Eip1193Provider | undefined;
-      const { stakeHash } = token === "MUSD"
+      const { stakeHash, rewardHash } = token === "MUSD"
         ? await payWithMUSD(parseUnits("0.2", 18), "0.0005", walletProvider)
         : await payWithMEZO(parseUnits("0.2", 18), walletProvider);
-      toast.success(`Payment confirmed with ${token}. Tx: ${stakeHash.slice(0, 10)}...`);
+      setPaymentReceipts((current) => [
+        { label: `0.2 ${token} payment`, hash: stakeHash },
+        ...(rewardHash ? [{ label: "0.0005 MUSD reward", hash: rewardHash }] : []),
+        ...current,
+      ].slice(0, 4));
+      toast.success(`Payment confirmed on-chain with ${token}. Your wallet may still label it "failed" — the explorer receipt is the real result.`);
       publish();
     } catch (error) {
       toast.error(getTokenPaymentError(error));
     } finally {
       setPaying(null);
+    }
+  };
+
+  const addTokensToWallet = async () => {
+    try {
+      const provider = (await connector?.getProvider()) as Eip1193Provider | undefined;
+      if (!provider) {
+        openConnectModal?.();
+        return;
+      }
+      for (const token of [
+        { address: MEZO_TOKEN_ADDRESS, symbol: "MEZO" },
+        { address: PREDICTION_MUSD, symbol: "MUSD" },
+      ]) {
+        await provider.request({
+          method: "wallet_watchAsset",
+          params: { type: "ERC20", options: { address: token.address, symbol: token.symbol, decimals: 18 } } as never,
+        });
+      }
+      toast.success("MEZO and MUSD were offered to your wallet.");
+    } catch (error) {
+      toast.error(getTokenPaymentError(error));
     }
   };
 
@@ -283,6 +310,24 @@ export function ServiceSellerStudio() {
                 {paying === "MEZO" ? <Loader2 className="animate-spin" /> : <Wallet />}
                 {paying === "MEZO" ? "Wait..." : "Pay with MEZO"}
               </Button>
+            </div>
+            <div className="space-y-2 text-xs text-muted-foreground">
+              <button type="button" onClick={addTokensToWallet} className="font-semibold text-primary underline-offset-4 hover:underline">
+                Add MEZO & MUSD to your wallet
+              </button>
+              <p>Some wallets show successful Mezo Testnet payments as "failed". The explorer receipt below is the real result.</p>
+              {paymentReceipts.map((receipt) => (
+                <a
+                  key={receipt.hash}
+                  href={`https://explorer.test.mezo.org/tx/${receipt.hash}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 rounded-md border border-accent/30 bg-accent/10 px-3 py-2 font-medium text-foreground"
+                >
+                  <CheckCircle2 className="h-4 w-4 text-accent" />
+                  {receipt.label} confirmed on-chain · <span className="font-mono">{receipt.hash.slice(0, 10)}…{receipt.hash.slice(-6)}</span>
+                </a>
+              ))}
             </div>
           </div>
         </div>
