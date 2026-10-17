@@ -41,6 +41,7 @@ export function ServiceSellerStudio() {
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync } = useSwitchChain();
   const [paying, setPaying] = useState<"MUSD" | "MEZO" | null>(null);
+  const [paymentReceipts, setPaymentReceipts] = useState<{ label: string; hash: string }[]>([]);
   const visibleTemplates = useMemo(() => sellerServiceTemplates.filter((t) => t.id !== "wallet-analytics"), []);
   const [selected, setSelected] = useState<SellerServiceTemplate>(visibleTemplates[0]);
   const [draft, setDraft] = useState(selected);
