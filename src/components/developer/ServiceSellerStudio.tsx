@@ -1,5 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useAccount, useSignMessage } from "wagmi";
+import { useAccount, useSignMessage, useSwitchChain } from "wagmi";
+import { parseUnits } from "viem";
+import type { Eip1193Provider } from "ethers";
+import { payWithMUSD } from "@/lib/musdPayment";
+import { payWithMEZO } from "@/lib/mezoPayment";
+import { getTokenPaymentError } from "@/lib/tokenPayment";
+
+const MEZO_TESTNET_CHAIN_ID = 31611;
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { Braces, CheckCircle2, FileUp, Loader2, Play, Rocket, Store, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,8 +37,10 @@ const SERVICE_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/seller-se
 const shortAddress = (value: string) => `${value.slice(0, 6)}…${value.slice(-4)}`;
 
 export function ServiceSellerStudio() {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
+  const { switchChainAsync } = useSwitchChain();
+  const [paying, setPaying] = useState<"MUSD" | "MEZO" | null>(null);
   const visibleTemplates = useMemo(() => sellerServiceTemplates.filter((t) => t.id !== "wallet-analytics"), []);
   const [selected, setSelected] = useState<SellerServiceTemplate>(visibleTemplates[0]);
   const [draft, setDraft] = useState(selected);
@@ -165,6 +174,28 @@ export function ServiceSellerStudio() {
     }
   };
 
+  const payAndPublish = async (token: "MUSD" | "MEZO") => {
+    if (paying) return;
+    if (!isConnected || !address) {
+      openConnectModal?.();
+      return;
+    }
+    setPaying(token);
+    try {
+      if (chainId !== MEZO_TESTNET_CHAIN_ID) await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
+      const walletProvider = (await connector?.getProvider()) as Eip1193Provider | undefined;
+      const { stakeHash } = token === "MUSD"
+        ? await payWithMUSD(parseUnits("0.2", 18), "0.0005", walletProvider)
+        : await payWithMEZO(parseUnits("0.2", 18), walletProvider);
+      toast.success(`Payment confirmed with ${token}. Tx: ${stakeHash.slice(0, 10)}...`);
+      publish();
+    } catch (error) {
+      toast.error(getTokenPaymentError(error));
+    } finally {
+      setPaying(null);
+    }
+  };
+
   return (
     <div className="space-y-8">
       <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr]">
@@ -239,10 +270,20 @@ export function ServiceSellerStudio() {
             <div className="border-y border-border py-3 text-xs text-muted-foreground">
               Seller wallet: <span className="font-mono font-semibold text-foreground">{address ? shortAddress(address) : "Connect wallet to assign ownership"}</span>
             </div>
-            <Button type="button" onClick={publish} className="w-full sm:w-auto">
-              {isConnected ? <Store /> : <Wallet />}
-              {isConnected ? "Publish & deploy service" : "Connect wallet to publish"}
-            </Button>
+            <div className="flex flex-wrap gap-3">
+              <Button type="button" onClick={publish} className="w-full sm:w-auto">
+                {isConnected ? <Store /> : <Wallet />}
+                {isConnected ? "Publish & deploy service" : "Connect wallet to publish"}
+              </Button>
+              <Button type="button" onClick={() => payAndPublish("MUSD")} disabled={paying !== null} className="w-full sm:w-auto">
+                {paying === "MUSD" ? <Loader2 className="animate-spin" /> : <Wallet />}
+                {paying === "MUSD" ? "Wait..." : "Pay with MUSD"}
+              </Button>
+              <Button type="button" onClick={() => payAndPublish("MEZO")} disabled={paying !== null} className="w-full sm:w-auto">
+                {paying === "MEZO" ? <Loader2 className="animate-spin" /> : <Wallet />}
+                {paying === "MEZO" ? "Wait..." : "Pay with MEZO"}
+              </Button>
+            </div>
           </div>
         </div>
       </div>
