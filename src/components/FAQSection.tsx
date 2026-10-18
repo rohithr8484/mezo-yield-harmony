@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: "Is this production-ready?",
-    a: "This deployment targets Mezo Testnet for demos and integration testing. Smart contracts (VotingDataHelper, MarketplaceAdmin, VeNFTMarketplace, etc.) are listed in the Contracts section above for review.",
+    a: "This deployment targets Mezo Testnet for demos and integration testing. Smart contracts are listed in the Contracts section above for review.",
   },
 ];
 
