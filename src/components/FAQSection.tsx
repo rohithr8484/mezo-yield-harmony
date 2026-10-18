@@ -6,8 +6,8 @@ const faqs = [
     a: "x402 is an open HTTP 402 payment protocol. The server replies 402 Payment Required with the price in MUSD on Mezo Testnet, your wallet signs a Permit2 authorization and sends the payment, and the client retries with the X-PAYMENT header. The banner triggers a real MUSD transfer so you can see the transaction in MetaMask activity.",
   },
   {
-    q: "Why do I need Mezo Testnet (Chain ID 31611)?",
-    a: "Every payment in this marketplace — MUSD, MEZO and x402 — settles on Mezo Testnet. The app automatically prompts MetaMask to switch networks before signing.",
+    q: "Why do I need Mezo Testnet / Mezo Matsnet Testnet (Chain ID 31611)?",
+    a: "Every payment in this marketplace — MUSD, MEZO and x402 — settles on Mezo Testnet / Mezo Matsnet Testnet. The app automatically prompts MetaMask to switch networks before signing.",
   },
   {
     q: "Which tokens are accepted for paid services?",
