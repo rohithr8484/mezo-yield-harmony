@@ -226,6 +226,7 @@ const DeveloperServices = () => {
                   01 / Service registry
                 </div>
                 <h2 className="text-3xl font-display font-bold text-foreground sm:text-4xl">AI Services Marketplace</h2>
+                <p className="seller-tag mt-2 text-sm font-semibold text-accent">(Seller → Mezo Auth Dev)</p>
                 <p className="mt-3 max-w-2xl text-base text-muted-foreground">
                   Services for intelligence, analytics, AML screening, and contract security.
                 </p>
@@ -335,6 +336,7 @@ const DeveloperServices = () => {
             <div>
               <p className="mb-2 text-xs font-bold uppercase text-primary">02 / Oracle network</p>
               <h2 className="text-3xl sm:text-4xl font-display font-bold text-foreground">Data Feeds / Oracles</h2>
+              <p className="seller-tag mt-2 text-sm font-semibold text-accent">(Seller → Mezo Auth Dev)</p>
             </div>
             <p className="max-w-xl text-muted-foreground md:text-right">
               Real-time price feeds with charts. Each user gets 4 free feed unlocks before paid access.
@@ -426,6 +428,7 @@ const DeveloperServices = () => {
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
             veMEZO Marketplace
           </h2>
+          <p className="seller-tag mb-4 text-center text-sm font-semibold text-accent">(Seller → Mezo Auth Dev)</p>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-12">
             Buy already-locked veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain
             settlement with free starter access per user.
@@ -452,6 +455,7 @@ const DeveloperServices = () => {
           <h2 className="text-3xl sm:text-4xl font-display font-bold text-center text-foreground mb-4">
             Governance
           </h2>
+          <p className="seller-tag mb-4 text-center text-sm font-semibold text-accent">(Seller → Mezo Auth Dev)</p>
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
             Shape the future of Bitcoin finance through decentralized governance. Each user gets 4 free entries.
           </p>
