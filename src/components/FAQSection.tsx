@@ -18,10 +18,6 @@ const faqs = [
     a: "Every successful payment shows a transaction hash linked to the Mezo explorer (explorer.test.mezo.org). MetaMask will also list the MUSD/MEZO transfer under Activity.",
   },
   {
-    q: "Do AI services (Sentiment, Summarization) use my API keys?",
-    a: "No. Both AI tools run through the Lovable AI Gateway with the google/gemini-3-flash-preview model — no third-party keys are required from you.",
-  },
-  {
     q: "What about gas fees?",
     a: "On Mezo Testnet gas fees are negligible. For x402 calls, the protocol settles in a single MUSD transfer so the user only signs once.",
   },
