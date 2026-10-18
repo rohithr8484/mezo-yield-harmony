@@ -8,7 +8,7 @@ const services: { title: string; kind: ServiceImageKind; description: string; an
   { title: "On Chain Analytics", kind: "analytics", description: "Inspect a transaction’s token movements, participants, decoded input and gas usage, with evidence-backed risk signals.", anchor: "service-analytics" },
   { title: "AML Screening", kind: "aml", description: "Examine observed payment patterns and transaction flows, including exploratory ML structuring analysis—not compliance clearance.", anchor: "service-identity" },
   { title: "Smart Contract Analysis", kind: "contracts", description: "Review uploaded Solidity code with AI-assisted analysis of potential risks and attack vectors.", anchor: "service-run" },
-  { title: "Data Feeds / Oracles", kind: "oracles", description: "View MUSD, BTC and cbBTC price feeds and their charts, with free-entry and pay-per-use access.", anchor: "data-feeds" },
+  { title: "Data Feeds / Oracles", kind: "oracles", description: "View live price feeds and their charts, with free-entry and pay-per-use access.", anchor: "data-feeds" },
   { title: "veMEZO Marketplace", kind: "vemezo", description: "Access vote-escrowed positions, create MEZO locks and manage eligible withdrawals through your connected wallet.", anchor: "venft-marketplace" },
   { title: "Governance", kind: "governance", description: "Browse proposals, follow voting deadlines and view the recorded results for each proposal.", anchor: "governance-analytics" },
 ];

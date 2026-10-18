@@ -7,15 +7,15 @@ const faqs = [
   },
   {
     q: "Why do I need Mezo Testnet (Chain ID 31611)?",
-    a: "Every payment in this marketplace — MUSD, MEZO, BTC and x402 — settles on Mezo Testnet. The app automatically prompts MetaMask to switch networks before signing.",
+    a: "Every payment in this marketplace — MUSD, MEZO and x402 — settles on Mezo Testnet. The app automatically prompts MetaMask to switch networks before signing.",
   },
   {
     q: "Which tokens are accepted for paid services?",
-    a: "Marketplace APIs and oracle feeds are priced in MEZO. Governance access can be paid with MUSD, MEZO or BTC. The x402 demo specifically uses MUSD via Permit2.",
+    a: "Marketplace APIs and oracle feeds are priced in MEZO. Governance access can be paid with MUSD or MEZO. The x402 demo specifically uses MUSD via Permit2.",
   },
   {
     q: "Where can I see my transaction after paying?",
-    a: "Every successful payment shows a transaction hash linked to the Mezo explorer (explorer.test.mezo.org). MetaMask will also list the MUSD/MEZO/BTC transfer under Activity.",
+    a: "Every successful payment shows a transaction hash linked to the Mezo explorer (explorer.test.mezo.org). MetaMask will also list the MUSD/MEZO transfer under Activity.",
   },
   {
     q: "Do AI services (Sentiment, Summarization) use my API keys?",
@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     q: "What about gas fees?",
-    a: "On Mezo Testnet gas is paid in BTC and is negligible. For x402 calls, the protocol settles in a single MUSD transfer so the user only signs once.",
+    a: "On Mezo Testnet gas fees are negligible. For x402 calls, the protocol settles in a single MUSD transfer so the user only signs once.",
   },
   {
     q: "Is this production-ready?",
