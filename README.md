@@ -1,4 +1,4 @@
-# 🏗️ Mezo Auth Dev - Infrastructure for Bitcoin DeFi using pay per use with MUSD/MEZO/BTC
+# 🏗️ Mezo Auth Dev - Marketplace for developer services using pay per use with MUSD/MEZO/BTC
 
 Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (text summarization, wallet verification, smart contract simulation & risk analysis), real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, or BTC,
 
@@ -150,7 +150,6 @@ MUSD powers the entire infrastructure economy.
 |---|---:|---:|---:|---:|
 | MUSD | 0.2 MUSD | 0.01 MUSD | 0.2 MUSD | 0.2 MUSD (0.0005 MUSD reward returned) |
 | MEZO | 0.2 MEZO | 0.01 MEZO | 0.2 MEZO | 0.2 MEZO |
-| BTC | 0.0001 BTC | 0.01 BTC | Not offered | Not offered |
 | x402 (MUSD) | 0.001 MUSD per feed unlock | Not offered | Not offered | Not offered |
 
 Network gas and any first-time token approval are additional; x402 settlement gas is paid by the facilitator. The x402 payment uses a different MUSD token from the regular MUSD buttons.
