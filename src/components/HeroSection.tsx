@@ -21,7 +21,7 @@ const HeroSection = () => {
 
       <div className="container relative z-10 text-center py-20">
         <span className="inline-block px-4 py-1.5 mb-6 rounded-full glass-card text-xs font-semibold uppercase tracking-wider text-muted-foreground animate-fade-in">
-          ⚡ Powered by Bitcoin · Live on Mezo
+          Live On Mezo Testnet
         </span>
         <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display font-bold leading-[0.95] tracking-tight animate-fade-in-up">
           <span className="text-gradient-animated italic">B</span>
