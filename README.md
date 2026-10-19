@@ -170,11 +170,10 @@ For each regular MUSD payment, the app attempts to send this reward from platfor
 
 | **Product** | **Description** | **Tech Used** |
 | --- | --- | --- |
-| **AI Text Summarization API** | AI-powered document summarization | OpenAI + Compute |
-| **On-chain Analytics API** | Blockchain transaction analytics | Solidity + APIs |
-| **Identity Verification API** | Wallet verification infrastructure | Attestations + Web3 |
+| **AI Text Summarization** | AI-powered document summarization | OpenAI + Compute |
+| **On-chain Analytics** | Blockchain transaction analytics | Solidity + APIs |
 | **Oracle Data Feeds** | Real-time market pricing infrastructure | Pyth + Mezo |
-| **Compute Runtime** | Smart contract simulation engine | AI + Solidity |
+| **Smart Contract Analysis** | Smart contract simulation engine | AI + Solidity |
 | **DAO Governance** | Proposal and voting infrastructure | Solidity + Javascript |
 
 ---
