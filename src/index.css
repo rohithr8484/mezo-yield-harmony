@@ -331,3 +331,33 @@
     transition-duration: 0.01ms;
   }
 }
+
+/* UI polish layer — presentation only */
+html { scroll-behavior: smooth; }
+::selection { background: hsl(var(--accent) / 0.25); }
+body {
+  background-image:
+    radial-gradient(60rem 30rem at 10% -10%, hsl(var(--primary) / 0.06), transparent 60%),
+    radial-gradient(50rem 30rem at 100% 0%, hsl(var(--accent) / 0.07), transparent 60%);
+  background-attachment: fixed;
+}
+:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 3px; border-radius: 6px; }
+.developer-workspace article,
+.developer-workspace .ops-card {
+  border-radius: 1rem;
+  transition: box-shadow .3s ease, border-color .3s ease, transform .3s ease;
+}
+.developer-workspace article:hover {
+  border-color: hsl(var(--accent) / 0.45);
+  box-shadow: 0 18px 40px -22px hsl(var(--primary) / 0.45);
+}
+.developer-workspace a:not([class*="bg-"]) {
+  background-image: linear-gradient(hsl(var(--accent)), hsl(var(--accent)));
+  background-size: 0 1px; background-repeat: no-repeat; background-position: 0 100%;
+  transition: background-size .3s ease;
+}
+.developer-workspace a:not([class*="bg-"]):hover { background-size: 100% 1px; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .developer-workspace article, .developer-workspace .ops-card, .developer-workspace a { transition: none !important; }
+}
