@@ -368,7 +368,7 @@ const DeveloperServices = () => {
                   <p className="text-xs text-muted-foreground mb-1">Feed ID</p>
                   <p className="font-mono text-xs text-foreground break-all select-all">{feed.feedId}</p>
                 </div>
-                <p className="mb-5 border-y border-border/60 py-2 text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO per unlock · pay-per-call 0.001 test mUSD · first 4 unlocks free</p>
+                <p className="mb-5 border-y border-border/60 py-2 text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO per unlock · pay-per-call 0.001 test MUSD · x402 · first 4 unlocks free</p>
                 <PaymentGate
                   serviceName={`${feed.name} Oracle`}
                   onPaymentSuccess={() => markPaid(paymentKey)}
