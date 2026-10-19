@@ -26,7 +26,8 @@ export default function ServicesOverview() {
           <ServiceImage kind={service.kind} alt={`${service.title} illustration`} className="aspect-[2/1] rounded-none" />
           <div className="flex flex-1 flex-col p-6">
             <h3 className="font-display text-lg font-semibold text-foreground">{service.title}</h3>
-            <p className="mb-5 mt-3 text-sm leading-relaxed text-muted-foreground">{service.description}</p>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{service.description}</p>
+            <p className="mb-5 mt-4 border-t border-border/60 pt-3 text-xs font-semibold text-accent">Charge: {service.charge}</p>
             <Button asChild variant="link" className="mt-auto h-auto justify-start p-0 text-primary"><Link to={`/developer-services#${service.anchor}`}>Open service <ArrowUpRight className="ml-2 h-4 w-4" /></Link></Button>
           </div>
         </article>)}
