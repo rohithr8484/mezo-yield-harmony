@@ -43,7 +43,7 @@ const DeveloperServices = () => {
       const stored = window.localStorage.getItem("developer_paid_services");
       const saved = stored ? JSON.parse(stored) as Record<string, boolean> : {};
       // Feed and marketplace access lasts until refresh; keep API unlocks as before.
-      return Object.fromEntries(Object.entries(saved).filter(([key]) => !key.startsWith("feed-v2-") && key !== "venft"));
+      return Object.fromEntries(Object.entries(saved).filter(([key]) => !key.startsWith("feed-v2-") && key !== "venft" && key !== "ai-summarize"));
     } catch {
       return {};
     }
@@ -138,7 +138,7 @@ const DeveloperServices = () => {
 
   useEffect(() => {
     const persistentServices = Object.fromEntries(
-      Object.entries(paidServices).filter(([key]) => !key.startsWith("feed-v2-") && key !== "venft"),
+      Object.entries(paidServices).filter(([key]) => !key.startsWith("feed-v2-") && key !== "venft" && key !== "ai-summarize"),
     );
     window.localStorage.setItem("developer_paid_services", JSON.stringify(persistentServices));
   }, [paidServices]);
