@@ -10,6 +10,7 @@ import { payWithMEZO } from "@/lib/mezoPayment";
 import { payWithBTC } from "@/lib/btcPayment";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
 import type { Eip1193Provider } from "ethers";
+import { X402Banner } from "./X402Banner";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
@@ -156,7 +157,9 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
       )}
       {!isPaid && !freeUnlocked && (
       <div className={compact ? "grid grid-cols-2 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
-        {!compact && extraButton}
+        {compact
+          ? <div className="col-span-2">{extraButton ?? <X402Banner uniform onPaymentSuccess={() => onPaymentSuccess()} />}</div>
+          : (extraButton ?? <X402Banner uniform onPaymentSuccess={() => onPaymentSuccess()} />)}
         <Button
           onClick={() => handlePay("MUSD")}
           disabled={isProcessing}
