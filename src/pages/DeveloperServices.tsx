@@ -473,7 +473,7 @@ const DeveloperServices = () => {
             </Button>
           </div>
           <div className="flex flex-wrap gap-4 justify-center">
-            <X402Banner uniform onPaymentSuccess={() => setTimeout(() => navigate("/governance"), 600)} />
+            <X402Banner uniform receiptKey="Governance" onPaymentSuccess={() => setTimeout(() => navigate("/governance"), 600)} />
             <Button
               onClick={() => handleGovPay("MUSD")}
               disabled={!!govPending}
