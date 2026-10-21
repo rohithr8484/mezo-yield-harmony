@@ -18,7 +18,9 @@ const EXPLORER = "https://explorer.test.mezo.org/tx";
 
 type Receipt = { tx?: string };
 
-export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: boolean; onPaymentSuccess?: (txHash?: string) => void } = {}) => {
+const RECEIPTS_STORE_KEY = "developer_x402_receipts_v1";
+
+export const X402Banner = ({ uniform = false, receiptKey, onPaymentSuccess }: { uniform?: boolean; receiptKey?: string; onPaymentSuccess?: (txHash?: string) => void } = {}) => {
   const { isConnected, address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
