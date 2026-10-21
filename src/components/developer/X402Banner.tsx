@@ -103,6 +103,7 @@ export const X402Banner = ({ uniform = false, receiptKey, onPaymentSuccess }: { 
       const settle = header ? decodePaymentResponseHeader(header) : null;
       if (!settle?.success) throw new Error("x402 settlement was not confirmed");
       setResult({ tx: settle?.transaction });
+      if (receiptKey && settle?.transaction) saveReceipt(receiptKey, settle.transaction);
       onPaymentSuccess?.(settle?.transaction);
       toast.success("x402 payment settled — resource unlocked");
     } catch (e) {
