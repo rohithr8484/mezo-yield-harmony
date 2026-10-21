@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Zap, Loader2, ExternalLink, Info } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -18,7 +18,9 @@ const EXPLORER = "https://explorer.test.mezo.org/tx";
 
 type Receipt = { tx?: string };
 
-export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: boolean; onPaymentSuccess?: (txHash?: string) => void } = {}) => {
+const RECEIPTS_STORE_KEY = "developer_x402_receipts_v1";
+
+export const X402Banner = ({ uniform = false, receiptKey, onPaymentSuccess }: { uniform?: boolean; receiptKey?: string; onPaymentSuccess?: (txHash?: string) => void } = {}) => {
   const { isConnected, address, chainId } = useAccount();
   const { switchChainAsync } = useSwitchChain();
   const { openConnectModal } = useConnectModal();
@@ -28,7 +30,31 @@ export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: bo
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string>("");
   const [result, setResult] = useState<Receipt | null>(null);
+  const [persistedTx, setPersistedTx] = useState<string | null>(null);
   const [showInfo, setShowInfo] = useState(false);
+
+  const saveReceipt = (key: string, tx: string) => {
+    try {
+      const stored = window.localStorage.getItem(RECEIPTS_STORE_KEY);
+      const map = stored ? JSON.parse(stored) as Record<string, string> : {};
+      map[key] = tx;
+      window.localStorage.setItem(RECEIPTS_STORE_KEY, JSON.stringify(map));
+    } catch {
+      // Keep the in-session receipt even if storage is unavailable.
+    }
+  };
+
+  useEffect(() => {
+    if (!receiptKey) return;
+    try {
+      const stored = window.localStorage.getItem(RECEIPTS_STORE_KEY);
+      const map = stored ? JSON.parse(stored) as Record<string, string> : {};
+      setPersistedTx(map[receiptKey] ?? null);
+    } catch {
+      setPersistedTx(null);
+    }
+  }, [receiptKey]);
+
   const paymentButtonClass =
     "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60";
 
@@ -77,6 +103,7 @@ export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: bo
       const settle = header ? decodePaymentResponseHeader(header) : null;
       if (!settle?.success) throw new Error("x402 settlement was not confirmed");
       setResult({ tx: settle?.transaction });
+      if (receiptKey && settle?.transaction) saveReceipt(receiptKey, settle.transaction);
       onPaymentSuccess?.(settle?.transaction);
       toast.success("x402 payment settled — resource unlocked");
     } catch (e) {
@@ -125,19 +152,22 @@ export const X402Banner = ({ uniform = false, onPaymentSuccess }: { uniform?: bo
         </div>
       )}
 
-      {result && (
-        result.tx && (
+      {(() => {
+        const shownTx = result?.tx ?? persistedTx;
+        if (!shownTx) return null;
+        return (
           <a
-            href={`${EXPLORER}/${result.tx}`}
+            href={`${EXPLORER}/${shownTx}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 font-mono text-xs text-accent hover:underline"
           >
-            {result.tx.slice(0, 12)}…{result.tx.slice(-8)}
+            {shownTx.slice(0, 12)}…{shownTx.slice(-8)}
             <ExternalLink className="h-3 w-3" />
+            {!result?.tx && <span className="font-sans text-[10px] font-semibold text-muted-foreground">x402 receipt</span>}
           </a>
-        )
-      )}
+        );
+      })()}
     </div>
   );
 };

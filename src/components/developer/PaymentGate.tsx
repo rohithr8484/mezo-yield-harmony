@@ -158,8 +158,8 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
       {!isPaid && !freeUnlocked && (
       <div className={compact ? "grid grid-cols-2 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
         {compact
-          ? <div className="col-span-2">{extraButton ?? <X402Banner uniform onPaymentSuccess={() => onPaymentSuccess()} />}</div>
-          : (extraButton ?? <X402Banner uniform onPaymentSuccess={() => onPaymentSuccess()} />)}
+          ? <div className="col-span-2">{extraButton ?? <X402Banner uniform receiptKey={serviceName} onPaymentSuccess={() => onPaymentSuccess()} />}</div>
+          : (extraButton ?? <X402Banner uniform receiptKey={serviceName} onPaymentSuccess={() => onPaymentSuccess()} />)}
         <Button
           onClick={() => handlePay("MUSD")}
           disabled={isProcessing}
