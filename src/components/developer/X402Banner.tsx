@@ -152,19 +152,22 @@ export const X402Banner = ({ uniform = false, receiptKey, onPaymentSuccess }: { 
         </div>
       )}
 
-      {result && (
-        result.tx && (
+      {(() => {
+        const shownTx = result?.tx ?? persistedTx;
+        if (!shownTx) return null;
+        return (
           <a
-            href={`${EXPLORER}/${result.tx}`}
+            href={`${EXPLORER}/${shownTx}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 font-mono text-xs text-accent hover:underline"
           >
-            {result.tx.slice(0, 12)}…{result.tx.slice(-8)}
+            {shownTx.slice(0, 12)}…{shownTx.slice(-8)}
             <ExternalLink className="h-3 w-3" />
+            {!result?.tx && <span className="font-sans text-[10px] font-semibold text-muted-foreground">x402 receipt</span>}
           </a>
-        )
-      )}
+        );
+      })()}
     </div>
   );
 };
