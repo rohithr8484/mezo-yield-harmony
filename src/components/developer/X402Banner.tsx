@@ -30,7 +30,31 @@ export const X402Banner = ({ uniform = false, receiptKey, onPaymentSuccess }: { 
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string>("");
   const [result, setResult] = useState<Receipt | null>(null);
+  const [persistedTx, setPersistedTx] = useState<string | null>(null);
   const [showInfo, setShowInfo] = useState(false);
+
+  const saveReceipt = (key: string, tx: string) => {
+    try {
+      const stored = window.localStorage.getItem(RECEIPTS_STORE_KEY);
+      const map = stored ? JSON.parse(stored) as Record<string, string> : {};
+      map[key] = tx;
+      window.localStorage.setItem(RECEIPTS_STORE_KEY, JSON.stringify(map));
+    } catch {
+      // Keep the in-session receipt even if storage is unavailable.
+    }
+  };
+
+  useEffect(() => {
+    if (!receiptKey) return;
+    try {
+      const stored = window.localStorage.getItem(RECEIPTS_STORE_KEY);
+      const map = stored ? JSON.parse(stored) as Record<string, string> : {};
+      setPersistedTx(map[receiptKey] ?? null);
+    } catch {
+      setPersistedTx(null);
+    }
+  }, [receiptKey]);
+
   const paymentButtonClass =
     "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold shadow-card hover:opacity-90 transition-opacity disabled:opacity-60";
 
