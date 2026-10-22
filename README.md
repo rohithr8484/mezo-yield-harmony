@@ -105,7 +105,7 @@ Shape the future of Bitcoin finance through decentralized governance systems -  
 
 # 🏗 Technical Architecture
 
-<img width="926" height="630" alt="image" src="https://github.com/user-attachments/assets/26812a46-2b84-4400-af09-512fb0187e71" />
+<img width="926" height="630" alt="image" src="https://github.com/user-attachments/assets/50a1ec93-5a4f-4bbc-bb70-ee0c91258c00" />
 
 
 ---
