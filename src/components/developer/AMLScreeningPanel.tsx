@@ -1,4 +1,4 @@
-import { ArrowRight, ArrowUpRight, CircleHelp, ExternalLink, FileSearch, GitFork, Globe2, Landmark, ScanLine, ShieldAlert, Wallet, type LucideIcon } from "lucide-react";
+import { ArrowRight, ArrowUpRight, CircleHelp, ExternalLink, FileSearch, Globe2, ScanLine, ShieldAlert, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments } from "@/lib/amlScreening";
 import type { AMLResult } from "@/lib/amlExplorer";
@@ -30,10 +30,6 @@ function Metric({ label, value, detail }: { label: string; value: string | numbe
 }
 function AddressLink({ address }: { address: string }) {
   return <a href={`${EXPLORER}/address/${address}`} target="_blank" rel="noopener noreferrer" title={address} className="inline-flex min-w-0 items-center gap-1 font-mono text-xs text-primary hover:underline">{shortAddress(address)}<ArrowUpRight className="h-3 w-3 shrink-0" /></a>;
-}
-function Node({ address, contract, label }: { address: string; contract: boolean; label: string }) {
-  const Icon = contract ? Landmark : Wallet;
-  return <div className={`min-w-0 rounded-lg border p-3 ${contract ? "border-bitcoin/40 bg-bitcoin/5" : "border-accent/40 bg-accent/5"}`}><p className={`mb-3 flex items-center gap-2 text-xs font-semibold ${contract ? "text-bitcoin" : "text-accent"}`}><Icon className="h-4 w-4" />{label}</p><AddressLink address={address} /><p className="mt-1 text-[10px] text-muted-foreground">{contract ? "Contract" : "Address · type not verified"}</p></div>;
 }
 
 export function AMLScreeningPanel({ result }: { result: AMLResult }) {
@@ -69,18 +65,6 @@ export function AMLScreeningPanel({ result }: { result: AMLResult }) {
     <Section hidden index="03" icon={FileSearch} title="Adverse Media Screening" status="Not screened" subtitle="Requested coverage: NLP scan across 40,000+ news, regulatory and enforcement sources">
       <div className="space-y-2">{mediaCategories.map(category => <div key={category} className="flex items-start justify-between gap-3 rounded-lg border border-border bg-secondary/15 p-4"><div className="min-w-0"><h5 className="flex items-start gap-2 text-sm font-semibold"><CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />{category}</h5><p className="mt-2 text-xs text-muted-foreground">No source search performed; mentions are unknown.</p></div><span className="shrink-0 text-[10px] text-muted-foreground">Not screened</span></div>)}</div>
       <p className="text-xs leading-relaxed text-muted-foreground">No media provider is connected. A wallet address alone does not resolve a person or entity; there is no verified source coverage or NLP result.</p>
-    </Section>
-    <Section index="04" icon={GitFork} title="Transaction Flow Graph" status="Observed payment legs" subtitle="Address → transaction → address or contract · native movements and token events, not multi-hop tracing">
-      <div className="flex flex-wrap gap-4 text-[10px] text-muted-foreground"><span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-accent" />Address</span><span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-bitcoin" />Contract</span><span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-primary" />Transaction</span></div>
-      <div className="max-h-[600px] space-y-4 overflow-y-auto">{observation.flows.slice(0, 12).map(flow => <div key={flow.id} className="overflow-x-auto pb-2"><div className="grid min-w-[650px] grid-cols-[1fr_50px_1fr_50px_1fr] items-center gap-1">
-        <Node address={flow.from} contract={flow.fromContract} label={flow.kind === "token" ? "Token sender" : "Sender"} />
-        <div className="flex flex-col items-center text-accent"><span className="mb-1 text-[8px] font-semibold">SENDS</span><ArrowRight className="h-5 w-5" /></div>
-        <div className="min-w-0 rounded-lg border border-primary/40 bg-primary/5 p-3"><p className="mb-3 text-xs font-semibold text-primary">Transaction</p><a href={`${EXPLORER}/tx/${flow.hash}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 font-mono text-xs text-primary hover:underline">{shortAddress(flow.hash)}<ExternalLink className="h-3 w-3" /></a><p className="mt-2 break-words font-mono text-xs font-semibold">{formatNumber(flow.amount)} {flow.symbol}</p></div>
-        <div className="flex flex-col items-center text-primary"><span className="mb-1 text-[8px] font-semibold">TO</span><ArrowRight className="h-5 w-5" /></div>
-        <Node address={flow.to} contract={flow.toContract} label={flow.kind === "token" ? "Token recipient" : "Recipient"} />
-      </div></div>)}</div>
-      <p className="text-xs text-muted-foreground">Showing {Math.min(12, observation.flows.length)} of {observation.flows.length} loaded payment legs. Internal transfers and downstream fund tracing are excluded.</p>
-      {observation.flows.length === 0 && <p className="text-xs text-muted-foreground">No supported flow edges found in the loaded records.</p>}
     </Section>
   </div>;
 }
