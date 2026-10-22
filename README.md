@@ -1,4 +1,4 @@
-# 🏗️ Mezo Auth Dev - Marketplace for developer services using pay per use with MUSD/MEZO/BTC
+# 🏗️ Mezo Auth Dev - Marketplace for developer services using pay per use with MEZO/MUSD
 
 Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (text summarization, wallet verification, smart contract simulation & risk analysis), VeMezo marketplace, real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, x402(MUSD)
 
@@ -153,6 +153,16 @@ MUSD powers the entire infrastructure economy.
 - Unlock oracle feeds
 - Execute compute workloads
 - Participate in DAO governance
+
+# Smart Contract Security
+- **Role-Based Access**: Only approved accounts can perform specific administrative actions.
+- **Payment Authorization**: Uses Permit2 and x402 to support signed payment authorization and token settlement.
+- **On-Chain Traceability**: Enables transaction verification and transparent activity records.
+  
+# Code Quality
+- **Modular Architecture**: Separates marketplace administration, payments, token handling, and governance.
+- **Reusable Security Libraries**: Uses established OpenZeppelin components for access control and pause functionality.
+- **Maintainable Governance**: Uses structured fee proposals, custom errors, and events for clearer administration.
 
 ---
 
