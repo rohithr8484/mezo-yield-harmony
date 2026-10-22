@@ -94,8 +94,9 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
   }, [freeUsageKey]);
 
   const freeRemaining = Math.max(0, FREE_ENTRY_LIMIT - freeUsed);
-  const paymentButtonClass =
-    "rounded-full bg-gradient-to-r from-primary via-magenta to-accent text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity shadow-card";
+  const paymentButtonClass = "ui-btn ui-btn-pay min-h-10";
+  const secondaryButtonClass = "ui-btn ui-btn-alt min-h-10";
+  const freeButtonClass = "ui-btn ui-btn-free min-h-11";
 
   const activateFreeEntry = () => {
     if (freeRemaining <= 0) {
@@ -116,83 +117,89 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
   const isProcessing = isSubmitting || isSwitching;
 
   return (
-    <div className={compact ? "mt-4 space-y-4" : "mt-4 space-y-3"}>
+    <div className={compact ? "mt-4" : "mt-4 space-y-3"}>
       {(isPaid || freeUnlocked) ? (
         <>
           {children}
           {freeUnlocked && !isPaid && (
-            <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-center text-xs text-muted-foreground">
-              Free plan active · {freeRemaining} of {FREE_ENTRY_LIMIT} entries left for this user
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-2 rounded-xl border border-accent/25 bg-accent/10 px-4 py-3 text-xs font-semibold text-accent">
+              <span>Free plan active for this user</span>
+              <span className="ui-pill ui-pill-active">{freeRemaining} of {FREE_ENTRY_LIMIT} left</span>
             </div>
           )}
         </>
       ) : (
-      <>
-      <div className={compact ? "flex items-center justify-between gap-3" : "text-center"}>
-        <p className={compact ? "text-xs font-medium text-muted-foreground" : "text-xs text-muted-foreground"}>
-          {compact ? "Free allowance" : `Free plan includes ${FREE_ENTRY_LIMIT} entries per user. Pay on Mezo Testnet after that.`}
-        </p>
-        {compact && (
-          <span className="rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-xs font-bold text-accent">
-            {freeRemaining} of {FREE_ENTRY_LIMIT} left
-          </span>
-        )}
-      </div>
-      {freeRemaining > 0 && (
-        <div className={compact ? "" : "flex justify-center"}>
+        <div className="ui-cluster">
+          <div className="ui-cluster-head">
+            <p className={compact ? "text-xs font-semibold text-muted-foreground" : "text-xs text-muted-foreground"}>
+              {compact ? "Free allowance" : `Free plan includes ${FREE_ENTRY_LIMIT} entries per user. Pay on Mezo Testnet after that.`}
+            </p>
+            {compact && (
+              <span className="ui-pill ui-pill-active">
+                {freeRemaining} of {FREE_ENTRY_LIMIT} left
+              </span>
+            )}
+          </div>
+          {freeRemaining > 0 && (
+            <div className={compact ? "" : "flex justify-center"}>
+              <Button
+                onClick={activateFreeEntry}
+                className={compact ? `${freeButtonClass} w-full` : freeButtonClass}
+              >
+                {compact ? "Use free entry" : `Use free entry (${freeRemaining} left)`}
+              </Button>
+            </div>
+          )}
+          {freeRemaining <= 0 && (
+            <p className="text-xs text-muted-foreground text-center">Free plan used for this user.</p>
+          )}
+        </div>
+      )}
+      {!isPaid && !freeUnlocked && (
+        <div className={compact ? "mt-3 flex flex-wrap items-start gap-2" : "flex gap-3 justify-center flex-wrap items-start"}>
+          {extraButton ?? <X402Banner uniform receiptKey={serviceName} onPaymentSuccess={() => onPaymentSuccess()} />}
           <Button
-            onClick={activateFreeEntry}
-            className={compact
-              ? "w-full rounded-lg border border-primary/30 bg-primary/10 text-sm font-semibold text-foreground shadow-none hover:bg-primary/20"
-              : "rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 text-sm font-semibold shadow-card"}
+            onClick={() => handlePay("MUSD")}
+            disabled={isProcessing}
+            className={compact ? `${paymentButtonClass} px-3 text-xs` : `${paymentButtonClass} px-4`}
           >
-            {compact ? "Use free entry" : `Use free entry (${freeRemaining} left)`}
+            <Wallet className="h-4 w-4" />
+            {pending === "MUSD" && isProcessing ? "Wait..." : compact ? "MUSD" : "Pay with MUSD"}
+          </Button>
+          <Button
+            onClick={() => handlePay("MEZO")}
+            disabled={isProcessing}
+            className={compact ? `${secondaryButtonClass} px-3 text-xs` : `${secondaryButtonClass} px-4`}
+          >
+            <Wallet className="h-4 w-4" />
+            {pending === "MEZO" && isProcessing ? "Wait..." : compact ? "MEZO" : "Pay with MEZO"}
+          </Button>
+          <Button
+            hidden
+            onClick={() => handlePay("BTC")}
+            disabled={isProcessing}
+            className={`${paymentButtonClass} hidden`}
+          >
+            <Bitcoin className="h-4 w-4" />
+            {pending === "BTC" && isProcessing ? "Wait..." : compact ? "BTC" : "Pay with BTC"}
           </Button>
         </div>
       )}
-      {freeRemaining <= 0 && (
-        <p className="text-xs text-muted-foreground text-center">Free plan used for this user.</p>
-      )}
-      </>
-      )}
       {!isPaid && !freeUnlocked && (
-      <div className={compact ? "grid grid-cols-2 gap-2" : "flex gap-3 justify-center flex-wrap items-center"}>
-        {compact
-          ? <div className="col-span-2">{extraButton ?? <X402Banner uniform receiptKey={serviceName} onPaymentSuccess={() => onPaymentSuccess()} />}</div>
-          : (extraButton ?? <X402Banner uniform receiptKey={serviceName} onPaymentSuccess={() => onPaymentSuccess()} />)}
-        <Button
-          onClick={() => handlePay("MUSD")}
-          disabled={isProcessing}
-          className={compact ? `${paymentButtonClass} min-w-0 rounded-lg px-2 text-xs` : paymentButtonClass}
-        >
-          <Wallet className="h-4 w-4" />
-          {pending === "MUSD" && isProcessing ? "Wait..." : compact ? "MUSD" : "Pay with MUSD"}
-        </Button>
-        <Button
-          onClick={() => handlePay("MEZO")}
-          disabled={isProcessing}
-          className={compact ? `${paymentButtonClass} min-w-0 rounded-lg px-2 text-xs` : paymentButtonClass}
-        >
-          <Wallet className="h-4 w-4" />
-          {pending === "MEZO" && isProcessing ? "Wait..." : compact ? "MEZO" : "Pay with MEZO"}
-        </Button>
-        <Button
-          hidden
-          onClick={() => handlePay("BTC")}
-          disabled={isProcessing}
-          className={compact ? `${paymentButtonClass} hidden min-w-0 rounded-lg px-2 text-xs` : `${paymentButtonClass} hidden`}
-        >
-          <Bitcoin className="h-4 w-4" />
-          {pending === "BTC" && isProcessing ? "Wait..." : compact ? "BTC" : "Pay with BTC"}
-        </Button>
-      </div>
-      )}
-      {!isPaid && !freeUnlocked && (
-      <div className={compact ? "border-t border-border/50 pt-3 text-center space-y-1" : "text-center space-y-1"}>
-        <p className="text-[10px] font-mono text-muted-foreground">MUSD: {MUSD_TOKEN}</p>
-        <p className="text-[10px] font-mono text-muted-foreground">MEZO: {MEZO_TOKEN}</p>
-        <p className="text-[10px] text-muted-foreground">Network: Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</p>
-      </div>
+        <div className="ui-meta mt-3">
+          <div className="ui-meta-row">
+            <span className="ui-meta-label">MUSD</span>
+            <span className="ui-meta-value">{MUSD_TOKEN}</span>
+          </div>
+          <div className="ui-meta-row">
+            <span className="ui-meta-label">MEZO</span>
+            <span className="ui-meta-value">{MEZO_TOKEN}</span>
+          </div>
+          <div className="ui-meta-row">
+            <span className="ui-meta-label">Network</span>
+            <span className="ui-meta-value">Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</span>
+          </div>
+        </div>
       )}
     </div>
   );
