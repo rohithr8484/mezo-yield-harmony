@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ['Space Grotesk', 'Avenir Next', 'system-ui', 'sans-serif'],
-        body: ['DM Sans', 'Avenir', 'system-ui', 'sans-serif'],
+        display: ['Sora', 'Avenir Next', 'system-ui', 'sans-serif'],
+        body: ['Manrope', 'Avenir', 'system-ui', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -59,6 +59,15 @@ export default {
           DEFAULT: "hsl(var(--bitcoin))",
           foreground: "hsl(var(--bitcoin-foreground))",
         },
+        surface: {
+          DEFAULT: "hsl(var(--surface))",
+          raised: "hsl(var(--surface-raised))",
+        },
+        hairline: "hsl(var(--hairline))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -74,6 +83,7 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 0.5rem)",
       },
       keyframes: {
         "accordion-down": {
@@ -121,6 +131,14 @@ export default {
           "33%": { transform: "translate(30px,-40px) scale(1.1)" },
           "66%": { transform: "translate(-20px,20px) scale(0.95)" },
         },
+        "sheen": {
+          "0%": { transform: "translateX(-120%)" },
+          "100%": { transform: "translateX(220%)" },
+        },
+        "rise-in": {
+          from: { opacity: "0", transform: "translateY(18px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -134,6 +152,8 @@ export default {
         "gradient-shift": "gradient-shift 8s ease infinite",
         "glow-pulse": "glow-pulse 3s ease-in-out infinite",
         "blob": "blob 14s ease-in-out infinite",
+        "sheen": "sheen 1.1s ease-out",
+        "rise-in": "rise-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both",
       },
     },
   },
