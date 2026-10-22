@@ -1,6 +1,6 @@
 # 🏗️ Mezo Auth Dev - Marketplace for developer services using pay per use with MUSD/MEZO/BTC
 
-Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (text summarization, wallet verification, smart contract simulation & risk analysis), real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, or BTC,
+Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, powering an AI API marketplace (text summarization, wallet verification, smart contract simulation & risk analysis), VeMezo marketplace, real-time decentralized oracles (BTC/USD, MUSD/USD, cbBTC/USD, live charts, low-latency pricing), and DAO governance infrastructure (proposals, treasury signaling, protocol upgrades) — all settled with MEZO, MUSD, x402(MUSD)
 
 <img width="1774" height="887" alt="image" src="https://github.com/user-attachments/assets/e243ff5f-179c-457b-be80-f655c0fce20c" />
 
@@ -23,7 +23,7 @@ Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — al
 
 - AI-powered text summarization
 - On-chain analytics APIs
-- Wallet identity verification
+- AML Analytics
 - Smart contract simulation & risk analysis
 
 ---
@@ -51,6 +51,18 @@ Shape the future of Bitcoin finance through decentralized governance systems -  
 - DAO proposal voting
 - Treasury signaling systems
 - Transparent community participation
+
+---
+
+## 🏛 VeMEZO Marketplace
+
+Shape the future of Bitcoin finance through locked MEZO
+
+### Governance Features
+
+- veMEZO Benefits – Receive veMEZO based on the protocol’s locking mechanism.
+- Commitment-Based Benefits – Locking duration may influence the benefits
+
 
 ---
 
