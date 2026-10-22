@@ -32,6 +32,12 @@
     --input: 222 18% 88%;
     --ring: 175 65% 34%;
 
+    --surface: 168 32% 97%;
+    --surface-raised: 0 0% 100%;
+    --hairline: 222 16% 90%;
+    --success: 162 58% 33%;
+    --success-foreground: 0 0% 100%;
+
     --radius: 0.5rem;
 
     --magenta: 249 55% 52%;
