@@ -48,14 +48,6 @@ const GovernanceSection = () => {
             <Wallet className="h-4 w-4" />
             Pay with MEZO
           </button>
-          <button
-            hidden
-            onClick={goToGovernance}
-            className="hidden px-5 py-2.5 rounded-full bg-gradient-to-r from-bitcoin to-amber-600 text-white text-sm font-semibold hover:opacity-90 transition-opacity items-center gap-2 shadow-card"
-          >
-            <Bitcoin className="h-4 w-4" />
-            Pay with BTC
-          </button>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
