@@ -20,8 +20,8 @@ describe("AML wallet observations", () => {
     expect(structure([...legs].reverse())).toEqual(result);
   });
   it("does not cluster different assets or duplicate logs as distinct payments", () => {
-    expect(structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xa", "0xb", i, `asset${i}`))).status).toBe("Insufficient data");
-    expect(structure(Array.from({ length: 6 }, (_, i) => leg("same", "0xa", "0xb", i))).status).toBe("Insufficient data");
+    expect(structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xa", "0xb", i, `asset${i}`))).status).toBe("No cluster flagged · limited sample");
+    expect(structure(Array.from({ length: 6 }, (_, i) => leg("same", "0xa", "0xb", i))).status).toBe("No cluster flagged · limited sample");
   });
   it("reports no flag for spaced activity without claiming low risk", () => {
     const result = structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xa", i % 2 ? "0xb" : "0xc", i * 120)));
@@ -30,8 +30,8 @@ describe("AML wallet observations", () => {
     expect(result.assessedAssets).toBe(1);
   });
   it("does not infer structuring from missing timestamps or inbound receipts", () => {
-    expect(structure(Array.from({ length: 6 }, (_, i) => ({ ...leg(`tx${i}`, "0xa", "0xb", i), timestamp: "" }))).status).toBe("Insufficient data");
-    expect(structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xb", "0xa", i))).status).toBe("Insufficient data");
+    expect(structure(Array.from({ length: 6 }, (_, i) => ({ ...leg(`tx${i}`, "0xa", "0xb", i), timestamp: "" }))).status).toBe("No cluster flagged · limited sample");
+    expect(structure(Array.from({ length: 6 }, (_, i) => leg(`tx${i}`, "0xb", "0xa", i))).status).toBe("No cluster flagged · limited sample");
   });
   it("observes equal same-asset pass-through within 60 minutes", () => {
     expect(assess([leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 60)])[1].status).toBe("Pattern observed");
@@ -50,8 +50,8 @@ describe("AML wallet observations", () => {
   });
   it("keeps unavailable label and reporting checks undetermined", () => {
     const rows = assess([]);
-    expect([rows[0].status, rows[2].status, rows[3].status]).toEqual(["Insufficient data", "Cannot determine", "Cannot determine"]);
-    expect(rows[1].status).toBe("Insufficient timed activity");
+    expect([rows[0].status, rows[2].status, rows[3].status]).toEqual(["No cluster flagged · limited sample", "Cannot determine", "Cannot determine"]);
+    expect(rows[1].status).toBe("No matching pattern · limited sample");
   });
   it("graphs only successful native movements involving the selected wallet", () => {
     const data = derivePaymentScreening("0xA", [

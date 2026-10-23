@@ -18,7 +18,7 @@ export function deriveAMLScreeningScore(observation: ReturnType<typeof deriveAML
     { index: 0, weight: 40 }, { index: 1, weight: 25 }, { index: 4, weight: 25 }, { index: 5, weight: 10 },
   ].map(({ index, weight }) => {
     const row = rows[index];
-    return { name: row?.name ?? "Unavailable check", weight, available: index === 0 ? row?.status !== "Insufficient data" : canCompare, triggered: row?.status === "Pattern observed" || row?.status === "Review pattern", evidence: row?.evidence ?? "No evidence available." };
+    return { name: row?.name ?? "Unavailable check", weight, available: index === 0 ? row?.status !== "No cluster flagged · limited sample" : canCompare, triggered: row?.status === "Pattern observed" || row?.status === "Review pattern", evidence: row?.evidence ?? "No evidence available." };
   }));
 }
 
@@ -62,7 +62,7 @@ export function assessStructuringRisk(observation: ReturnType<typeof deriveAMLPa
     }
   }
   const limits = "Exploratory unsupervised ML (k-means), not a calibrated laundering probability. No fiat reporting threshold or jurisdiction supplied; repeated payments can be legitimate. Recent loaded records only; missing amounts/times and same-transaction logs are excluded.";
-  const status = candidate.length ? "Review pattern" : assessed ? "No cluster flagged" : "Insufficient data";
+  const status = candidate.length ? "Review pattern" : assessed ? "No cluster flagged" : "No cluster flagged · limited sample";
   const evidence = candidate.length
     ? `${candidate.length} distinct outgoing ${candidate[0]?.symbol ?? "asset"} transactions in an ML cluster have similar amounts (±10%) within 60 minutes to ${new Set(candidate.map(flow => flow.to.toLowerCase())).size} recipients.`
     : assessed ? `${assessed} asset sample(s) assessed; no ML cluster met the repeated-payment review criteria. This does not establish low risk.`
@@ -115,7 +115,7 @@ export function assessAMLBehavior(observation: ReturnType<typeof deriveAMLPaymen
   const zero = "0x0000000000000000000000000000000000000000";
   const mints = incoming.filter(f => f.kind === "token" && f.from.toLowerCase() === zero);
   const dispersals = mints.filter(a => outgoing.some(b => paired(a, b))).length;
-  const outcome = (count: number) => count > 0 ? "Pattern observed" : timed.length > 1 ? "No matching pattern in sample" : "Insufficient timed activity";
+  const outcome = (count: number) => count > 0 ? "Pattern observed" : timed.length > 1 ? "No matching pattern in sample" : "No matching pattern · limited sample";
   const structuring = assessStructuringRisk(observation, address);
   return [
     { name: "Structuring (smurfing) below reporting threshold", status: structuring.status, evidence: `${structuring.evidence} Below-threshold intent cannot be determined without fiat valuation and jurisdiction.` },

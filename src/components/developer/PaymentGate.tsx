@@ -174,15 +174,6 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
             <Wallet className="h-4 w-4" />
             {pending === "MEZO" && isProcessing ? "Wait..." : compact ? "MEZO" : "Pay with MEZO"}
           </Button>
-          <Button
-            hidden
-            onClick={() => handlePay("BTC")}
-            disabled={isProcessing}
-            className={`${paymentButtonClass} hidden`}
-          >
-            <Bitcoin className="h-4 w-4" />
-            {pending === "BTC" && isProcessing ? "Wait..." : compact ? "BTC" : "Pay with BTC"}
-          </Button>
         </div>
       )}
       {!isPaid && !freeUnlocked && (

@@ -490,15 +490,6 @@ const DeveloperServices = () => {
               <Wallet className="h-4 w-4" />
               {govPending === "MEZO" ? "Confirming..." : "Pay with MEZO"}
             </Button>
-            <Button
-              hidden
-              onClick={() => handleGovPay("BTC")}
-              disabled={!!govPending}
-              className={`${paymentButtonClass} hidden`}
-            >
-              <Bitcoin className="h-4 w-4" />
-              {govPending === "BTC" ? "Confirming..." : "Pay with BTC"}
-            </Button>
           </div>
           <p className="text-center text-xs text-muted-foreground mt-4">
             Settles on Mezo Testnet (Chain ID 31611), then opens Governance.
