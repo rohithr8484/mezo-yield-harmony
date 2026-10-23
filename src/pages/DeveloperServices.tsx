@@ -272,7 +272,7 @@ const DeveloperServices = () => {
                   serviceName: "Identity Verification",
                   label: "COMPLIANCE / AML",
                   title: "AML Screening",
-                  description: "Inspect wallet activity and payment flows, with sanctions and adverse-media screening status.",
+                  description: "AML Screening results",
                   icon: Database,
                   content: <IdentityVerification />,
                 },
