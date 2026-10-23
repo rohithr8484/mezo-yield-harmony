@@ -32,12 +32,18 @@ export function assessStructuringRisk(observation: ReturnType<typeof deriveAMLPa
     groups.set(flow.asset, group);
   }
   let assessed = 0;
-  let candidate: typeof observation.flows = [];
-  for (const group of groups.values()) {
+  let burstCandidate: typeof observation.flows = [];
+  let pairCandidate: typeof observation.flows = [];
+  let singleCandidate: typeof observation.flows = [];
+  // Fixed round-figure heuristic: an amount with at most two significant digits (0.2, 1.5, 0.001…).
+  const significantFigures = (value: number) => {
+    const mantissa = Math.abs(value).toExponential().split("e")[0].replace(/[-.]/g, "").replace(/0+$/, "");
+    return mantissa.length || 1;
+  };
+  for (const asset of [...groups.keys()].sort()) {
     // One point per transaction: multiple logs from a single payment are not a burst.
-    const distinct = [...new Map(group.map(flow => [flow.hash.toLowerCase(), flow])).values()]
+    const distinct = [...new Map(groups.get(asset)!.map(flow => [flow.hash.toLowerCase(), flow])).values()]
       .sort((a, b) => Date.parse(a.timestamp ?? "") - Date.parse(b.timestamp ?? "") || a.hash.localeCompare(b.hash));
-    if (distinct.length < 6) continue;
     assessed++;
     const amounts = distinct.map(flow => Math.log10(flow.amount ?? 1));
     const times = distinct.map(flow => Date.parse(flow.timestamp ?? ""));
@@ -57,16 +63,34 @@ export function assessStructuringRisk(observation: ReturnType<typeof deriveAMLPa
           const ratio = (flow.amount ?? 0) / (start.amount ?? 1);
           return elapsed >= 0 && elapsed <= 3600000 && ratio >= 0.9 && ratio <= 1.1;
         });
-        if (burst.length >= 3 && new Set(burst.map(flow => flow.to.toLowerCase())).size >= 2 && burst.length > candidate.length) candidate = burst;
+        if (burst.length >= 3 && new Set(burst.map(flow => flow.to.toLowerCase())).size >= 2 && burst.length > burstCandidate.length) burstCandidate = burst;
       }
     }
+    for (let i = 0; i < distinct.length && !pairCandidate.length; i++) {
+      for (let j = i + 1; j < distinct.length; j++) {
+        const a = distinct[i], b = distinct[j];
+        const elapsed = Date.parse(b.timestamp ?? "") - Date.parse(a.timestamp ?? "");
+        const ratio = (b.amount ?? 0) / (a.amount ?? 1);
+        if (elapsed >= 0 && elapsed <= 3600000 && ratio >= 0.9 && ratio <= 1.1 && a.to.toLowerCase() !== b.to.toLowerCase()) {
+          pairCandidate = [a, b];
+          break;
+        }
+      }
+    }
+    if (distinct.length === 1 && significantFigures(distinct[0].amount ?? 0) <= 2) singleCandidate = distinct;
   }
-  const limits = "Exploratory unsupervised ML (k-means), not a calibrated laundering probability. No fiat reporting threshold or jurisdiction supplied; repeated payments can be legitimate. Recent loaded records only; missing amounts/times and same-transaction logs are excluded.";
+  const candidate = burstCandidate.length ? burstCandidate : pairCandidate.length ? pairCandidate : singleCandidate;
+  const limits = "Exploratory unsupervised ML (k-means) plus fixed round-figure and interval heuristics, not a calibrated laundering probability. No fiat reporting threshold or jurisdiction supplied; repeated or round-figure payments can be legitimate. Recent loaded records only; missing amounts/times and same-transaction logs are excluded.";
   const status = candidate.length ? "Review pattern" : assessed ? "No cluster flagged" : "No cluster flagged · limited sample";
-  const evidence = candidate.length
-    ? `${candidate.length} distinct outgoing ${candidate[0]?.symbol ?? "asset"} transactions in an ML cluster have similar amounts (±10%) within 60 minutes to ${new Set(candidate.map(flow => flow.to.toLowerCase())).size} recipients.`
-    : assessed ? `${assessed} asset sample(s) assessed; no ML cluster met the repeated-payment review criteria. This does not establish low risk.`
-      : "ML needs at least 6 distinct outgoing transactions with known amounts and timestamps in the same asset. A single transaction cannot establish structuring.";
+  const evidence = burstCandidate.length
+    ? `${burstCandidate.length} distinct outgoing ${burstCandidate[0]?.symbol ?? "asset"} transactions in an ML cluster have similar amounts (±10%) within 60 minutes to ${new Set(burstCandidate.map(flow => flow.to.toLowerCase())).size} recipients.`
+    : pairCandidate.length
+      ? `${pairCandidate.length} distinct outgoing ${pairCandidate[0]?.symbol ?? "asset"} transactions have similar amounts (±10%) within 60 minutes to different recipients.`
+      : singleCandidate.length
+        ? `Single outgoing ${singleCandidate[0]?.symbol ?? "asset"} transaction of ${singleCandidate[0]?.amount ?? "an unknown amount"} flagged for review under the fixed round-figure single-payment check.`
+        : assessed
+          ? `${assessed} asset sample(s) assessed; no ML cluster or review heuristic was met. This does not establish low risk.`
+          : "No outgoing transactions with known amounts, timestamps and a recognized asset were loaded for this wallet.";
   return { status, evidence, limits, hashes: candidate.map(flow => flow.hash), assessedAssets: assessed };
 }
 
