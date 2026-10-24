@@ -314,7 +314,7 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 
 ---
 
-## **x402 — How It Is Used**
+## **x402(MUSD) — How It Is Used**
 
 - The proxy address arrives inside the server's 402 requirements.
 - The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
@@ -334,7 +334,7 @@ Supporting files: `starter/server/humor-server.ts` (returns the 402 with `spende
 
 ---
 
-## **x402 Wallet Roles & Funding Requirements**
+## **x402 (MUSD) Wallet Roles & Funding Requirements**
 
 | Wallet | Purpose | Funding Needed |
 |---|---|---|
