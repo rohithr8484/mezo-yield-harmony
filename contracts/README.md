@@ -1,5 +1,3 @@
-# Contracts
-
 ## veMEZO NFT Scanner Test
 
 Demonstrates on-chain veMEZO NFT ownership scanning using Hardhat.
