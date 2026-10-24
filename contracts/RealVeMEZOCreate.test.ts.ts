@@ -1,0 +1,241 @@
+import { ethers } from "hardhat";
+
+describe("REAL veMEZO NFT Scanner", function () {
+
+  const VEMEZO =
+    "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
+
+  it(
+    "Should display exact veMEZO token IDs for all addresses",
+    async function () {
+
+      // Prevent timeout
+      this.timeout(600000);
+
+      console.log(
+        "\n========== veMEZO NFT SCANNER =========="
+      );
+
+      const [signer] =
+        await ethers.getSigners();
+
+      console.log(
+        "Your Wallet:",
+        signer.address
+      );
+
+      // =====================================
+      // CONNECT veMEZO
+      // =====================================
+
+      const veMEZO =
+        await ethers.getContractAt(
+          [
+            "function ownerOf(uint256 tokenId) external view returns (address)",
+            "function balanceOf(address owner) external view returns (uint256)",
+            "function locked(uint256 tokenId) external view returns (int128 amount,uint256 end)",
+            "function balanceOfNFT(uint256 tokenId) external view returns (uint256)"
+          ],
+          VEMEZO
+        );
+
+      // =====================================
+      // CHECK WALLET BALANCE
+      // =====================================
+
+      const walletBalance =
+        await veMEZO.balanceOf(
+          signer.address
+        );
+
+      console.log(
+        "\nWallet veMEZO Balance:",
+        walletBalance.toString()
+      );
+
+      // =====================================
+      // STORAGE
+      // =====================================
+
+      const addressToTokens: {
+        [address: string]: number[];
+      } = {};
+
+      const addressBalances: {
+        [address: string]: string;
+      } = {};
+
+      // =====================================
+      // TOKEN RANGE
+      // =====================================
+
+      const START_ID = 1;
+      const END_ID = 680;
+
+      console.log(
+        `\nScanning Token IDs ${START_ID} -> ${END_ID}\n`
+      );
+
+      // =====================================
+      // SCAN TOKEN IDS
+      // =====================================
+
+      for (
+        let i = START_ID;
+        i <= END_ID;
+        i++
+      ) {
+
+        try {
+
+          const owner =
+            await veMEZO.ownerOf(i);
+
+          // Skip zero address
+          if (
+            owner ===
+            "0x0000000000000000000000000000000000000000"
+          ) {
+
+            console.log(
+              `ID# ${i} | Empty`
+            );
+
+            continue;
+          }
+
+          console.log(
+            `\nID# ${i}`
+          );
+
+          console.log(
+            `Owner: ${owner}`
+          );
+
+          // =====================================
+          // OWNER BALANCE
+          // =====================================
+
+          if (!addressBalances[owner]) {
+
+            const ownerBalance =
+              await veMEZO.balanceOf(owner);
+
+            addressBalances[owner] =
+              ownerBalance.toString();
+          }
+
+          console.log(
+            `Owner veMEZO Balance: ${addressBalances[owner]}`
+          );
+
+          // =====================================
+          // OPTIONAL EXTRA DATA
+          // =====================================
+
+          try {
+
+            const lockData =
+              await veMEZO.locked(i);
+
+            const votingPower =
+              await veMEZO.balanceOfNFT(i);
+
+            console.log(
+              `Locked Amount: ${lockData.amount.toString()}`
+            );
+
+            console.log(
+              `Unlock Time: ${lockData.end.toString()}`
+            );
+
+            console.log(
+              `Voting Power: ${votingPower.toString()}`
+            );
+
+          } catch (err) {
+
+            console.log(
+              "Extra NFT data unavailable"
+            );
+          }
+
+          console.log(
+            "--------------------------------"
+          );
+
+          // =====================================
+          // MAP ADDRESS => TOKEN IDS
+          // =====================================
+
+          if (!addressToTokens[owner]) {
+
+            addressToTokens[owner] = [];
+          }
+
+          addressToTokens[owner].push(i);
+
+        } catch (err) {
+
+          console.log(
+            `ID# ${i} | Not Minted`
+          );
+        }
+      }
+
+      // =====================================
+      // SUMMARY
+      // =====================================
+
+      console.log(
+        "\n========== ADDRESS OWNERSHIP =========="
+      );
+
+      for (
+        const address of Object.keys(
+          addressToTokens
+        )
+      ) {
+
+        const tokenIds =
+          addressToTokens[address]
+            .sort((a, b) => a - b);
+
+        console.log(
+          `\nOwner Address: ${address}`
+        );
+
+        console.log(
+          `Total Tokens Owned: ${tokenIds.length}`
+        );
+
+        console.log(
+          `balanceOf(): ${addressBalances[address]}`
+        );
+
+        console.log(
+          `Exact Token IDs:`
+        );
+
+        for (
+          const tokenId of tokenIds
+        ) {
+
+          console.log(
+            `   ID# ${tokenId}`
+          );
+        }
+
+        console.log(
+          "--------------------------------"
+        );
+      }
+
+      console.log(
+        "\n========== COMPLETE =========="
+      );
+
+    }
+  );
+
+});
