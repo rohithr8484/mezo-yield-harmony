@@ -16,9 +16,6 @@ Demonstrates on-chain veMEZO NFT ownership scanning using Hardhat.
 ```bash
 npx hardhat test RealVeMEZOCreate.test.ts --network mezoMats
 ```
-
-**Note:** Performs read-only blockchain queries. Results depend on the selected network and scanned token-ID range.
-
 ---
 
 ## MarketplaceAdmin Contract
