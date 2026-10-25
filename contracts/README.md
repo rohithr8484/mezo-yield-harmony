@@ -20,13 +20,12 @@ npx hardhat test RealVeMEZOCreate.test.ts --network mezoMats
 
 ## MarketplaceAdmin Contract
 
-Provides secure administrative controls for the veNFT marketplace.
+Provides secure controls for the veNFT marketplace.
 
 **File:** `MarketplaceAdmin.sol`
 
 ### Features
 
-- Role-based access control and emergency pause.
 - Fee management with a timelock.
 - veNFT collection whitelist management.
 - Payment router administration.
