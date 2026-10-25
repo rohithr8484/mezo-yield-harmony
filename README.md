@@ -17,7 +17,7 @@ Mezo Auth Dev is Marketplace for Bitcoin-native Web3 on Mezo, powering an AI API
 
 ## 🔌 AI API Marketplace
 
-Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — all priced in MEZO/MUSD/BTC.
+Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — all priced in MEZO/MUSD.
 
 ### Included APIs
 
@@ -30,7 +30,7 @@ Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — al
 
 ## 📡 Data Feeds & Oracle Infrastructure
 
-Real-time decentralized oracle infrastructure for Bitcoin DeFi applications -  all priced in MEZO/MUSD/BTC.
+Real-time decentralized oracle infrastructure for Bitcoin DeFi applications -  all priced in MEZO/MUSD.
 
 ### Supported Feeds
 
@@ -44,7 +44,7 @@ Real-time decentralized oracle infrastructure for Bitcoin DeFi applications -  a
 
 ## 🏛 Governance Infrastructure
 
-Shape the future of Bitcoin finance through decentralized governance systems -  all priced in MEZO/MUSD/BTC
+Shape the future of Bitcoin finance through decentralized governance systems -  all priced in MEZO/MUSD
 
 ### Governance Features
 
