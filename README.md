@@ -116,8 +116,7 @@ Shape the future of Bitcoin finance through locked MEZO
 
 # 🏗 Technical Architecture
 
-<img width="926" height="630" alt="image" src="https://github.com/user-attachments/assets/50a1ec93-5a4f-4bbc-bb70-ee0c91258c00" />
-
+<img width="1518" height="1036" alt="image" src="https://github.com/user-attachments/assets/2a7e47bf-2e91-448e-8875-735187a023e6" />
 
 ---
 
