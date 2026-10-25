@@ -116,7 +116,7 @@ Shape the future of Bitcoin finance through locked MEZO
 
 # 🏗 Technical Architecture
 
-<img width="1518" height="1036" alt="image" src="https://github.com/user-attachments/assets/2a7e47bf-2e91-448e-8875-735187a023e6" />
+<img width="1518" height="1036" alt="image" src="https://github.com/user-attachments/assets/339ef7fd-7a1f-4e36-9124-74f35fad41fa" />
 
 ---
 
@@ -354,9 +354,8 @@ Contributions are welcome.
 
 ---
 
-# 📄 License
+# 📄 App images
 
-Please contact the maintainer for access.
 <img width="624" height="381" alt="image" src="https://github.com/user-attachments/assets/0795cd49-73f0-4345-a23d-000168902e39" />
 <img width="624" height="399" alt="image" src="https://github.com/user-attachments/assets/6f327cc8-36ab-4e85-9e17-f63356a2ec50" />
 <img width="624" height="498" alt="image" src="https://github.com/user-attachments/assets/88a2f871-f831-4644-b72f-7e2febef4012" />
@@ -365,7 +364,11 @@ Please contact the maintainer for access.
 <img width="624" height="358" alt="image" src="https://github.com/user-attachments/assets/869590d4-4485-47c1-9af5-5a64c35da87a" />
 
 
+---
 
+# 📄 License
+
+Please contact the maintainer for access.
 
 ---
 
