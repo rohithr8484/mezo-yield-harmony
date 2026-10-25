@@ -356,16 +356,15 @@ Contributions are welcome.
 
 # 📄 License
 
-This project is private.  
 Please contact the maintainer for access.
 
 ---
 
 # ⚡ Vision
 
-Build the infrastructure layer powering Bitcoin DeFi.
+Build the marketplace/infrastructure layer powering Bitcoin DeFi.
 
-From APIs and AI tooling to governance and decentralized compute — Mezo Auth Dev enables developers to build scalable Bitcoin-native applications fully powered by MEZO.
+From APIs and AI tooling to governance and decentralized compute — Mezo Auth Dev enables developers to build scalable Bitcoin-native applications fully powered by MUSD/MEZO.
 
 ---
 
