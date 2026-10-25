@@ -1,6 +1,20 @@
 import { useEffect, useState } from "react";
 import { ethers, type Eip1193Provider } from "ethers";
-import { Lock, Zap, ShieldCheck, ChevronRight, X, Wallet, Copy, Sparkles, TrendingUp, Crown, CheckCircle2, Loader2, Vote } from "lucide-react";
+import {
+  Lock,
+  Zap,
+  ShieldCheck,
+  ChevronRight,
+  X,
+  Wallet,
+  Copy,
+  Sparkles,
+  TrendingUp,
+  Crown,
+  CheckCircle2,
+  Loader2,
+  Vote,
+} from "lucide-react";
 import { useAccount, useSwitchChain, useWriteContract } from "wagmi";
 import { parseUnits } from "viem";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
@@ -17,7 +31,7 @@ const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`
 const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001";
 const VEMEZO_TOKEN = "0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b";
 const BOOST_CONTRACT = "0x21d7bDF5a5929AD179F8cA0c9014A0B62ae6Bfd1";
-const VOTER_CONTRACT = "0x9A220b677234BB18273aC031bE6CA405a950cA2e";
+// const VOTER_CONTRACT = "0x9A220b677234BB18273aC031bE6CA405a950cA2e";
 const DEFAULT_VOTE_POOL = "0xd16A5Df82120ED8D626a1a15232bFcE2366d6AA9";
 const FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const LISTING_PRICE = 0.2;
@@ -28,7 +42,10 @@ interface VeToken {
   balance: number;
 }
 
-interface MintedToken extends VeToken { txHash?: string; source?: "local" | "chain"; }
+interface MintedToken extends VeToken {
+  txHash?: string;
+  source?: "local" | "chain";
+}
 
 const LOCKED_POSITIONS_STORAGE_KEY = "vemezo_locked_positions";
 const OWNED_POSITIONS_STORAGE_KEY = "vemezo_owned_positions";
@@ -45,7 +62,12 @@ const TOKENS: VeToken[] = [
 ];
 
 const shorten = (a: string) => `${a.slice(0, 6)}…${a.slice(-4)}`;
-const tierFor = (b: number) => (b >= 50 ? { label: "Whale", cls: "from-amber-500 to-orange-500", icon: Crown } : b >= 10 ? { label: "Pro", cls: "from-fuchsia-500 to-pink-500", icon: TrendingUp } : { label: "Starter", cls: "from-sky-500 to-cyan-500", icon: Sparkles });
+const tierFor = (b: number) =>
+  b >= 50
+    ? { label: "Whale", cls: "from-amber-500 to-orange-500", icon: Crown }
+    : b >= 10
+      ? { label: "Pro", cls: "from-fuchsia-500 to-pink-500", icon: TrendingUp }
+      : { label: "Starter", cls: "from-sky-500 to-cyan-500", icon: Sparkles };
 
 const getWalletMessage = (err: unknown, fallback: string) => {
   const error = err as { shortMessage?: string; reason?: string; message?: string; error?: { message?: string } };
@@ -133,7 +155,15 @@ const loadOwnedPositions = (): Record<number, boolean> => {
   }
 };
 
-const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClose: () => void; onPurchased: () => void }) => {
+const PurchaseModal = ({
+  token,
+  onClose,
+  onPurchased,
+}: {
+  token: VeToken;
+  onClose: () => void;
+  onPurchased: () => void;
+}) => {
   const { isConnected, chainId, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const { switchChainAsync } = useSwitchChain();
@@ -142,43 +172,65 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
   const [submitting, setSubmitting] = useState(false);
 
   const handleApprove = async () => {
-    if (!isConnected) { openConnectModal?.(); return; }
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
     setSubmitting(true);
     try {
       if (chainId !== MEZO_TESTNET_CHAIN_ID) await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       await writeContractAsync({
-        address: MUSD_TOKEN, abi: ERC20_ABI, functionName: "approve",
+        address: MUSD_TOKEN,
+        abi: ERC20_ABI,
+        functionName: "approve",
         args: [FEE_RECIPIENT, parseUnits(String(LISTING_PRICE), 18)],
         chainId: MEZO_TESTNET_CHAIN_ID,
       });
       toast.success(`Approved ${LISTING_PRICE} MUSD via ${connector?.name ?? "wallet"}`);
       setStep(2);
-    } catch { toast.error("Approval cancelled or failed"); }
-    finally { setSubmitting(false); }
+    } catch {
+      toast.error("Approval cancelled or failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handlePurchase = async () => {
-    if (!isConnected) { openConnectModal?.(); return; }
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
     setSubmitting(true);
     try {
       if (chainId !== MEZO_TESTNET_CHAIN_ID) await switchChainAsync({ chainId: MEZO_TESTNET_CHAIN_ID });
       const tx = await writeContractAsync({
-        address: MUSD_TOKEN, abi: ERC20_ABI, functionName: "transfer",
+        address: MUSD_TOKEN,
+        abi: ERC20_ABI,
+        functionName: "transfer",
         args: [FEE_RECIPIENT, parseUnits(String(LISTING_PRICE), 18)],
         chainId: MEZO_TESTNET_CHAIN_ID,
       });
       toast.success(`Purchased veMEZO #${token.id}. Tx: ${tx.slice(0, 10)}...`);
       onPurchased();
       onClose();
-    } catch { toast.error("Purchase cancelled or failed"); }
-    finally { setSubmitting(false); }
+    } catch {
+      toast.error("Purchase cancelled or failed");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const tier = tierFor(token.balance);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/85 backdrop-blur-md p-4 animate-fade-in" onClick={onClose}>
-      <div className="relative bg-card border border-border rounded-3xl p-8 max-w-md w-full shadow-2xl shadow-bitcoin/10" onClick={(e) => e.stopPropagation()}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/85 backdrop-blur-md p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-card border border-border rounded-3xl p-8 max-w-md w-full shadow-2xl shadow-bitcoin/10"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className={`absolute -top-px left-8 right-8 h-px bg-gradient-to-r ${tier.cls}`} />
         <div className="flex justify-between items-start mb-2">
           <div>
@@ -187,25 +239,48 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
               veMEZO <span className="text-gradient-animated">#{token.id}</span>
             </h3>
           </div>
-          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-secondary transition"><X className="h-4 w-4" /></button>
+          <button onClick={onClose} className="rounded-full p-1.5 hover:bg-secondary transition">
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         <div className="bg-gradient-to-br from-secondary/60 to-secondary/20 border border-border/50 rounded-2xl p-5 my-5 space-y-3 text-sm">
-          <div className="flex justify-between items-center"><span className="text-muted-foreground">Price</span><span className="font-display text-lg font-bold text-foreground">{LISTING_PRICE} <span className="text-xs text-bitcoin">MUSD</span></span></div>
+          <div className="flex justify-between items-center">
+            <span className="text-muted-foreground">Price</span>
+            <span className="font-display text-lg font-bold text-foreground">
+              {LISTING_PRICE} <span className="text-xs text-bitcoin">MUSD</span>
+            </span>
+          </div>
           <div className="h-px bg-border/50" />
-          <div className="flex justify-between"><span className="text-muted-foreground">veMEZO Balance</span><span className="font-semibold text-foreground">{token.balance}</span></div>
-          <div className="flex justify-between"><span className="text-muted-foreground">Owner</span><span className="font-mono text-xs text-foreground">{shorten(token.owner)}</span></div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">veMEZO Balance</span>
+            <span className="font-semibold text-foreground">{token.balance}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-muted-foreground">Owner</span>
+            <span className="font-mono text-xs text-foreground">{shorten(token.owner)}</span>
+          </div>
         </div>
 
         <div className="flex items-center gap-2 mb-5">
-          <span className={`flex-1 text-center text-xs px-3 py-2 rounded-full transition ${step === 1 ? "bg-gradient-to-r from-bitcoin/20 to-amber-500/10 text-bitcoin font-semibold ring-1 ring-bitcoin/30" : "bg-secondary text-muted-foreground"}`}>{step > 1 ? <CheckCircle2 className="h-3 w-3 inline mr-1" /> : "①"} Approve</span>
+          <span
+            className={`flex-1 text-center text-xs px-3 py-2 rounded-full transition ${step === 1 ? "bg-gradient-to-r from-bitcoin/20 to-amber-500/10 text-bitcoin font-semibold ring-1 ring-bitcoin/30" : "bg-secondary text-muted-foreground"}`}
+          >
+            {step > 1 ? <CheckCircle2 className="h-3 w-3 inline mr-1" /> : "①"} Approve
+          </span>
           <div className="h-px w-3 bg-border" />
-          <span className={`flex-1 text-center text-xs px-3 py-2 rounded-full transition ${step === 2 ? "bg-gradient-to-r from-bitcoin/20 to-amber-500/10 text-bitcoin font-semibold ring-1 ring-bitcoin/30" : "bg-secondary text-muted-foreground"}`}>② Purchase</span>
+          <span
+            className={`flex-1 text-center text-xs px-3 py-2 rounded-full transition ${step === 2 ? "bg-gradient-to-r from-bitcoin/20 to-amber-500/10 text-bitcoin font-semibold ring-1 ring-bitcoin/30" : "bg-secondary text-muted-foreground"}`}
+          >
+            ② Purchase
+          </span>
         </div>
 
         <div className="bg-bitcoin/5 border border-bitcoin/20 rounded-xl p-3 mb-5 flex gap-2">
           <ShieldCheck className="h-4 w-4 text-bitcoin flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-muted-foreground leading-relaxed">NFT transfers to you before payment is routed. Atomic settlement on-chain.</p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            NFT transfers to you before payment is routed. Atomic settlement on-chain.
+          </p>
         </div>
 
         <button
@@ -222,21 +297,50 @@ const PurchaseModal = ({ token, onClose, onPurchased }: { token: VeToken; onClos
   );
 };
 
-const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boosting, onVote, voting }: { token: VeToken; owned: boolean; onBuy: () => void; onWithdraw: () => void; withdrawing: boolean; onBoost: () => void; boosting: boolean; onVote: () => void; voting: boolean }) => {
+const TokenCard = ({
+  token,
+  owned,
+  onBuy,
+  onWithdraw,
+  withdrawing,
+  onBoost,
+  boosting,
+  onVote,
+  voting,
+}: {
+  token: VeToken;
+  owned: boolean;
+  onBuy: () => void;
+  onWithdraw: () => void;
+  withdrawing: boolean;
+  onBoost: () => void;
+  boosting: boolean;
+  onVote: () => void;
+  voting: boolean;
+}) => {
   const tier = tierFor(token.balance);
   const TierIcon = tier.icon;
   return (
-    <div className={`group relative rounded-3xl bg-gradient-to-br from-card to-card/50 border p-6 transition-all duration-300 hover:-translate-y-1 ${owned ? "border-emerald-500/50 ring-2 ring-emerald-500/20 shadow-lg shadow-emerald-500/10" : "border-border hover:border-bitcoin/40 hover:shadow-2xl hover:shadow-bitcoin/10"}`}>
-      <div className={`absolute -top-px left-6 right-6 h-px bg-gradient-to-r ${tier.cls} opacity-60 group-hover:opacity-100 transition`} />
-      <div className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${tier.cls} opacity-0 group-hover:opacity-[0.03] transition pointer-events-none`} />
+    <div
+      className={`group relative rounded-3xl bg-gradient-to-br from-card to-card/50 border p-6 transition-all duration-300 hover:-translate-y-1 ${owned ? "border-emerald-500/50 ring-2 ring-emerald-500/20 shadow-lg shadow-emerald-500/10" : "border-border hover:border-bitcoin/40 hover:shadow-2xl hover:shadow-bitcoin/10"}`}
+    >
+      <div
+        className={`absolute -top-px left-6 right-6 h-px bg-gradient-to-r ${tier.cls} opacity-60 group-hover:opacity-100 transition`}
+      />
+      <div
+        className={`absolute inset-0 rounded-3xl bg-gradient-to-br ${tier.cls} opacity-0 group-hover:opacity-[0.03] transition pointer-events-none`}
+      />
 
       <div className="flex justify-between items-start mb-5">
         <div>
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">veMEZO</p>
           <h3 className="font-display text-2xl font-bold text-foreground">#{token.id}</h3>
         </div>
-        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r ${tier.cls} text-white text-[10px] font-bold uppercase tracking-wider shadow`}>
-          <TierIcon className="h-3 w-3" />{tier.label}
+        <span
+          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r ${tier.cls} text-white text-[10px] font-bold uppercase tracking-wider shadow`}
+        >
+          <TierIcon className="h-3 w-3" />
+          {tier.label}
         </span>
       </div>
 
@@ -249,7 +353,10 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boos
           <Zap className="h-5 w-5 text-bitcoin" />
         </div>
         <div className="h-1 w-full rounded-full bg-secondary overflow-hidden">
-          <div className={`h-full bg-gradient-to-r ${tier.cls}`} style={{ width: `${Math.min(100, (token.balance / 70) * 100)}%` }} />
+          <div
+            className={`h-full bg-gradient-to-r ${tier.cls}`}
+            style={{ width: `${Math.min(100, (token.balance / 70) * 100)}%` }}
+          />
         </div>
       </div>
 
@@ -257,7 +364,10 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boos
         <div>
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">Owner</p>
           <button
-            onClick={() => { navigator.clipboard.writeText(token.owner); toast.success("Address copied"); }}
+            onClick={() => {
+              navigator.clipboard.writeText(token.owner);
+              toast.success("Address copied");
+            }}
             className="font-mono text-xs text-foreground hover:text-bitcoin transition flex items-center gap-1"
           >
             {shorten(token.owner)}
@@ -266,7 +376,9 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boos
         </div>
         <div className="text-right">
           <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">Price</p>
-          <p className="font-display font-bold text-foreground">{LISTING_PRICE} <span className="text-[10px] text-bitcoin">MUSD</span></p>
+          <p className="font-display font-bold text-foreground">
+            {LISTING_PRICE} <span className="text-[10px] text-bitcoin">MUSD</span>
+          </p>
         </div>
       </div>
 
@@ -276,7 +388,19 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boos
           disabled={withdrawing || owned}
           className={`w-full font-semibold py-3 rounded-full transition flex items-center justify-center gap-2 ${owned ? "bg-emerald-500/10 text-emerald-500 cursor-default" : "bg-foreground text-background hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:shadow-lg hover:shadow-bitcoin/30 disabled:opacity-50"}`}
         >
-          {owned ? <><CheckCircle2 className="h-4 w-4" /> Withdrawn</> : withdrawing ? <><Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…</> : <>Withdraw #{token.id} <ChevronRight className="h-4 w-4" /></>}
+          {owned ? (
+            <>
+              <CheckCircle2 className="h-4 w-4" /> Withdrawn
+            </>
+          ) : withdrawing ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Withdrawing…
+            </>
+          ) : (
+            <>
+              Withdraw #{token.id} <ChevronRight className="h-4 w-4" />
+            </>
+          )}
         </button>
         <button
           onClick={onBoost}
@@ -284,7 +408,15 @@ const TokenCard = ({ token, owned, onBuy, onWithdraw, withdrawing, onBoost, boos
           disabled={boosting}
           className="hidden w-full font-semibold py-3 rounded-full transition items-center justify-center gap-2 border border-bitcoin/40 text-foreground hover:bg-gradient-to-r hover:from-amber-500 hover:to-orange-500 hover:text-white hover:border-transparent hover:shadow-lg hover:shadow-amber-500/30 disabled:opacity-50"
         >
-          {boosting ? <><Loader2 className="h-4 w-4 animate-spin" /> Boosting…</> : <><Sparkles className="h-4 w-4" /> Boost #{token.id}</>}
+          {boosting ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" /> Boosting…
+            </>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" /> Boost #{token.id}
+            </>
+          )}
         </button>
       </div>
     </div>
@@ -326,7 +458,9 @@ export const VeNFTMarketplace = () => {
         const restored = await Promise.all(
           Array.from({ length: balance }, async (_, index) => {
             // The deployed veMEZO exposes ownerToNFTokenIdList; tokenOfOwnerByIndex reverts.
-            const raw = await veMEZO.ownerToNFTokenIdList(address, index).catch(() => veMEZO.tokenOfOwnerByIndex(address, index));
+            const raw = await veMEZO
+              .ownerToNFTokenIdList(address, index)
+              .catch(() => veMEZO.tokenOfOwnerByIndex(address, index));
             const id = Number(raw);
             return { id, owner: address, balance: 2, source: "chain" as const };
           }),
@@ -371,7 +505,9 @@ export const VeNFTMarketplace = () => {
     setBoostingId(tokenId);
     try {
       const from = await connectMezoWallet(eth);
-      const data = new ethers.Interface(["function pokeBoosts(uint256[] boostableTokenIds) external"]).encodeFunctionData("pokeBoosts", [[tokenId]]);
+      const data = new ethers.Interface([
+        "function pokeBoosts(uint256[] boostableTokenIds) external",
+      ]).encodeFunctionData("pokeBoosts", [[tokenId]]);
       toast.info(`Boosting veMEZO #${tokenId}…`);
       const txHash = await sendWalletTransaction(eth, from, BOOST_CONTRACT, data);
       toast.success(`Boost submitted for veMEZO #${tokenId} • ${txHash.slice(0, 10)}…`);
@@ -407,7 +543,9 @@ export const VeNFTMarketplace = () => {
       const from = await connectMezoWallet(eth);
       const poolVote = [poolAddress];
       const weights = [BigInt(weight)];
-      const data = new ethers.Interface(["function vote(uint256 _tokenId, address[] _poolVote, uint256[] _weights) external"]).encodeFunctionData("vote", [tokenId, poolVote, weights]);
+      const data = new ethers.Interface([
+        "function vote(uint256 _tokenId, address[] _poolVote, uint256[] _weights) external",
+      ]).encodeFunctionData("vote", [tokenId, poolVote, weights]);
       toast.info(`Submitting vote for veMEZO #${tokenId}…`);
       const txHash = await sendWalletTransaction(eth, from, VOTER_CONTRACT, data);
       toast.success(`Vote submitted for veMEZO #${tokenId} • ${txHash.slice(0, 10)}…`);
@@ -451,7 +589,9 @@ export const VeNFTMarketplace = () => {
         const now = Math.floor(Date.now() / 1000);
         if (lockEnd > 0 && now < lockEnd) {
           const daysLeft = Math.ceil((lockEnd - now) / 86400);
-          toast.error(`${VEMEZO_WITHDRAW_REVERT_MESSAGE} Lock still active — ${daysLeft} day(s) remaining until withdrawal is allowed.`);
+          toast.error(
+            `${VEMEZO_WITHDRAW_REVERT_MESSAGE} Lock still active — ${daysLeft} day(s) remaining until withdrawal is allowed.`,
+          );
           return;
         }
       } catch {
@@ -496,14 +636,16 @@ export const VeNFTMarketplace = () => {
           "function decimals() external view returns(uint8)",
           "function balanceOf(address owner) external view returns(uint256)",
         ],
-        signer
+        signer,
       );
       const decimals = await mezo.decimals();
       const parsedAmount = ethers.parseUnits(LOCK_AMOUNT, decimals);
 
       const balance: bigint = await mezo.balanceOf(me);
       if (balance < parsedAmount) {
-        toast.error(`Insufficient MEZO balance. Need ${LOCK_AMOUNT} MEZO, have ${ethers.formatUnits(balance, decimals)}.`);
+        toast.error(
+          `Insufficient MEZO balance. Need ${LOCK_AMOUNT} MEZO, have ${ethers.formatUnits(balance, decimals)}.`,
+        );
         setLocking(false);
         return;
       }
@@ -521,7 +663,7 @@ export const VeNFTMarketplace = () => {
           "function createLock(uint256 _value,uint256 _lockDuration) external returns(uint256)",
           "event Transfer(address indexed from,address indexed to,uint256 indexed tokenId)",
         ],
-        signer
+        signer,
       );
 
       // Preflight static call — surfaces the actual revert reason before the wallet prompt.
@@ -540,11 +682,21 @@ export const VeNFTMarketplace = () => {
       const owner = await signer.getAddress();
       const transferLog = receipt.logs
         .map((log: ethers.Log) => {
-          try { return veMEZO.interface.parseLog(log); } catch { return null; }
+          try {
+            return veMEZO.interface.parseLog(log);
+          } catch {
+            return null;
+          }
         })
         .find((log) => log?.name === "Transfer" && log.args?.from === ethers.ZeroAddress);
-      const newId = transferLog ? Number(transferLog.args.tokenId) : (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
-      setMinted((prev) => mergeLockedPositions(prev, [{ id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash, source: "local" }]));
+      const newId = transferLog
+        ? Number(transferLog.args.tokenId)
+        : (allTokens.reduce((m, t) => Math.max(m, t.id), 0) || 36) + 1;
+      setMinted((prev) =>
+        mergeLockedPositions(prev, [
+          { id: newId, owner, balance: Number(LOCK_AMOUNT), txHash: tx.hash, source: "local" },
+        ]),
+      );
       toast.success(`Lock created! veMEZO #${newId} • ${tx.hash.slice(0, 10)}…`);
     } catch (err: unknown) {
       console.error(err);
@@ -572,27 +724,37 @@ export const VeNFTMarketplace = () => {
       </div>
 
       {([52, 1] as const).map((weeks) => (
-      <div key={weeks} title={weeks === 1 ? "The contract rounds expiry down to the next weekly boundary, so the actual lock may be shorter than seven days." : undefined} className="rounded-3xl border border-border bg-gradient-to-br from-card to-card/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-500 to-pink-500 flex items-center justify-center shadow-lg shadow-bitcoin/20">
-            <Lock className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Create New Position</p>
-            <h3 className="font-display text-xl font-bold text-foreground">Lock 2 MEZO for {weeks} {weeks === 1 ? "week" : "weeks"}</h3>
-            <p className="text-xs text-muted-foreground mt-1">Mint your own veMEZO position directly on-chain.</p>
-          </div>
-        </div>
-        <Button
-          aria-label={`Lock 2 MEZO for ${weeks} ${weeks === 1 ? "week" : "weeks"}`}
-          onClick={() => handleLock(weeks)}
-          disabled={locking}
-          className="h-auto px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-bitcoin/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
+        <div
+          key={weeks}
+          title={
+            weeks === 1
+              ? "The contract rounds expiry down to the next weekly boundary, so the actual lock may be shorter than seven days."
+              : undefined
+          }
+          className="rounded-3xl border border-border bg-gradient-to-br from-card to-card/50 p-6 flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
-          {locking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
-          {locking ? "Locking…" : "Lock veMEZO"}
-        </Button>
-      </div>
+          <div className="flex items-start gap-4">
+            <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-amber-500 to-pink-500 flex items-center justify-center shadow-lg shadow-bitcoin/20">
+              <Lock className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Create New Position</p>
+              <h3 className="font-display text-xl font-bold text-foreground">
+                Lock 2 MEZO for {weeks} {weeks === 1 ? "week" : "weeks"}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-1">Mint your own veMEZO position directly on-chain.</p>
+            </div>
+          </div>
+          <Button
+            aria-label={`Lock 2 MEZO for ${weeks} ${weeks === 1 ? "week" : "weeks"}`}
+            onClick={() => handleLock(weeks)}
+            disabled={locking}
+            className="h-auto px-6 py-3 rounded-full bg-gradient-to-r from-amber-500 via-orange-500 to-pink-500 text-white font-semibold hover:shadow-lg hover:shadow-bitcoin/30 transition-all disabled:opacity-50 flex items-center justify-center gap-2 whitespace-nowrap"
+          >
+            {locking ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+            {locking ? "Locking…" : "Lock veMEZO"}
+          </Button>
+        </div>
       ))}
 
       <div className="rounded-3xl border border-bitcoin/30 bg-bitcoin/5 p-5 space-y-4">
@@ -601,14 +763,26 @@ export const VeNFTMarketplace = () => {
             <p className="text-[10px] uppercase tracking-widest text-bitcoin mb-1">Newly Locked Positions</p>
             <h3 className="font-display text-2xl font-bold text-foreground">Your recent veMEZO locks</h3>
           </div>
-          <p className="text-xs text-muted-foreground">{isConnected ? `${minted.length} restored` : "Connect wallet to restore on-chain locks"}</p>
+          <p className="text-xs text-muted-foreground">
+            {isConnected ? `${minted.length} restored` : "Connect wallet to restore on-chain locks"}
+          </p>
         </div>
 
         {minted.length > 0 ? (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {minted.map((token) => (
               <div key={`new-${token.id}`} className="space-y-2">
-                <TokenCard token={token} owned={!!owned[token.id]} onBuy={() => setSelected(token)} onWithdraw={() => handleWithdraw(token.id)} withdrawing={withdrawingId === token.id} onBoost={() => handleBoost(token.id)} boosting={boostingId === token.id} onVote={() => handleVote(token.id)} voting={votingId === token.id} />
+                <TokenCard
+                  token={token}
+                  owned={!!owned[token.id]}
+                  onBuy={() => setSelected(token)}
+                  onWithdraw={() => handleWithdraw(token.id)}
+                  withdrawing={withdrawingId === token.id}
+                  onBoost={() => handleBoost(token.id)}
+                  boosting={boostingId === token.id}
+                  onVote={() => handleVote(token.id)}
+                  voting={votingId === token.id}
+                />
                 {token.txHash ? (
                   <a
                     href={`https://explorer.test.mezo.org/tx/${token.txHash}`}
@@ -620,7 +794,9 @@ export const VeNFTMarketplace = () => {
                     Tx: {token.txHash.slice(0, 10)}…{token.txHash.slice(-8)}
                   </a>
                 ) : (
-                  <p className="px-2 text-[10px] font-mono text-muted-foreground">Restored from wallet • ID #{token.id}</p>
+                  <p className="px-2 text-[10px] font-mono text-muted-foreground">
+                    Restored from wallet • ID #{token.id}
+                  </p>
                 )}
               </div>
             ))}
@@ -637,7 +813,17 @@ export const VeNFTMarketplace = () => {
           const mintedTx = minted.find((m) => m.id === t.id)?.txHash;
           return (
             <div key={t.id} className="space-y-2">
-              <TokenCard token={t} owned={!!owned[t.id]} onBuy={() => setSelected(t)} onWithdraw={() => handleWithdraw(t.id)} withdrawing={withdrawingId === t.id} onBoost={() => handleBoost(t.id)} boosting={boostingId === t.id} onVote={() => handleVote(t.id)} voting={votingId === t.id} />
+              <TokenCard
+                token={t}
+                owned={!!owned[t.id]}
+                onBuy={() => setSelected(t)}
+                onWithdraw={() => handleWithdraw(t.id)}
+                withdrawing={withdrawingId === t.id}
+                onBoost={() => handleBoost(t.id)}
+                boosting={boostingId === t.id}
+                onVote={() => handleVote(t.id)}
+                voting={votingId === t.id}
+              />
               {mintedTx && (
                 <a
                   href={`https://explorer.test.mezo.org/tx/${mintedTx}`}
