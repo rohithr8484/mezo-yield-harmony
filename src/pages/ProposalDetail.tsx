@@ -30,7 +30,7 @@ import { toast } from "sonner";
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const PROPOSAL_FEE_RECIPIENT = "0x000000000000000000000000000000000000dEaD" as `0x${string}`;
 const VOTING_TOKEN_DECIMALS = 18;
-const FREE_GOVERNANCE_VOTES = 4;
+const FREE_GOVERNANCE_VOTES = 8;
 
 
 const ProposalDetail = () => {
@@ -290,7 +290,7 @@ const ProposalDetail = () => {
                   {isActive ? `Voting is live 🟢 · ends in ${countdown}` : "Voting is closed 🔴"}
                 </p>
                 <p className="text-xs text-muted-foreground mb-4">
-                  4 free Governance entries per user, then {VOTING_FEE} MEZO or MUSD per vote
+                  8 free Governance entries per user, then {VOTING_FEE} MEZO or MUSD per vote
                 </p>
                 <div className="space-y-3">
                   {isActive && (
