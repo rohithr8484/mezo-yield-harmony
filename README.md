@@ -155,13 +155,14 @@ MUSD powers the entire infrastructure economy.
 
 # Smart Contract Security
 - **Role-Based Access**: Only approved accounts can perform specific administrative actions.
-- **Payment Authorization**: Uses Permit2 and x402 to support signed payment authorization and token settlement.
+- **X402 Payment Authorization**: Uses Permit2 and x402 to support signed payment authorization and token settlement.
 - **On-Chain Traceability**: Enables transaction verification and transparent activity records.
   
 # Code Quality
 - **Modular Architecture**: Separates marketplace administration, payments, token handling, and governance.
 - **Reusable Security Libraries**: Uses established OpenZeppelin components for access control and pause functionality.
 - **Maintainable Governance**: Uses structured fee proposals, custom errors, and events for clearer administration.
+- **Testing**: Execution of test cases for VeMEZO marketplace 
 
 ---
 
