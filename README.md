@@ -81,7 +81,7 @@ Shape the future of Bitcoin finance through locked MEZO
 - **Solidity** — Smart contract development
 - **Wagmi** — Web3 React Hooks
 - **@mezo-org/passport** - Web3 wallet integration
-- **Mezo SDK** — Native Mezo integration
+- **Mezo SDK** —  Mezo integration ( Live On Mezo Testnet )
 - **Pyth Network** — Oracle infrastructure
 - **Boar API** — Mezo infrastructure and analytics integration
 - **Ethers.js** — Ethereum-compatible interactions
