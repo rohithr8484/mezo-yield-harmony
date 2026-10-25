@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { ServiceImage, type ServiceImageKind } from "./ServiceImage";
 
 const services: { title: string; kind: ServiceImageKind; description: string; anchor: string; charge: string }[] = [
-  { title: "AI Text Summarization", kind: "summarization", description: "Turn long articles, documentation and discussions into concise summaries and key points.", anchor: "service-ai-summarize", charge: "0.2 MUSD or 0.2 MEZO per entry · first 8 free" },
-  { title: "On Chain Analytics", kind: "analytics", description: "Inspect a transaction’s token movements, participants, decoded input and gas usage, with evidence-backed risk signals.", anchor: "service-analytics", charge: "0.2 MUSD or 0.2 MEZO per entry · first 8 free" },
-  { title: "AML Screening", kind: "aml", description: "Examine observed payment patterns and transaction flows, including exploratory ML structuring analysis—not compliance clearance.", anchor: "service-identity", charge: "0.2 MUSD or 0.2 MEZO per entry · first 8 free" },
-  { title: "Smart Contract Analysis", kind: "contracts", description: "Review uploaded Solidity code with AI-assisted analysis of potential risks and attack vectors.", anchor: "service-run", charge: "0.2 MUSD or 0.2 MEZO per entry · first 8 free" },
-  { title: "Data Feeds / Oracles", kind: "oracles", description: "View live price feeds and their charts, with free-entry and pay-per-use access.", anchor: "data-feeds", charge: "0.2 MUSD or 0.2 MEZO per unlock · or pay-per-call 0.001 test MUSD · x402 · first 8 free" },
+  { title: "AI Text Summarization", kind: "summarization", description: "Turn long articles, documentation and discussions into concise summaries and key points.", anchor: "service-ai-summarize", charge: "0.2 MUSD or 0.2 MEZO per entry · first 4 free" },
+  { title: "On Chain Analytics", kind: "analytics", description: "Inspect a transaction’s token movements, participants, decoded input and gas usage, with evidence-backed risk signals.", anchor: "service-analytics", charge: "0.2 MUSD or 0.2 MEZO per entry · first 4 free" },
+  { title: "AML Screening", kind: "aml", description: "Examine observed payment patterns and transaction flows, including exploratory ML structuring analysis—not compliance clearance.", anchor: "service-identity", charge: "0.2 MUSD or 0.2 MEZO per entry · first 4 free" },
+  { title: "Smart Contract Analysis", kind: "contracts", description: "Review uploaded Solidity code with AI-assisted analysis of potential risks and attack vectors.", anchor: "service-run", charge: "0.2 MUSD or 0.2 MEZO per entry · first 4 free" },
+  { title: "Data Feeds / Oracles", kind: "oracles", description: "View live price feeds and their charts, with free-entry and pay-per-use access.", anchor: "data-feeds", charge: "0.2 MUSD or 0.2 MEZO per unlock · or pay-per-call 0.001 test MUSD · x402 · first 4 free" },
   { title: "veMEZO Marketplace", kind: "vemezo", description: "Access vote-escrowed positions, create MEZO locks and manage eligible withdrawals through your connected wallet.", anchor: "venft-marketplace", charge: "0.2 MUSD or 0.2 MEZO entry · positions priced 0.2 MUSD" },
-  { title: "Governance", kind: "governance", description: "Browse proposals, follow voting deadlines and view the recorded results for each proposal.", anchor: "governance-analytics", charge: "0.01 MUSD or 0.01 MEZO per entry · first 8 free" },
+  { title: "Governance", kind: "governance", description: "Browse proposals, follow voting deadlines and view the recorded results for each proposal.", anchor: "governance-analytics", charge: "0.01 MUSD or 0.01 MEZO per entry · first 4 free" },
 ];
 
 export default function ServicesOverview() {

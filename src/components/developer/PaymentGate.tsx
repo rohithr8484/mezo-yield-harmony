@@ -15,7 +15,7 @@ import { X402Banner } from "./X402Banner";
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
 const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
-const FREE_ENTRY_LIMIT = 8;
+const FREE_ENTRY_LIMIT = 4;
 
 interface PaymentGateProps {
   serviceName: string;

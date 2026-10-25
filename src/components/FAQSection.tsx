@@ -27,7 +27,7 @@ const faqs = [
   },
   {
     q: "What is Mezo Auth Dev?",
-    a: "Mezo Auth Dev is this app — a developer control room on Mezo Testnet that brings paid services and protocol access into one place. It offers AI Text Summarization, On Chain Analytics, AML Screening, Smart Contract Analysis, live Data Feeds / Oracles, veMEZO Marketplace positions and Governance proposals, plus a seller studio where you can publish your own service under your connected wallet address. Each service gives eight free entries and then unlocks through pay-per-use payments in MUSD or MEZO, with every payment linked to its transaction hash in the Mezo explorer. It is a testnet demo: results are observations and AI-assisted analysis, not compliance clearance or audited advice.",
+    a: "Mezo Auth Dev is this app — a developer control room on Mezo Testnet that brings paid services and protocol access into one place. It offers AI Text Summarization, On Chain Analytics, AML Screening, Smart Contract Analysis, live Data Feeds / Oracles, veMEZO Marketplace positions and Governance proposals, plus a seller studio where you can publish your own service under your connected wallet address. Each service gives four free entries and then unlocks through pay-per-use payments in MUSD or MEZO, with every payment linked to its transaction hash in the Mezo explorer. It is a testnet demo: results are observations and AI-assisted analysis, not compliance clearance or audited advice.",
   },
 ];
 
