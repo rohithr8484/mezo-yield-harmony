@@ -13,7 +13,7 @@ Mezo Auth Dev is AWS-like infrastructure for Bitcoin-native Web3 on Mezo, poweri
 
 ---
 
-# ✨ Features
+# ✨ Wave 1 Features Of Mezo Auth Dev
 
 ## 🔌 AI API Marketplace
 
@@ -24,7 +24,7 @@ Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — al
 - AI-powered text summarization
 - On-chain analytics APIs
 - AML Analytics
-- Smart contract simulation & risk analysis
+- Smart contract simulation
 
 ---
 
@@ -62,7 +62,6 @@ Shape the future of Bitcoin finance through locked MEZO
 
 - veMEZO Benefits – Receive veMEZO based on the protocol’s locking mechanism.
 - Commitment-Based Benefits – Locking duration may influence the benefits
-
 
 ---
 
