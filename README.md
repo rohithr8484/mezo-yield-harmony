@@ -339,7 +339,7 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 ## **x402(MUSD) — How It Is Used**
 
 - The proxy address arrives inside the server's 402 requirements.
-- - x402 pays MUSD `0x1189…c503`, while the MUSD/MEZO/BTC buttons use different addresses — two separate money paths inside the same card.
+- x402 pays MUSD `0x1189…c503`, while the MUSD/MEZO/BTC buttons use different addresses — two separate money paths inside the same card.
 - The feed unlocks the moment settlement is confirmed, and the `Pay with x402` button is hidden once the feed is unlocked.
 
   
