@@ -187,7 +187,7 @@ Network gas and any first-time token approval are additional; x402 settlement ga
 |---|---:|---:|---:|---:|
 | MUSD | 0.0005 MUSD | 0.0005 MUSD | 0.0005 MUSD | 0.0005 MUSD reward |
 
-For each regular MUSD payment, the app attempts to send this reward from platform `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` back to the paying wallet after the payment confirms. This reward does not apply to x402, MEZO, or BTC payments.
+For each regular MUSD payment, the app attempts to send this reward from platform `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` back to the paying wallet after the payment confirms. This reward does not apply to x402, MEZO payments.
 
 
 ## Transactions involving MUSD/MEZO
