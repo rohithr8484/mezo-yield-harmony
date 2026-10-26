@@ -194,7 +194,7 @@ For each regular MUSD payment, the app attempts to send this reward from platfor
 #### 🧪 Testnet — Mezo Matsnet Testnet
 
 |      Token         | Transaction details                                  |  Activity Type |       link   | 
-| --------------------- | -------------------------------------------- | ----------------------| 
+| --------------------- | -------------------------------------------- | ----------------------| ---------------------- |
 | MUSD            | `0x274349523ae3b5bc6977ce926a95406e6ee18f298c0f7875ff798fa21bbef27c` | approve MUSD | [`Transaction`](https://explorer.test.mezo.org/tx/0x274349523ae3b5bc6977ce926a95406e6ee18f298c0f7875ff798fa21bbef27c)   |
 | MUSD            | `0x8b8dc03cdb7f20ccd8613ca5d4e998cde5d94b4ad50e47d2f1e95985209ac98d` | MUSD payment From wallet | [`Transaction`](https://explorer.test.mezo.org/tx/0x8b8dc03cdb7f20ccd8613ca5d4e998cde5d94b4ad50e47d2f1e95985209ac98d)  |
 | MUSD            | `0xa8c548a65b008b915b3dee1fb153cb011abfdd7345e7e8f20dba9eccbfd34be4` | Reward MUSD to wallet | [`Transaction`](https://explorer.test.mezo.org/tx/0xa8c548a65b008b915b3dee1fb153cb011abfdd7345e7e8f20dba9eccbfd34be4)   |
