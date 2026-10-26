@@ -7,7 +7,7 @@ Mezo Auth Dev is Marketplace for Bitcoin-native Web3 on Mezo, powering an AI API
 <p align="left">
   <img src="https://img.shields.io/badge/Bitcoin-orange?style=flat-square" />
   <img src="https://img.shields.io/badge/MEZO-blue?style=flat-square" />
-  <img src="https://img.shields.io/badge/Infrastructure-green?style=flat-square" />
+  <img src="https://img.shields.io/badge/Marketplace/Infrastructure-green?style=flat-square" />
   <img src="https://img.shields.io/badge/Web3-purple?style=flat-square" />
 </p>
 
