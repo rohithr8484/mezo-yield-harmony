@@ -188,6 +188,21 @@ Network gas and any first-time token approval are additional; x402 settlement ga
 
 For each regular MUSD payment, the app attempts to send this reward from platform `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` back to the paying wallet after the payment confirms. This reward does not apply to x402, MEZO, or BTC payments.
 
+
+## Transactions involving MUSD/MEZO
+
+#### 🧪 Testnet — Arbitrum Sepolia
+
+|      Token         | Transaction details                                  |  Activity Type |
+| --------------------- | -------------------------------------------- | ----------------------| 
+| MUSD            | `0x274349523ae3b5bc6977ce926a95406e6ee18f298c0f7875ff798fa21bbef27c` | approve MUSD |
+| MUSD            | `0x8b8dc03cdb7f20ccd8613ca5d4e998cde5d94b4ad50e47d2f1e95985209ac98d` | MUSD payment From wallet |
+| MUSD            | `0xa8c548a65b008b915b3dee1fb153cb011abfdd7345e7e8f20dba9eccbfd34be4` | Reward MUSD to wallet
+| MUSD            | `0x4868636cab6659be076de1becd48de4f2cafade6377d79e27f321fc5d5a07ceab` | X402 MUSD payment |
+| MEZO      | `0x14bff02771937faa89e9f7b669053355f2ef6f2570900684417656a617be45c4` | approve MEZO | 
+| MEZO      | `0xc11a28a0dc17754bce5c07bd65351aed8d7996027445323ed4abbba358fc8546` | MEZO payment from wallet |
+| VEMEZO | `0xc2fe5e841e9172a290f3a95e2c999e7ab64a074cf8d330948308a99948d4c06a` |  createLock of VEMEZO | 
+| VEMEZO | `0xfdcf48b6620f9e91eb3784bcbfc88be71372dac23cbc90e1b937357ded24a751` | withdraw of MEZO | 
 ---
 
 # 🌐 Infrastructure Marketplace
