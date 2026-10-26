@@ -167,7 +167,7 @@ MUSD powers the entire infrastructure economy.
 - **Modular Architecture**: Separates marketplace administration, payments, token handling, and governance.
 - **Reusable Security Libraries**: Uses established OpenZeppelin components for access control and pause functionality.
 - **Maintainable Governance**: Uses structured fee proposals, custom errors, and events for clearer administration.
-- **Testing**: Execution of tests for VeMEZO marketplace | [`test-file`](https://github.com/rohithr8484/mezo-yield-harmony/blob/main/contracts/RealVeMEZOCreate.test.ts) |
+- **Testing**: Execution of tests for VeMEZO marketplace | [`test-file`](https://github.com/rohithr8484/mezo-yield-harmony/blob/main/contracts/RealVeMEZOCreate.test.ts.) |
 
 ---
 
