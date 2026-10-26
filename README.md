@@ -396,7 +396,7 @@ Please contact the maintainer for access.
 
 Build the marketplace/infrastructure layer powering Bitcoin DeFi.
 
-From APIs and AI tooling to governance — Mezo Auth Dev enables developers to build scalable Bitcoin-native applications fully powered by MUSD/MEZO.
+From APIs and AI tooling to governance — Mezo Auth Dev enables developers to run scalable Bitcoin-native applications fully powered by MUSD/MEZO.
 
 ---
 
