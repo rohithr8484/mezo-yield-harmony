@@ -27,8 +27,8 @@ Decentralized pay-per-use APIs for analytics, AI, identity infrastructure — pr
 ### Included APIs
 
 - AI-powered text summarization
-- On-chain analytics APIs
-- AML Analytics
+- On-chain analytics service
+- AML Analytics service
 - Smart contract simulation
 
 ---
