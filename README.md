@@ -374,7 +374,7 @@ Contributions are welcome.
 
 ---
 
-# 📄 App images
+# 📄 App UI images
 
 <img width="624" height="381" alt="image" src="https://github.com/user-attachments/assets/0795cd49-73f0-4345-a23d-000168902e39" />
 <img width="624" height="399" alt="image" src="https://github.com/user-attachments/assets/6f327cc8-36ab-4e85-9e17-f63356a2ec50" />
