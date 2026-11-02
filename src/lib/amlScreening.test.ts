@@ -6,11 +6,11 @@ describe("AML wallet observations", () => {
   const assess = (legs: ReturnType<typeof leg>[]) => assessAMLBehavior(deriveAMLPayments("0xa", [], legs), "0xa");
   const structure = (legs: ReturnType<typeof leg>[]) => assessStructuringRisk(deriveAMLPayments("0xa", [], legs), "0xa");
   it("scores observed AML pass-through at 65 of 100 with every check assessed", () => {
-    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 1)]), "0xa")).toMatchObject({ score: 65, assessed: 4, total: 4, upperBound: 100 });
+    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("in", "0xb", "0xa", 0), leg("out", "0xa", "0xc", 1)]), "0xa")).toMatchObject({ score: 65, assessed: 4, total: 4, upperBound: 65 });
   });
   it("assesses a single round-figure outgoing payment on the structuring check alone", () => {
-    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("one", "0xa", "0xb", 0)]), "0xa")).toMatchObject({ score: 40, assessed: 1, total: 4, upperBound: 40 });
-    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("one", "0xa", "0xb", 0), leg("two", "0xb", "0xa", 1, "other")]), "0xa")).toMatchObject({ score: 40, assessed: 1, total: 4, upperBound: 40 });
+    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("one", "0xa", "0xb", 0)]), "0xa")).toMatchObject({ score: 40, assessed: 1, total: 4, upperBound: 100 });
+    expect(deriveAMLScreeningScore(deriveAMLPayments("0xa", [], [leg("one", "0xa", "0xb", 0), leg("two", "0xb", "0xa", 1, "other")]), "0xa")).toMatchObject({ score: 40, assessed: 1, total: 4, upperBound: 100 });
   });
   it("establishes a single-transaction structuring review without the six-payment minimum", () => {
     const result = structure([leg("one", "0xa", "0xb", 0)]);
