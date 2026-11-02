@@ -247,7 +247,8 @@ Deposit testnet BTC as collateral
 Borrow → Mint MUSD
 
 MUSD appears in your wallet
-/ Add MUSD token (0xD88b46ef8444dAA8aa493d714b1124DE75CCa067)
+/ Add MUSD token (0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503)
+& (0xD88b46ef8444dAA8aa493d714b1124DE75CCa067) 
 
 - **Network:** Mezo Testnet    **Chain ID:** `31611`
 
