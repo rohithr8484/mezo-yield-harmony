@@ -173,7 +173,7 @@ MUSD powers the entire infrastructure economy.
 
 ---
 
-# Payment amounts (Mezo Testnet)
+# Business model - Pay Per use - amounts (Mezo Testnet)
 
 | Pay with | APIs / data feeds | Governance entry | Proposal vote | Provide your own service |
 |---|---:|---:|---:|---:|
