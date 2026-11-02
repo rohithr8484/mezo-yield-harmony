@@ -8,7 +8,7 @@ import { getPaymentSigner, getTokenPaymentError, sendTokenPayment } from "./toke
 export const PREDICTION_MARKET_ADDRESS =
   "0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7";
 export const PREDICTION_MUSD =
-  "0xD88b46ef8444dAA8aa493d714b1124DE75CCa067";
+  "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503";
 
 /**
  * ABIs
