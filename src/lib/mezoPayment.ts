@@ -7,7 +7,7 @@ export const MEZO_TOKEN_ADDRESS =
 
 /** Fee payee. Never send tokens to the token contract itself. */
 export const MEZO_FEE_RECIPIENT =
-  "0x000000000000000000000000000000000000dEaD";
+  "0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694";
 
 const ERC20_ABI = [
   "function transfer(address to, uint256 amount) external returns (bool)",
