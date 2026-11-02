@@ -26,6 +26,7 @@ import { IdentityVerification } from "@/components/developer/IdentityVerificatio
 import { RunSection } from "@/components/developer/RunSection";
 
 import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
+import { PythPriceCard } from "@/components/developer/PythPriceCard";
 import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
 import { AITextSummarizer } from "@/components/developer/AITextSummarizer";
 import { X402Banner } from "@/components/developer/X402Banner";
@@ -376,6 +377,7 @@ const DeveloperServices = () => {
                   uniform
                   extraButton={<X402Banner uniform onPaymentSuccess={(txHash) => markX402Paid(paymentKey, txHash)} />}
                 >
+                  <PythPriceCard feedName={feed.name} feedId={feed.feedId} />
                   <PriceFeedChart feedName={feed.name} />
                 </PaymentGate>
                 {x402Tx && (
