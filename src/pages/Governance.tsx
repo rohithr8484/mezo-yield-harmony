@@ -7,7 +7,9 @@ import { formatUnits } from "viem";
 import { CONTRACTS, ERC20_ABI } from "@/lib/mezo";
 import { Link } from "react-router-dom";
 import { statusStyles, type Proposal } from "@/lib/proposals";
-import { getAllProposals, getUserProposals, saveUserProposal } from "@/lib/proposalStore";
+import { getAllProposals, getUserProposals, saveUserProposal, getVotingEndTime } from "@/lib/proposalStore";
+import { anchorProposalOnchain } from "@/lib/governanceAnchor";
+import { getTokenPaymentError } from "@/lib/tokenPayment";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
@@ -308,6 +310,10 @@ const Governance = () => {
                       setUserProposals(next);
 
                       toast.success(`Proposal "${newProposal.title}" submitted!`);
+                      const deadline = getVotingEndTime(newProposal.id);
+                      anchorProposalOnchain(newProposal.id, deadline, newProposal.title)
+                        .then((hash) => toast.success(`Proposal anchored on-chain. Tx: ${hash.slice(0, 10)}...`))
+                        .catch((err) => toast.error(`On-chain anchor failed: ${getTokenPaymentError(err)}`));
                       setProposalForm({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
                       setShowSubmitForm(false);
                     }}
