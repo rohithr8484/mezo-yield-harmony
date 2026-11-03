@@ -60,7 +60,7 @@ async function send(
   const contract = new ethers.Contract(GOVERNANCE_ANCHOR_ADDRESS, GOVERNANCE_ANCHOR_ABI, signer);
   await contract[method].staticCall(...args);
   const tx = await contract[method](...args);
-  await confirmPaymentTransaction(signer.provider!, tx.hash);
+  await confirmPaymentTransaction(tx);
   return tx.hash as string;
 }
 
