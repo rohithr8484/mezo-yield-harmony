@@ -23,6 +23,7 @@ function formatRelative(ts: number): string {
 import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
+import { getAnchor, voteOnchain, finalizeOnchain } from "@/lib/governanceAnchor";
 import type { Eip1193Provider } from "ethers";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
@@ -66,6 +67,37 @@ const ProposalDetail = () => {
     }
 
     return `Confirm in ${connectedWalletName}...`;
+  };
+
+  const [isFinalizing, setIsFinalizing] = useState(false);
+
+  const castOnchainVote = async (proposalId: string, choice: "FOR" | "AGAINST" | "ABSTAIN") => {
+    if (!getAnchor(proposalId)) return;
+    try {
+      const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
+      const hash = await voteOnchain(proposalId, choice, walletProvider);
+      if (hash) toast.success(`Vote stored on-chain. Tx: ${hash.slice(0, 10)}...`);
+    } catch (error) {
+      toast.error(`On-chain vote failed: ${getTokenPaymentError(error)}`);
+    }
+  };
+
+  const handleFinalize = async () => {
+    if (!proposal || isFinalizing) return;
+    if (!isConnected) {
+      openConnectModal?.();
+      return;
+    }
+    setIsFinalizing(true);
+    try {
+      const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
+      const hash = await finalizeOnchain(proposal.id, walletProvider);
+      toast.success(`Results finalized on-chain. Tx: ${hash.slice(0, 10)}...`);
+    } catch (error) {
+      toast.error(`Finalize failed: ${getTokenPaymentError(error)}`);
+    } finally {
+      setIsFinalizing(false);
+    }
   };
 
   const handlePayAndVote = async (payToken: "MEZO" | "MUSD") => {
@@ -112,6 +144,7 @@ const ProposalDetail = () => {
           toast.error("Payment confirmed, but voting ended before confirmation. No vote was counted.");
           return;
         }
+        void castOnchainVote(proposal.id, selectedVote);
       }
       setVoted(selectedVote);
       setSelectedVote(null);
@@ -144,14 +177,16 @@ const ProposalDetail = () => {
       return;
     }
 
+    const choice = selectedVote;
     if (proposal) {
       const recorded = addVote(proposal.id, {
         voter: address ?? "anonymous",
-        type: selectedVote,
+        type: choice,
         weight: 1,
         ts: Date.now(),
       });
       if (!recorded) return;
+      void castOnchainVote(proposal.id, choice);
     }
     const nextUsed = freeVotesUsed + 1;
     setFreeVotesUsed(nextUsed);
@@ -408,6 +443,28 @@ const ProposalDetail = () => {
                       ? "Rejected (Against wins)"
                       : "Tied"}
                   </p>
+                )}
+                {!isActive && proposal && getAnchor(proposal.id) && (
+                  <div className="space-y-2 text-xs">
+                    {getAnchor(proposal.id)?.finalizeTx ? (
+                      <a
+                        href={`https://explorer.test.mezo.org/tx/${getAnchor(proposal.id)?.finalizeTx}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-semibold text-primary underline"
+                      >
+                        Results finalized on-chain — view transaction
+                      </a>
+                    ) : (
+                      <button
+                        onClick={handleFinalize}
+                        disabled={isFinalizing}
+                        className="px-4 py-2 rounded-lg bg-primary text-primary-foreground font-semibold disabled:opacity-60"
+                      >
+                        {isFinalizing ? "Finalizing..." : "Finalize results on-chain"}
+                      </button>
+                    )}
+                  </div>
                 )}
 
                 {[
