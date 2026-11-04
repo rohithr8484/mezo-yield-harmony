@@ -1,5 +1,8 @@
 # Current tasks
 
+- [x] Check governance contract selectors and show confirmed governance method receipts; 13 tests and fixture-based receipt/refresh checks pass. Existing explorer transactions succeed but remain undecoded because the contract is unverified; no new wallet transaction was submitted.
+- [ ] Confirm the governance contract's vote meanings and enable explorer method decoding — blocked on matching Solidity source/deployment artifacts from the contract owner; preserve existing app vote encoding meanwhile.
+
 - [x] Remove BTC wording from homepage copy only (Data Feeds description and FAQ answers); no visible BTC text remains, build OK, payments and feed data unchanged.
 
 - [x] Add a separate seller service workflow from the homepage using templates, bind published listings to the connected wallet, and show them in the Developer infrastructure control room without changing existing services or payments.

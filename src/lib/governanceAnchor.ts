@@ -11,7 +11,7 @@ export const GOVERNANCE_ANCHOR_ABI = [
   "function hasVoted(uint256 proposalId, address voter) view returns (bool)",
 ];
 
-/** Contract vote codes: 0 = Yes (For), 1 = No (Against), 2 = Abstain. */
+/** App vote encoding; semantic ordering requires the deployed contract's source. */
 export const VOTE_CODE = { FOR: 0, AGAINST: 1, ABSTAIN: 2 } as const;
 export type VoteChoice = keyof typeof VOTE_CODE;
 
@@ -21,6 +21,7 @@ export interface AnchorRecord {
   onchainId: string;
   anchorTx?: string;
   finalizeTx?: string;
+  voteTransactions?: Array<{ hash: string; choice: VoteChoice }>;
 }
 
 function readAnchors(): Record<string, AnchorRecord> {
@@ -60,8 +61,7 @@ async function send(
   const contract = new ethers.Contract(GOVERNANCE_ANCHOR_ADDRESS, GOVERNANCE_ANCHOR_ABI, signer);
   await contract[method].staticCall(...args);
   const tx = await contract[method](...args);
-  await confirmPaymentTransaction(tx);
-  return tx.hash as string;
+  return confirmPaymentTransaction(tx);
 }
 
 export async function anchorProposalOnchain(
@@ -79,7 +79,9 @@ export async function anchorProposalOnchain(
 export async function voteOnchain(proposalId: string, choice: VoteChoice, walletProvider?: ethers.Eip1193Provider) {
   const anchor = getAnchor(proposalId);
   if (!anchor) return null;
-  return send("vote", [BigInt(anchor.onchainId), VOTE_CODE[choice]], walletProvider);
+  const hash = await send("vote", [BigInt(anchor.onchainId), VOTE_CODE[choice]], walletProvider);
+  writeAnchor(proposalId, { voteTransactions: [...(anchor.voteTransactions ?? []), { hash, choice }] });
+  return hash;
 }
 
 export async function finalizeOnchain(proposalId: string, walletProvider?: ethers.Eip1193Provider) {

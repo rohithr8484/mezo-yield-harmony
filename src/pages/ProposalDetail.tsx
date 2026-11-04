@@ -24,6 +24,7 @@ import { payWithMUSD } from "@/lib/musdPayment";
 import { payWithMEZO } from "@/lib/mezoPayment";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
 import { getAnchor, voteOnchain, finalizeOnchain } from "@/lib/governanceAnchor";
+import GovernanceTransactions from "@/components/governance/GovernanceTransactions";
 import type { Eip1193Provider } from "ethers";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
@@ -76,7 +77,7 @@ const ProposalDetail = () => {
     try {
       const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
       const hash = await voteOnchain(proposalId, choice, walletProvider);
-      if (hash) toast.success(`Vote stored on-chain. Tx: ${hash.slice(0, 10)}...`);
+      if (hash) toast.success(`vote confirmed on-chain. Tx: ${hash.slice(0, 10)}...`);
     } catch (error) {
       toast.error(`On-chain vote failed: ${getTokenPaymentError(error)}`);
     }
@@ -92,7 +93,7 @@ const ProposalDetail = () => {
     try {
       const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
       const hash = await finalizeOnchain(proposal.id, walletProvider);
-      toast.success(`Results finalized on-chain. Tx: ${hash.slice(0, 10)}...`);
+      toast.success(`finalize confirmed on-chain. Tx: ${hash.slice(0, 10)}...`);
     } catch (error) {
       toast.error(`Finalize failed: ${getTokenPaymentError(error)}`);
     } finally {
@@ -488,6 +489,7 @@ const ProposalDetail = () => {
 
               {/* Proposal Info */}
               <div className="rounded-lg bg-card border border-border shadow-card p-6 space-y-3">
+                <GovernanceTransactions proposalId={proposal.id} />
                 {/* Contract addresses */}
                 <div className="border-t border-border pt-3 mt-3">
                   <p className="text-xs text-muted-foreground mb-1">Voting fee contracts:</p>
