@@ -1,6 +1,7 @@
 # Current tasks
 
-- [ ] Check governance contract selectors and vote ordering, and show confirmed governance transaction methods without changing payments or local tallies.
+- [x] Check governance contract selectors and show confirmed governance method receipts; 13 tests and fixture-based receipt/refresh checks pass. Existing explorer transactions succeed but remain undecoded because the contract is unverified; no new wallet transaction was submitted.
+- [ ] Confirm the governance contract's vote meanings and enable explorer method decoding — blocked on matching Solidity source/deployment artifacts from the contract owner; preserve existing app vote encoding meanwhile.
 
 - [x] Remove BTC wording from homepage copy only (Data Feeds description and FAQ answers); no visible BTC text remains, build OK, payments and feed data unchanged.
 
