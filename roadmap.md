@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Check governance contract selectors and vote ordering, and show confirmed governance transaction methods without changing payments or local tallies.
+
 - [x] Remove BTC wording from homepage copy only (Data Feeds description and FAQ answers); no visible BTC text remains, build OK, payments and feed data unchanged.
 
 - [x] Add a separate seller service workflow from the homepage using templates, bind published listings to the connected wallet, and show them in the Developer infrastructure control room without changing existing services or payments.
