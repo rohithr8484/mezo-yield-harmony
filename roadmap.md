@@ -1,7 +1,7 @@
 # Current tasks
 
 - [x] Check governance contract selectors and show confirmed governance method receipts; 13 tests and fixture-based receipt/refresh checks pass. Existing explorer transactions succeed but remain undecoded because the contract is unverified; no new wallet transaction was submitted.
-- [ ] Confirm the governance contract's vote meanings and enable explorer method decoding — blocked on matching Solidity source/deployment artifacts from the contract owner; preserve existing app vote encoding meanwhile.
+- [x] Verify the uploaded ProposalRecords source against deployed executable bytecode (Solidity 0.8.34, optimizer disabled, Prague) and submit explorer verification; explorer now reports verified and decodes anchorProposal, vote, and finalize. Source confirms 0 = Yes, 1 = No, 2 = Abstain; app behavior unchanged.
 
 - [x] Remove BTC wording from homepage copy only (Data Feeds description and FAQ answers); no visible BTC text remains, build OK, payments and feed data unchanged.
 
