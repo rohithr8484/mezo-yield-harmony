@@ -10,6 +10,7 @@ import { statusStyles, type Proposal } from "@/lib/proposals";
 import { getAllProposals, getUserProposals, saveUserProposal, getVotingEndTime } from "@/lib/proposalStore";
 import { anchorProposalOnchain } from "@/lib/governanceAnchor";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
+import type { Eip1193Provider } from "ethers";
 
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { toast } from "sonner";
@@ -21,7 +22,7 @@ const filterOptions: Array<{ label: string; value: string }> = [
 ];
 
 const Governance = () => {
-  const { isConnected, address } = useAccount();
+  const { isConnected, address, connector } = useAccount();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -282,7 +283,7 @@ const Governance = () => {
                 </div>
                 <div className="flex items-center gap-3 pt-2">
                   <button
-                    onClick={() => {
+                    onClick={async () => {
                       if (!proposalForm.title.trim() || !proposalForm.summary.trim()) {
                         toast.error("Title and summary are required");
                         return;
@@ -311,11 +312,15 @@ const Governance = () => {
 
                       toast.success(`Proposal "${newProposal.title}" submitted!`);
                       const deadline = getVotingEndTime(newProposal.id);
-                      anchorProposalOnchain(newProposal.id, deadline, newProposal.title)
-                        .then((hash) => toast.success(`Proposal anchored on-chain. Tx: ${hash.slice(0, 10)}...`))
-                        .catch((err) => toast.error(`On-chain anchor failed: ${getTokenPaymentError(err)}`));
                       setProposalForm({ title: "", category: "Parameter Change", summary: "", motivation: "", specification: "" });
                       setShowSubmitForm(false);
+                      try {
+                        const walletProvider = await connector?.getProvider() as Eip1193Provider | undefined;
+                        const hash = await anchorProposalOnchain(newProposal.id, deadline, newProposal.title, walletProvider);
+                        toast.success(`anchorProposal confirmed on-chain. Tx: ${hash.slice(0, 10)}...`);
+                      } catch (err) {
+                        toast.error(`On-chain anchor failed: ${getTokenPaymentError(err)}`);
+                      }
                     }}
                     className="px-6 py-2.5 rounded-xl bg-primary text-primary-foreground text-sm font-semibold hover:bg-primary/90 transition-colors"
                   >
