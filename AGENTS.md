@@ -11,7 +11,7 @@
 
 - Derive transaction analytics from explorer observations in a shared pure module; label method-based inferences and incomplete or unavailable data, and never aggregate quantities across different tokens or present heuristics as proven safety.
 
-- Route both supported veMEZO lock durations through the same approval, simulation, and confirmation flow; respect the deployed contract's weekly expiry rounding and never submit one-minute locks.
+- Route all supported veMEZO lock durations through the same approval, simulation, and confirmation flow; keep duration conversion in the shared lock module for test coverage, respect the deployed contract's weekly expiry rounding, and never submit one-minute locks.
 
 - Normalize veMEZO withdrawal reverts through a shared error formatter, including nested wallet errors; keep cancellation and network failures distinct so rejection explanations remain consistent across NFT IDs.
 

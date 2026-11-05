@@ -1,5 +1,8 @@
 # Current tasks
 
+- [x] Hide On-chain Analytics only in seller listings, preserving saved services and built-in Analytics.
+- [x] Add a 2 MEZO two-week lock below existing options through the same lock flow; 10 tests and browser unlock/refresh checks pass. Actual wallet submission not tested; expiry remains contract-rounded.
+
 - [x] Check governance contract selectors and show confirmed governance method receipts; 13 tests and fixture-based receipt/refresh checks pass. Existing explorer transactions succeed but remain undecoded because the contract is unverified; no new wallet transaction was submitted.
 - [x] Verify the uploaded ProposalRecords source against deployed executable bytecode (Solidity 0.8.34, optimizer disabled, Prague) and submit explorer verification; explorer now reports verified and decodes anchorProposal, vote, and finalize. Source confirms 0 = Yes, 1 = No, 2 = Abstain; app behavior unchanged.
 
