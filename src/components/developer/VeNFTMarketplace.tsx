@@ -22,6 +22,7 @@ import { toast } from "sonner";
 import { ERC20_ABI } from "@/lib/mezo";
 import { getVeMezoWithdrawError, VEMEZO_WITHDRAW_REVERT_MESSAGE } from "@/lib/veMezoWithdrawError";
 import { Button } from "@/components/ui/button";
+import { getVeMezoLockDuration, VEMEZO_LOCK_AMOUNT, VEMEZO_LOCK_WEEKS, type VeMezoLockWeeks } from "@/lib/veMezoLock";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const MEZO_TESTNET_CHAIN_HEX = `0x${MEZO_TESTNET_CHAIN_ID.toString(16)}`;
@@ -614,10 +615,9 @@ export const VeNFTMarketplace = () => {
     }
   };
 
-  const handleLock = async (weeks: 1 | 52) => {
-    const LOCK_AMOUNT = "2";
-    const WEEK = 7 * 24 * 60 * 60;
-    const LOCK_DURATION = weeks * WEEK;
+  const handleLock = async (weeks: VeMezoLockWeeks) => {
+    const LOCK_AMOUNT = VEMEZO_LOCK_AMOUNT;
+    const LOCK_DURATION = getVeMezoLockDuration(weeks);
 
     const eth = (window as Window & { ethereum?: Eip1193Provider }).ethereum;
     if (!eth) {
@@ -725,7 +725,7 @@ export const VeNFTMarketplace = () => {
         ))}
       </div>
 
-      {([52, 1] as const).map((weeks) => (
+      {VEMEZO_LOCK_WEEKS.map((weeks) => (
         <div
           key={weeks}
           title={
@@ -745,6 +745,9 @@ export const VeNFTMarketplace = () => {
                 Lock 2 MEZO for {weeks} {weeks === 1 ? "week" : "weeks"}
               </h3>
               <p className="text-xs text-muted-foreground mt-1">Mint your own veMEZO position directly on-chain.</p>
+              {weeks === 2 && (
+                <p className="text-xs text-muted-foreground mt-1">Requests 14 days; the contract rounds expiry down to a weekly boundary.</p>
+              )}
             </div>
           </div>
           <Button

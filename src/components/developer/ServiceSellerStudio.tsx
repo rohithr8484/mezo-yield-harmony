@@ -49,7 +49,7 @@ export function ServiceSellerStudio() {
   const [services, setServices] = useState(() => readSellerServices());
   const normalizedAddress = address?.toLowerCase();
   const ownServices = useMemo(
-    () => services.filter((service) => service.sellerAddress === normalizedAddress),
+    () => services.filter((service) => service.sellerAddress === normalizedAddress && service.id !== "wallet-analytics"),
     [normalizedAddress, services],
   );
 
