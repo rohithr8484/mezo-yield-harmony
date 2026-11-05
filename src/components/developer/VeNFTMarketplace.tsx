@@ -23,6 +23,7 @@ import { ERC20_ABI } from "@/lib/mezo";
 import { getVeMezoWithdrawError, VEMEZO_WITHDRAW_REVERT_MESSAGE } from "@/lib/veMezoWithdrawError";
 import { Button } from "@/components/ui/button";
 import { getVeMezoLockDuration, VEMEZO_LOCK_AMOUNT, VEMEZO_LOCK_WEEKS, type VeMezoLockWeeks } from "@/lib/veMezoLock";
+import { MarketplaceAdminControls } from "./MarketplaceAdminControls";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const MEZO_TESTNET_CHAIN_HEX = `0x${MEZO_TESTNET_CHAIN_ID.toString(16)}`;
@@ -711,6 +712,7 @@ export const VeNFTMarketplace = () => {
 
   return (
     <div className="space-y-8">
+      <MarketplaceAdminControls />
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Listed", value: TOKENS.length },
