@@ -59,11 +59,11 @@ export const MarketplaceAdminControls = () => {
   return (
     <div className="mb-8 space-y-3" aria-label="MarketplaceAdmin contract reads">
       <div className="flex flex-wrap justify-center gap-3">
-        <Button onClick={() => read("fee")} disabled={pending !== null} className="ui-btn ui-btn-pay min-h-10">
+        <Button hidden onClick={() => read("fee")} disabled={pending !== null} className="hidden ui-btn ui-btn-pay min-h-10">
           {pending === "fee" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Clock className="h-4 w-4" />}
           FEE_TIMELOCK()
         </Button>
-        <Button onClick={() => read("collection")} disabled={pending !== null} className="ui-btn ui-btn-pay min-h-10">
+        <Button hidden onClick={() => read("collection")} disabled={pending !== null} className="hidden ui-btn ui-btn-pay min-h-10">
           {pending === "collection" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
           isCollectionSupported()
         </Button>
