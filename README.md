@@ -260,7 +260,7 @@ MUSD appears in your wallet
 
 **Explorer:**
 
-https://explorer.mezo.org
+https://explorer.test.mezo.org/
 
 ---
 
