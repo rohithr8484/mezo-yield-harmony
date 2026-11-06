@@ -316,7 +316,7 @@ VITE_SUPABASE_URL=
 | Contract / Component | Address | Description |
 |---|---|---|
 | **VEMEZO token** | ` 0xaCE816CA2bcc9b12C59799dcC5A959Fb9b98111b` | for VEMEZO NFT creation |
-| **MarketplaceAdmin** | `0x1D462522A9f8fbea6c10122dce01E09432A64dBF` | Marketplace admin and fee controls. |
+| **MarketplaceAdmin** | `0x1D462522A9f8fbea6c10122dce01E09432A64dBF` | Marketplace roles and fee controls. |
 | **Mezo Governance Treasury** | `0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694` | Governance treasury and payments. |
 
 ---
