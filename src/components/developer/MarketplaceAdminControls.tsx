@@ -67,7 +67,7 @@ export const MarketplaceAdminControls = () => {
           {pending === "collection" ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
           isCollectionSupported()
         </Button>
-        {MARKETPLACE_ADMIN_ACTIONS.map((item) => (
+        {MARKETPLACE_ADMIN_ACTIONS.filter((item) => item.id !== "addCollection" && item.id !== "removeCollection").map((item) => (
           <Button key={item.id} className="ui-btn ui-btn-pay min-h-10" disabled={pending !== null || actionPending} onClick={() => {
             setAction(item.id); setAccount(address ?? ""); setActionError(null);
           }}>
