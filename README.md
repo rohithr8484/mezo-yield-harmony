@@ -176,7 +176,7 @@ MUSD powers the entire infrastructure economy.
 
 # Business model - Pay Per use - amounts (Mezo Testnet)
 
-| Pay with | APIs / data feeds | Governance entry | Proposal vote | Provide your own service |
+| Pay with | Services / data feeds | Governance entry | Proposal vote | Provide your own service |
 |---|---:|---:|---:|---:|
 | MUSD | 0.2 MUSD | 0.01 MUSD | 0.2 MUSD | 0.2 MUSD (0.0005 MUSD reward returned) |
 | MEZO | 0.2 MEZO | 0.01 MEZO | 0.2 MEZO | 0.2 MEZO |
@@ -186,7 +186,7 @@ Network gas and any first-time token approval are additional; x402 settlement ga
 
 ## Rewards (Mezo Testnet)
 
-| Pay with | APIs / data feeds | Governance entry | Proposal vote | Provide your own service |
+| Pay with | Services / data feeds | Governance entry | Proposal vote | Provide your own service |
 |---|---:|---:|---:|---:|
 | MUSD | 0.0005 MUSD | 0.0005 MUSD | 0.0005 MUSD | 0.0005 MUSD reward |
 
