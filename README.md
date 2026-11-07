@@ -164,7 +164,7 @@ MUSD powers the entire infrastructure economy.
 - **Role-Based Access**: Only approved accounts can perform specific administrative actions.
 - **X402 Payment Authorization**: Uses Permit2 and x402 to support signed payment authorization and token settlement.
 - **On-Chain Traceability**: Enables transaction verification and transparent activity records.
-- **Smart Contract Audit Report** : performed overall | [`smart-contract-audit`](https://github.com/rohithr8484/mezo-yield-harmony/blob/main/Smart_Contract_Security_Findings_Risk_Ratings_Mezo_Auth_Dev.pdf) |
+- **Smart Contract Audit Report** : performed overall | [`smart-contract-audit`](https://github.com/rohithr8484/mezo-yield-harmony/blob/main/Smart_Contract_Security_Review_Technical_Findings_F08_F10.pdf) |
   
 # Code Quality
 - **Modular Architecture**: Separates marketplace administration, payments, token handling, and governance.
