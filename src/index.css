@@ -520,3 +520,104 @@ input:focus-visible, textarea:focus-visible { box-shadow: 0 0 0 4px hsl(var(--ac
   .rounded-lg.border:hover, .rounded-xl.border:hover, .rounded-2xl.border:hover,
   button:hover, .group:hover img { transform: none !important; }
 }
+
+/* ===== Scroll-reveal + ambient layer (presentation only) =====
+   Content is never hidden by default: .reveal only applies when JS
+   adds it, and .reveal-visible restores full visibility. */
+.reveal {
+  opacity: 0;
+  transform: translateY(22px) scale(0.99);
+  transition:
+    opacity 0.65s cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 0.65s cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Stagger siblings so groups cascade in */
+.reveal-visible:nth-of-type(2) { transition-delay: 60ms; }
+.reveal-visible:nth-of-type(3) { transition-delay: 120ms; }
+.reveal-visible:nth-of-type(4) { transition-delay: 180ms; }
+.reveal-visible:nth-of-type(5) { transition-delay: 240ms; }
+.reveal-visible:nth-of-type(6) { transition-delay: 300ms; }
+
+/* Ambient floating orbs behind all pages */
+.ambient-orbs {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ambient-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(70px);
+  opacity: 0.5;
+}
+
+.ambient-orb-primary {
+  width: 34rem;
+  height: 34rem;
+  top: -12rem;
+  left: -10rem;
+  background: radial-gradient(circle, hsl(var(--primary) / 0.28), transparent 65%);
+  animation: orb-float-a 26s ease-in-out infinite alternate;
+}
+
+.ambient-orb-accent {
+  width: 30rem;
+  height: 30rem;
+  top: 20%;
+  right: -12rem;
+  background: radial-gradient(circle, hsl(var(--accent) / 0.3), transparent 65%);
+  animation: orb-float-b 32s ease-in-out infinite alternate;
+}
+
+.ambient-orb-magenta {
+  width: 26rem;
+  height: 26rem;
+  bottom: -10rem;
+  left: 30%;
+  background: radial-gradient(circle, hsl(var(--magenta) / 0.2), transparent 65%);
+  animation: orb-float-c 38s ease-in-out infinite alternate;
+}
+
+@keyframes orb-float-a {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(6rem, 4rem) scale(1.15); }
+}
+
+@keyframes orb-float-b {
+  from { transform: translate(0, 0) scale(1.1); }
+  to { transform: translate(-5rem, 6rem) scale(0.95); }
+}
+
+@keyframes orb-float-c {
+  from { transform: translate(0, 0) scale(0.95); }
+  to { transform: translate(4rem, -5rem) scale(1.1); }
+}
+
+/* Keep page content above the ambient layer */
+.ambient-orbs ~ * { position: relative; z-index: 1; }
+
+/* Pulsing glow for live/status accents */
+.ui-pill-live, .ops-status-dot {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+/* Gradient border shimmer on primary cards */
+@keyframes border-shimmer {
+  0%, 100% { border-color: hsl(var(--primary) / 0.25); }
+  50% { border-color: hsl(var(--accent) / 0.45); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .ambient-orb, .ui-pill-live, .ops-status-dot { animation: none !important; }
+}
