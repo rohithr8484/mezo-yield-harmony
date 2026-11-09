@@ -38,7 +38,7 @@ Provides secure custom controls for the veNFT marketplace.
 
 ## Governance Records Contract
 
-Provides permanent on-chain anchoring of governance proposals and voting results.
+Provides on-chain anchoring of governance proposals and voting results.
 
 **File:** `Governance-records.sol`
 
