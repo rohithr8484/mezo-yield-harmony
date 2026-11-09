@@ -44,10 +44,9 @@ Provides permanent on-chain anchoring of governance proposals and voting results
 
 ### Features
 
-- Anchors a proposal once with its IPFS content identifier.
+- Anchors a proposal once with its content identifier.
 - Records one vote per wallet as Yes, No, or Abstain.
 - Keeps separate Yes, No, and Abstain tallies for every proposal.
-- Marks results as finalized so voting cannot continue afterwards.
 - Emits events for anchoring, vote casting, and finalization.
 
 **Technology:** Solidity ^0.8.24, plain Solidity mappings and events with no external dependencies.
