@@ -33,3 +33,21 @@ Provides secure custom controls for the veNFT marketplace.
 - MUSD balance tracking and funding.
 
 **Technology:** Solidity ^0.8.20, OpenZeppelin AccessControl, Pausable, and IERC20.
+
+---
+
+## Governance Records Contract
+
+Provides permanent on-chain anchoring of governance proposals and voting results.
+
+**File:** `Governance-records.sol`
+
+### Features
+
+- Anchors a proposal once with its IPFS content identifier.
+- Records one vote per wallet as Yes, No, or Abstain.
+- Keeps separate Yes, No, and Abstain tallies for every proposal.
+- Marks results as finalized so voting cannot continue afterwards.
+- Emits events for anchoring, vote casting, and finalization.
+
+**Technology:** Solidity ^0.8.24, plain Solidity mappings and events with no external dependencies.
