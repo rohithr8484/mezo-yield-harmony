@@ -146,7 +146,7 @@ export default function GovernanceChatBot() {
               <p className="text-sm font-semibold text-white">
                 Governance Agent
               </p>
-              <p className="text-[10px] text-white/70">
+              <p className="text-[12px] text-white/70">
                 Powered by Lovable AI
               </p>
             </div>
@@ -232,7 +232,7 @@ export default function GovernanceChatBot() {
               <Send className="h-4 w-4" />
             </Button>
           </form>
-          <p className="mt-1 text-center text-[10px] text-muted-foreground">
+          <p className="mt-1 text-center text-[12px] text-muted-foreground">
             Ask about proposals, voting, veMEZO, delegates & more
           </p>
         </div>

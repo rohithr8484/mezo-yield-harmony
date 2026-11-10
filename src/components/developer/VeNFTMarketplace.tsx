@@ -238,7 +238,7 @@ const PurchaseModal = ({
         <div className={`absolute -top-px left-8 right-8 h-px bg-gradient-to-r ${tier.cls}`} />
         <div className="flex justify-between items-start mb-2">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Vote-Escrowed Position</p>
+            <p className="text-[12px] uppercase tracking-widest text-muted-foreground mb-1">Vote-Escrowed Position</p>
             <h3 className="text-2xl font-display font-bold text-foreground">
               veMEZO <span className="text-gradient-animated">#{token.id}</span>
             </h3>
@@ -337,11 +337,11 @@ const TokenCard = ({
 
       <div className="flex justify-between items-start mb-5">
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">veMEZO</p>
+          <p className="text-[12px] uppercase tracking-widest text-muted-foreground mb-1">veMEZO</p>
           <h3 className="font-display text-2xl font-bold text-foreground">#{token.id}</h3>
         </div>
         <span
-          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r ${tier.cls} text-white text-[10px] font-bold uppercase tracking-wider shadow`}
+          className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gradient-to-r ${tier.cls} text-white text-[12px] font-bold uppercase tracking-wider shadow`}
         >
           <TierIcon className="h-3 w-3" />
           {tier.label}
@@ -351,7 +351,7 @@ const TokenCard = ({
       <div className="bg-gradient-to-br from-secondary/60 to-secondary/20 rounded-2xl p-4 mb-4 border border-border/40">
         <div className="flex items-end justify-between mb-3">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Locked Balance</p>
+            <p className="text-[12px] uppercase tracking-widest text-muted-foreground">Locked Balance</p>
             <p className="font-display text-3xl font-bold text-gradient-animated leading-none mt-1">{token.balance}</p>
           </div>
           <Zap className="h-5 w-5 text-bitcoin" />
@@ -366,7 +366,7 @@ const TokenCard = ({
 
       <div className="flex items-center justify-between mb-4 px-1">
         <div>
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">Owner</p>
+          <p className="text-[12px] uppercase tracking-widest text-muted-foreground mb-0.5">Owner</p>
           <button
             onClick={() => {
               navigator.clipboard.writeText(token.owner);
@@ -379,9 +379,9 @@ const TokenCard = ({
           </button>
         </div>
         <div className="text-right">
-          <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-0.5">Price</p>
+          <p className="text-[12px] uppercase tracking-widest text-muted-foreground mb-0.5">Price</p>
           <p className="font-display font-bold text-foreground">
-            {LISTING_PRICE} <span className="text-[10px] text-bitcoin">MUSD</span>
+            {LISTING_PRICE} <span className="text-[12px] text-bitcoin">MUSD</span>
           </p>
         </div>
       </div>
@@ -721,7 +721,7 @@ export const VeNFTMarketplace = () => {
           { label: "Acquired", value: ownedCount },
         ].map((s) => (
           <div key={s.label} className="rounded-2xl border border-border bg-card/50 backdrop-blur p-4">
-            <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">{s.label}</p>
+            <p className="text-[12px] uppercase tracking-widest text-muted-foreground mb-1">{s.label}</p>
             <p className="font-display text-xl font-bold text-foreground">{s.value}</p>
           </div>
         ))}
@@ -742,7 +742,7 @@ export const VeNFTMarketplace = () => {
               <Lock className="h-5 w-5 text-white" />
             </div>
             <div>
-              <p className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Create New Position</p>
+              <p className="text-[12px] uppercase tracking-widest text-muted-foreground mb-1">Create New Position</p>
               <h3 className="font-display text-xl font-bold text-foreground">
                 Lock 2 MEZO for {weeks} {weeks === 1 ? "week" : "weeks"}
               </h3>
@@ -767,7 +767,7 @@ export const VeNFTMarketplace = () => {
       <div className="rounded-3xl border border-bitcoin/30 bg-bitcoin/5 p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-bitcoin mb-1">Newly Locked Positions</p>
+            <p className="text-[12px] uppercase tracking-widest text-bitcoin mb-1">Newly Locked Positions</p>
             <h3 className="font-display text-2xl font-bold text-foreground">Your recent veMEZO locks</h3>
           </div>
           <p className="text-xs text-muted-foreground">
@@ -795,13 +795,13 @@ export const VeNFTMarketplace = () => {
                     href={`https://explorer.test.mezo.org/tx/${token.txHash}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="block px-2 text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
+                    className="block px-2 text-[12px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
                     title={token.txHash}
                   >
                     Tx: {token.txHash.slice(0, 10)}…{token.txHash.slice(-8)}
                   </a>
                 ) : (
-                  <p className="px-2 text-[10px] font-mono text-muted-foreground">
+                  <p className="px-2 text-[12px] font-mono text-muted-foreground">
                     Restored from wallet • ID #{token.id}
                   </p>
                 )}
@@ -836,7 +836,7 @@ export const VeNFTMarketplace = () => {
                   href={`https://explorer.test.mezo.org/tx/${mintedTx}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="block px-2 text-[10px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
+                  className="block px-2 text-[12px] font-mono text-muted-foreground hover:text-bitcoin transition truncate"
                   title={mintedTx}
                 >
                   Tx: {mintedTx.slice(0, 10)}…{mintedTx.slice(-8)}

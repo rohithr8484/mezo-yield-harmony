@@ -188,15 +188,15 @@ const DeveloperServices = () => {
               <div className="grid min-w-0 grid-cols-2 border-y border-border/70 lg:grid-cols-1 lg:divide-y lg:divide-border lg:border-y-0 lg:border-l lg:pl-6">
                 <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Network className="h-5 w-5 text-accent" />
-                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Network</p><p className="font-display font-semibold">Chain 31611</p></div>
+                  <div><p className="text-[12px] font-bold uppercase text-muted-foreground">Network</p><p className="font-display font-semibold">Chain 31611</p></div>
                 </div>
                 <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Layers3 className="h-5 w-5 text-primary" />
-                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Access</p><p className="font-display font-semibold">4 free entries</p></div>
+                  <div><p className="text-[12px] font-bold uppercase text-muted-foreground">Access</p><p className="font-display font-semibold">4 free entries</p></div>
                 </div>
                 <div className="col-span-2 flex items-center gap-3 border-t border-border/70 py-3 lg:col-span-1 lg:border-t-0 lg:py-4">
                   <Radio className="h-5 w-5 text-bitcoin" />
-                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Settlement</p><p className="font-display font-semibold">MUSD · MEZO · BTC</p></div>
+                  <div><p className="text-[12px] font-bold uppercase text-muted-foreground">Settlement</p><p className="font-display font-semibold">MUSD · MEZO · BTC</p></div>
                 </div>
               </div>
             </div>
@@ -235,15 +235,15 @@ const DeveloperServices = () => {
               <div className="grid grid-cols-3 border-y border-border/70 text-center">
                 <div className="border-r border-border/70 px-4 py-3">
                   <p className="text-lg font-display font-bold text-foreground">4</p>
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Services</p>
+                  <p className="text-[12px] font-bold uppercase text-muted-foreground">Services</p>
                 </div>
                 <div className="border-r border-border/70 px-4 py-3">
                   <p className="text-lg font-display font-bold text-accent">04</p>
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Free uses</p>
+                  <p className="text-[12px] font-bold uppercase text-muted-foreground">Free uses</p>
                 </div>
                 <div className="px-4 py-3">
                   <p className="text-lg font-display font-bold text-primary">3</p>
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Assets</p>
+                  <p className="text-[12px] font-bold uppercase text-muted-foreground">Assets</p>
                 </div>
               </div>
             </div>
@@ -300,11 +300,11 @@ const DeveloperServices = () => {
                           <service.icon className="h-5 w-5" />
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold uppercase text-muted-foreground">{service.label}</p>
+                          <p className="text-[12px] font-bold uppercase text-muted-foreground">{service.label}</p>
                           <h3 className="mt-1 text-xl font-display font-semibold text-foreground sm:text-2xl">{service.title}</h3>
                         </div>
                       </div>
-                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase text-accent">
+                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[12px] font-bold uppercase text-accent">
                         <CheckCircle2 className="h-3 w-3" /> Live
                       </span>
                     </div>
@@ -361,7 +361,7 @@ const DeveloperServices = () => {
                   </div>
                   <h3 className="text-xl font-display font-semibold text-foreground">{feed.name}</h3>
                   </div>
-                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase text-accent">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-[12px] font-bold uppercase text-accent">
                     <span className="ops-status-dot" /> Live oracle
                   </span>
                 </div>

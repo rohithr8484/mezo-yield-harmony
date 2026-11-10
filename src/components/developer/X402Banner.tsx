@@ -133,16 +133,16 @@ export const X402Banner = ({ uniform = false, receiptKey, onPaymentSuccess }: { 
         <button
           type="button"
           onClick={() => setShowInfo((v) => !v)}
-          className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary hover:underline"
+          className="inline-flex items-center gap-1 text-[12px] font-semibold text-primary hover:underline"
         >
           <Info className="h-3.5 w-3.5" /> What is x402?
         </button>
       </div>
 
-      {busy && status && <p className="text-[11px] text-muted-foreground">{status}</p>}
+      {busy && status && <p className="text-[12px] text-muted-foreground">{status}</p>}
 
       {showInfo && (
-        <div className="rounded-lg border border-border bg-card p-3 text-[11px] leading-relaxed text-muted-foreground animate-in fade-in duration-200">
+        <div className="rounded-lg border border-border bg-card p-3 text-[12px] leading-relaxed text-muted-foreground animate-in fade-in duration-200">
           <span className="font-semibold text-foreground">x402</span> revives HTTP{" "}
           <span className="font-mono text-foreground">402 Payment Required</span>. The app requests a paid
           resource, the server replies 402 with the price, you sign a gasless Permit2 authorization (one
@@ -164,7 +164,7 @@ export const X402Banner = ({ uniform = false, receiptKey, onPaymentSuccess }: { 
           >
             {shownTx.slice(0, 12)}…{shownTx.slice(-8)}
             <ExternalLink className="h-3 w-3" />
-            {!result?.tx && <span className="font-sans text-[10px] font-semibold text-muted-foreground">x402 receipt</span>}
+            {!result?.tx && <span className="font-sans text-[12px] font-semibold text-muted-foreground">x402 receipt</span>}
           </a>
         );
       })()}

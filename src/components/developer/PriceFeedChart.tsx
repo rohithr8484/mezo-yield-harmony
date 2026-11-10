@@ -87,7 +87,7 @@ export const PriceFeedChart = ({ feedName }: { feedName: string }) => {
         />
       </svg>
 
-      <div className="flex justify-between mt-2 text-[10px] text-muted-foreground font-mono">
+      <div className="flex justify-between mt-2 text-[12px] text-muted-foreground font-mono">
         <span>{data[0].time}</span>
         <span>{data[Math.floor(data.length / 2)].time}</span>
         <span>{data[data.length - 1].time}</span>
@@ -95,15 +95,15 @@ export const PriceFeedChart = ({ feedName }: { feedName: string }) => {
 
       <div className="grid grid-cols-3 gap-3 mt-4 text-center">
         <div className="bg-card rounded-lg p-2 border border-border">
-          <p className="text-[10px] text-muted-foreground">24h High</p>
+          <p className="text-[12px] text-muted-foreground">24h High</p>
           <p className="text-sm font-mono font-semibold text-foreground">${max.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
         </div>
         <div className="bg-card rounded-lg p-2 border border-border">
-          <p className="text-[10px] text-muted-foreground">24h Low</p>
+          <p className="text-[12px] text-muted-foreground">24h Low</p>
           <p className="text-sm font-mono font-semibold text-foreground">${min.toLocaleString(undefined, { minimumFractionDigits: 2 })}</p>
         </div>
         <div className="bg-card rounded-lg p-2 border border-border">
-          <p className="text-[10px] text-muted-foreground">24h Volume</p>
+          <p className="text-[12px] text-muted-foreground">24h Volume</p>
           <p className="text-sm font-mono font-semibold text-foreground">${(Math.random() * 50 + 10).toFixed(1)}M</p>
         </div>
       </div>
