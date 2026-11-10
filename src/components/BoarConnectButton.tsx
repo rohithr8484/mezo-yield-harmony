@@ -95,7 +95,7 @@ const BoarConnectButton = () => {
       onClick={account ? disconnect : connect}
       disabled={busy}
       title={account ? `${account} — click to disconnect` : "Connect via Boar"}
-      className="group relative inline-flex items-center justify-center gap-2 w-full h-10 px-4 rounded-lg bg-gradient-to-r from-bitcoin via-accent to-primary text-white text-xs font-semibold overflow-hidden transition-all hover:shadow-[0_0_24px_-4px_hsl(var(--bitcoin)/0.7)] disabled:opacity-60"
+      className="group relative inline-flex items-center justify-center gap-2 w-full h-11 px-4 rounded-lg bg-gradient-to-r from-bitcoin via-accent to-primary text-white text-sm font-semibold overflow-hidden transition-all hover:shadow-[0_0_24px_-4px_hsl(var(--bitcoin)/0.7)] disabled:opacity-60"
     >
       <span className="absolute inset-0 bg-[linear-gradient(110deg,transparent_25%,rgba(255,255,255,0.35)_50%,transparent_75%)] bg-[length:200%_100%] animate-shimmer" />
       <Zap className="h-4 w-4 relative z-10" />

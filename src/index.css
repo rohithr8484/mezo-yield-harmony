@@ -73,6 +73,11 @@
     @apply border-border;
   }
 
+  html {
+    /* Global text scale: every rem-based size (text, spacing) grows slightly. */
+    font-size: 17px;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);

@@ -17,14 +17,14 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-      <div className="container flex items-center justify-between h-16">
+      <div className="container flex items-center justify-between h-20">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2">
-          <div className="h-8 w-8 rounded-lg bg-gradient-hero flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm font-display">M</span>
+        <Link to="/" className="flex items-center gap-2.5">
+          <div className="h-10 w-10 rounded-xl bg-gradient-hero flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-lg font-display">M</span>
           </div>
-          <span className="text-xl font-bold font-display text-foreground">Mezo Auth Dev</span>
-          <span className="px-2 py-0.5 rounded-full bg-bitcoin/10 text-bitcoin text-[10px] font-bold uppercase tracking-wider">
+          <span className="text-2xl font-bold font-display text-foreground">Mezo Auth Dev</span>
+          <span className="px-2.5 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold uppercase tracking-wider">
             Testnet
           </span>
         </Link>
@@ -35,7 +35,7 @@ const Navbar = () => {
             <Link
               key={link.label}
               to={link.href}
-              className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary"
+              className="px-4 py-2 text-base font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary"
             >
               {link.label}
             </Link>
@@ -49,15 +49,15 @@ const Navbar = () => {
               href="https://explorer.test.mezo.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
             >
               Explorer ↗
             </a>
           )}
-          <div className="w-[180px]">
+          <div className="w-[200px]">
             <WalletButton />
           </div>
-          <div className="w-[180px]">
+          <div className="w-[200px]">
             <BoarConnectButton />
           </div>
         </div>
@@ -67,7 +67,7 @@ const Navbar = () => {
           className="lg:hidden text-foreground"
           onClick={() => setMobileOpen(!mobileOpen)}
         >
-          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {mobileOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
         </button>
       </div>
 
@@ -78,7 +78,7 @@ const Navbar = () => {
             <Link
               key={link.label}
               to={link.href}
-              className="block px-3 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors"
+              className="block px-3 py-2.5 text-base font-semibold text-muted-foreground hover:text-foreground hover:bg-secondary rounded-md transition-colors"
               onClick={() => setMobileOpen(false)}
             >
               {link.label}
