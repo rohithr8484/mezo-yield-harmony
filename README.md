@@ -123,7 +123,7 @@ Shape the future of Bitcoin finance through locked MEZO - priced in MEZO/MUSD
 # 🏗 Technical Architecture
 
 <img width="1518" height="1036" alt="image" src="https://github.com/user-attachments/assets/339ef7fd-7a1f-4e36-9124-74f35fad41fa" />
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/caeeaf73-d6b8-462f-81ea-299452cfa846" />
+<img width="1535" height="1024" alt="image" src="https://github.com/user-attachments/assets/a5b85547-61e5-41e6-b290-18509cfa01ce" />
 
 ---
 
