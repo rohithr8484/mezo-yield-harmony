@@ -17,14 +17,14 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-      <div className="container flex items-center justify-between h-20">
+      <div className="container flex items-center justify-between gap-3 h-20 px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5">
           <div className="h-10 w-10 rounded-xl bg-gradient-hero flex items-center justify-center">
             <span className="text-primary-foreground font-bold text-lg font-display">M</span>
           </div>
-          <span className="text-2xl font-bold font-display text-foreground">Mezo Auth Dev</span>
-          <span className="px-2.5 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold uppercase tracking-wider">
+          <span className="text-2xl font-bold font-display text-foreground whitespace-nowrap">Mezo Auth Dev</span>
+          <span className="px-2.5 py-1 rounded-full bg-bitcoin/10 text-bitcoin text-xs font-bold uppercase tracking-wider whitespace-nowrap">
             Testnet
           </span>
         </Link>
@@ -35,7 +35,7 @@ const Navbar = () => {
             <Link
               key={link.label}
               to={link.href}
-              className="px-4 py-2 text-base font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary"
+              className="px-3 py-2 text-base font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary whitespace-nowrap"
             >
               {link.label}
             </Link>
@@ -49,15 +49,15 @@ const Navbar = () => {
               href="https://explorer.test.mezo.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors"
+              className="px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap"
             >
               Explorer ↗
             </a>
           )}
-          <div className="w-[200px]">
+          <div className="shrink-0">
             <WalletButton />
           </div>
-          <div className="w-[200px]">
+          <div className="shrink-0">
             <BoarConnectButton />
           </div>
         </div>
