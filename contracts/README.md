@@ -62,7 +62,6 @@ Provides a self-custody deposit vault for holding user MEZO on-chain.
 ### Features
 
 - Accepts MEZO deposits from users after a direct token approval.
-- Tracks each wallet's recorded deposit and aggregate vault deposits.
 - Lets each wallet withdraw only its own recorded deposit.
 - Verifies the MEZO amount actually received before crediting a deposit.
 - Reports the configured MEZO address, per-wallet claims, total deposits, and the live token balance held by the vault.
