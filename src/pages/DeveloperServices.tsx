@@ -217,7 +217,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* API Marketplace */}
-      <section className="relative scroll-mt-24 py-10 md:py-12" id="api-marketplace">
+      <section className="relative scroll-mt-32 py-10 md:py-12" id="api-marketplace">
         <div className="container">
           <div>
             <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -290,7 +290,7 @@ const DeveloperServices = () => {
                 <article
                   key={service.key}
                   id={`service-${service.key}`}
-                  className="developer-service group flex min-w-0 scroll-mt-24 flex-col overflow-hidden rounded-lg border border-border bg-card p-5 shadow-card md:p-8"
+                  className="developer-service group flex min-w-0 scroll-mt-32 flex-col overflow-hidden rounded-lg border border-border bg-card p-5 shadow-card md:p-8"
                 >
                   <div className="relative flex h-full flex-col">
                     <ServiceImage kind={({ "ai-summarize": "summarization", analytics: "analytics", identity: "aml", run: "contracts" } as Record<string, ServiceImageKind>)[service.key]} alt={`${service.title} illustration`} className="mx-auto mb-7 aspect-[2/1] max-w-xl" />
@@ -332,7 +332,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* Data Feeds / Oracles */}
-      <section className="scroll-mt-24 border-t border-border/70 bg-secondary/25 py-12 md:py-16" id="data-feeds">
+      <section className="scroll-mt-32 border-t border-border/70 bg-secondary/25 py-12 md:py-16" id="data-feeds">
         <div className="container">
           <div className="ops-section-heading mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
@@ -409,7 +409,7 @@ const DeveloperServices = () => {
         </div>
       </section>
 
-      <section className="scroll-mt-24 border-t border-border/70 py-12 md:py-16" id="seller-studio">
+      <section className="scroll-mt-32 border-t border-border/70 py-12 md:py-16" id="seller-studio">
         <div className="container">
           <div className="ops-section-heading mb-8">
             <p className="mb-2 text-xs font-bold uppercase text-primary">03 / Seller studio</p>
@@ -452,7 +452,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* Governance intro */}
-      <section className="scroll-mt-24 border-t border-border/60 py-16" id="governance-analytics">
+      <section className="scroll-mt-32 border-t border-border/60 py-16" id="governance-analytics">
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">
           <ServiceImage kind="governance" alt="Governance proposals and participation illustration" className="mx-auto mb-8 aspect-[2/1] max-w-xl" />

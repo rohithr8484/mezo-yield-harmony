@@ -17,7 +17,8 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-      <div className="container flex items-center justify-between gap-3 h-20 px-4">
+      {/* Row 1: brand + wallet controls */}
+      <div className="container flex items-center justify-between gap-3 h-16 px-4">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5">
           <div className="h-10 w-10 rounded-xl bg-gradient-hero flex items-center justify-center">
@@ -28,19 +29,6 @@ const Navbar = () => {
             Testnet
           </span>
         </Link>
-
-        {/* Desktop Links */}
-        <div className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => (
-            <Link
-              key={link.label}
-              to={link.href}
-              className="px-3 py-2 text-base font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary whitespace-nowrap"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
 
         {/* CTA */}
         <div className="hidden lg:flex items-center gap-3">
@@ -69,6 +57,21 @@ const Navbar = () => {
         >
           {mobileOpen ? <X className="h-7 w-7" /> : <Menu className="h-7 w-7" />}
         </button>
+      </div>
+
+      {/* Row 2: navigation headings (desktop) */}
+      <div className="hidden lg:block border-t border-border/60 bg-secondary/25">
+        <div className="container flex items-center gap-2 px-4 py-1.5">
+          {navLinks.map((link) => (
+            <Link
+              key={link.label}
+              to={link.href}
+              className="px-3 py-1.5 text-base font-semibold text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-secondary whitespace-nowrap"
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* Mobile Menu */}
