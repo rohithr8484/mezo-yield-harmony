@@ -59,6 +59,7 @@ export default {
           DEFAULT: "hsl(var(--bitcoin))",
           foreground: "hsl(var(--bitcoin-foreground))",
         },
+        "hero-tagline": "hsl(var(--hero-tagline))",
         surface: {
           DEFAULT: "hsl(var(--surface))",
           raised: "hsl(var(--surface-raised))",

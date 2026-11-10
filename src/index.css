@@ -45,6 +45,9 @@
     --bitcoin: 38 92% 46%;
     --bitcoin-foreground: 231 54% 7%;
 
+    /* Light hero tagline: soft indigo-gray, still legible on the pale gold coin. */
+    --hero-tagline: 240 28% 47%;
+
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
     --gradient-banner: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--magenta)), hsl(var(--accent)));
     --gradient-card: linear-gradient(135deg, hsl(var(--card)), hsl(var(--secondary)));
@@ -108,6 +111,11 @@
 
   .bg-gradient-hero {
     background-image: var(--gradient-hero);
+  }
+
+  .hero-tagline-halo {
+    /* Pale halo keeps the light tagline legible over the coin's textured rim. */
+    text-shadow: 0 0 12px hsl(var(--background) / 0.95), 0 1px 3px hsl(var(--background) / 0.9);
   }
 
   .glass-card {
