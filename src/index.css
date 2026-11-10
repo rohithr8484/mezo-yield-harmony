@@ -46,7 +46,7 @@
     --bitcoin-foreground: 231 54% 7%;
 
     /* Light hero tagline: soft indigo-gray, still legible on the pale gold coin. */
-    --hero-tagline: 238 24% 56%;
+    --hero-tagline: 240 28% 47%;
 
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
     --gradient-banner: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--magenta)), hsl(var(--accent)));
