@@ -12,17 +12,17 @@ const EXPLORER = "https://explorer.test.mezo.org";
 
 const Metric = ({ label, value, detail }: { label: string; value: ReactNode; detail?: string }) => (
   <div className="min-w-0 border-l-2 border-border px-3 py-1">
-    <dt className="text-[11px] font-medium text-muted-foreground">{label}</dt>
+    <dt className="text-[12px] font-medium text-muted-foreground">{label}</dt>
     <dd className="mt-1 break-words font-mono text-sm font-semibold text-foreground">{value}</dd>
-    {detail && <p className="mt-1 text-[11px] leading-relaxed text-muted-foreground">{detail}</p>}
+    {detail && <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">{detail}</p>}
   </div>
 );
 const Metrics = ({ children }: { children: ReactNode }) => <dl className="grid grid-cols-2 gap-x-4 gap-y-5 lg:grid-cols-4">{children}</dl>;
 const Section = ({ icon: Icon, title, index, children, badge }: { icon: typeof Layers; title: string; index: string; children: ReactNode; badge?: string }) => (
   <section aria-label={title} className="min-w-0 border-t border-border py-6">
     <div className="mb-5 flex flex-wrap items-center justify-between gap-2">
-      <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground"><span className="mr-1 font-mono text-[10px] text-muted-foreground">{index}</span><Icon className="h-4 w-4 text-accent" />{title}</h4>
-      {badge && <span className="text-[10px] font-medium uppercase text-muted-foreground">{badge}</span>}
+      <h4 className="flex items-center gap-2 text-sm font-semibold text-foreground"><span className="mr-1 font-mono text-[12px] text-muted-foreground">{index}</span><Icon className="h-4 w-4 text-accent" />{title}</h4>
+      {badge && <span className="text-[12px] font-medium uppercase text-muted-foreground">{badge}</span>}
     </div>
     {children}
   </section>
@@ -127,7 +127,7 @@ export const OnchainAnalytics = () => {
                 {data.status === "Success" ? <CheckCircle className="h-4 w-4 text-accent" /> : data.status === "Failed" ? <XCircle className="h-4 w-4 text-destructive" /> : <Clock className="h-4 w-4 text-muted-foreground" />}
                 <span className={data.status === "Failed" ? "text-destructive" : "text-foreground"}>{data.status}</span><span className="text-xs font-normal text-muted-foreground">· Mezo Testnet</span>
               </div>
-              <p className="mt-1 break-all font-mono text-[11px] text-muted-foreground">{result.tx.hash}</p>
+              <p className="mt-1 break-all font-mono text-[12px] text-muted-foreground">{result.tx.hash}</p>
             </div>
             <div className="flex items-center gap-2">
               <Tooltip><TooltipTrigger asChild><Button type="button" size="icon" variant="ghost" onClick={copyHash} aria-label={copied ? "Hash copied" : "Copy transaction hash"}>{copied ? <Check /> : <Copy />}</Button></TooltipTrigger><TooltipContent>{copied ? "Copied" : "Copy hash"}</TooltipContent></Tooltip>
@@ -200,7 +200,7 @@ export const OnchainAnalytics = () => {
               <Metric label="Recipient type" value={data.interaction === "Contract creation" ? "New contract" : (result.toInfo?.is_contract ?? result.tx.to?.is_contract) ? "Contract" : "Wallet / unknown"} />
               <Metric label="Additional endpoints" value={Math.max(0, data.participants - new Set([result.tx.from?.hash, result.tx.to?.hash].filter(Boolean).map(a => a?.toLowerCase())).size)} detail="Beyond transaction sender and recipient" />
             </Metrics>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2">{[{ label: "Sender", address: result.tx.from, info: result.fromInfo }, { label: "Recipient", address: result.tx.to, info: result.toInfo }].map(p => <div key={p.label} className="min-w-0 border-l border-border pl-3"><p className="mb-1 text-[11px] text-muted-foreground">{p.label}</p><AddressLink address={p.address?.hash} />{p.address?.name && <p className="mt-1 break-words text-xs text-foreground">{p.address.name}</p>}<p className="mt-1 text-xs text-muted-foreground">Current balance {native(p.info?.coin_balance)}</p></div>)}</div>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">{[{ label: "Sender", address: result.tx.from, info: result.fromInfo }, { label: "Recipient", address: result.tx.to, info: result.toInfo }].map(p => <div key={p.label} className="min-w-0 border-l border-border pl-3"><p className="mb-1 text-[12px] text-muted-foreground">{p.label}</p><AddressLink address={p.address?.hash} />{p.address?.name && <p className="mt-1 break-words text-xs text-foreground">{p.address.name}</p>}<p className="mt-1 text-xs text-muted-foreground">Current balance {native(p.info?.coin_balance)}</p></div>)}</div>
           </Section>
           <Section index="08" icon={Activity} title="Token flow" badge={result.transferComplete ? "Loaded transfer records" : "Partial transfer records"}>
             <Metrics>
@@ -209,7 +209,7 @@ export const OnchainAnalytics = () => {
               <Metric label="Sender outgoing events" value={result.transfers.filter(t => result.tx.from?.hash && t.from?.hash?.toLowerCase() === result.tx.from.hash.toLowerCase()).length} />
               <Metric label="Sender incoming events" value={result.transfers.filter(t => result.tx.from?.hash && t.to?.hash?.toLowerCase() === result.tx.from.hash.toLowerCase()).length} />
             </Metrics>
-            {data.assets.length > 0 && <div className="mt-5 divide-y divide-border border-y border-border">{data.assets.map(asset => <div key={asset.key} className="grid min-w-0 gap-2 py-3 sm:grid-cols-3"><div><p className="text-xs font-semibold text-foreground">{asset.symbol}</p><p className="break-all font-mono text-[10px] text-muted-foreground">{asset.key.startsWith("unknown-") ? "Token address unavailable" : shortAddress(asset.key)}</p></div><div className="text-xs"><p className="text-muted-foreground">Gross event volume</p><p className="mt-1 font-mono text-foreground">{asset.known ? formatNumber(asset.volume) : "Unavailable"}</p></div><div className="text-xs"><p className="text-muted-foreground">Sender out / in</p><p className="mt-1 font-mono text-foreground">{asset.known ? `${formatNumber(asset.outgoing)} / ${formatNumber(asset.incoming)}` : "Unavailable"}</p></div></div>)}</div>}
+            {data.assets.length > 0 && <div className="mt-5 divide-y divide-border border-y border-border">{data.assets.map(asset => <div key={asset.key} className="grid min-w-0 gap-2 py-3 sm:grid-cols-3"><div><p className="text-xs font-semibold text-foreground">{asset.symbol}</p><p className="break-all font-mono text-[12px] text-muted-foreground">{asset.key.startsWith("unknown-") ? "Token address unavailable" : shortAddress(asset.key)}</p></div><div className="text-xs"><p className="text-muted-foreground">Gross event volume</p><p className="mt-1 font-mono text-foreground">{asset.known ? formatNumber(asset.volume) : "Unavailable"}</p></div><div className="text-xs"><p className="text-muted-foreground">Sender out / in</p><p className="mt-1 font-mono text-foreground">{asset.known ? `${formatNumber(asset.outgoing)} / ${formatNumber(asset.incoming)}` : "Unavailable"}</p></div></div>)}</div>}
             <div className="mt-4 max-h-72 space-y-2 overflow-y-auto">{result.transfers.map((t, i) => <div key={i} className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-border/50 py-2 text-xs"><span className="font-mono font-semibold text-foreground">{finiteNumber(t.total?.decimals ?? t.token?.decimals) === null ? "—" : formatUnits(t.total?.value, Number(t.total?.decimals ?? t.token?.decimals))} {t.token?.symbol || "Unknown"}</span><AddressLink address={t.from?.hash} /><ArrowRight className="h-3 w-3 text-muted-foreground" /><AddressLink address={t.to?.hash} /><span className="text-muted-foreground">{t.type || "Transfer"}</span></div>)}</div>
             <Note>{result.transfers.length === 0 ? result.transferComplete ? "No token transfer events recorded. " : "Token transfer records unavailable. " : ""}Volumes stay separate per asset and sum transfer events, not net economic value; repeated movements can count more than once.{data.status !== "Success" ? " Execution is not confirmed successful; these records do not establish settled movement." : ""}</Note>
           </Section>

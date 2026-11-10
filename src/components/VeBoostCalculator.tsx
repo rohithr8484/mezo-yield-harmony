@@ -133,7 +133,7 @@ const VeBoostCalculator = () => {
                     placeholder="0"
                   />
                   <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold whitespace-nowrap">
-                    <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-bold">₿</span>
+                    <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[12px] font-bold">₿</span>
                     veBTC
                   </span>
                 </div>
@@ -162,7 +162,7 @@ const VeBoostCalculator = () => {
                     placeholder="0"
                   />
                   <span className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm font-semibold whitespace-nowrap">
-                    <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-bold">M</span>
+                    <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[12px] font-bold">M</span>
                     veMEZO
                   </span>
                 </div>
@@ -181,7 +181,7 @@ const VeBoostCalculator = () => {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="flex items-center gap-2 text-sm text-foreground font-medium">
-                          <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-bold">₿</span>
+                          <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[12px] font-bold">₿</span>
                           veBTC
                         </span>
                         <span className="text-sm font-semibold text-foreground">{totalVeBTC.toLocaleString()}</span>
@@ -195,7 +195,7 @@ const VeBoostCalculator = () => {
                           onValueChange={(v) => setTotalVeBTC(v[0])}
                         />
                         <div className="flex justify-end mt-1">
-                          <span className="text-[10px] text-muted-foreground">MAX {formatNumber(maxVeBTC)}</span>
+                          <span className="text-[12px] text-muted-foreground">MAX {formatNumber(maxVeBTC)}</span>
                         </div>
                       </div>
                     </div>
@@ -203,7 +203,7 @@ const VeBoostCalculator = () => {
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="flex items-center gap-2 text-sm text-foreground font-medium">
-                          <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[10px] font-bold">M</span>
+                          <span className="h-5 w-5 rounded-full bg-primary flex items-center justify-center text-primary-foreground text-[12px] font-bold">M</span>
                           veMEZO
                         </span>
                         <span className="text-sm font-semibold text-foreground">{totalVeMEZO.toLocaleString()}</span>
@@ -217,7 +217,7 @@ const VeBoostCalculator = () => {
                           onValueChange={(v) => setTotalVeMEZO(v[0])}
                         />
                         <div className="flex justify-end mt-1">
-                          <span className="text-[10px] text-muted-foreground">MAX {formatNumber(maxVeMEZO)}</span>
+                          <span className="text-[12px] text-muted-foreground">MAX {formatNumber(maxVeMEZO)}</span>
                         </div>
                       </div>
                     </div>
@@ -301,13 +301,13 @@ const VeBoostCalculator = () => {
                       <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                         <Lock className="h-3.5 w-3.5" /> Locked
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">Auto-calculated</p>
+                      <p className="text-[12px] text-muted-foreground mt-0.5">Auto-calculated</p>
                     </div>
                     <div className="flex-1 rounded-lg bg-secondary p-3">
                       <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
                         <Unlock className="h-3.5 w-3.5" /> Unlocked
                       </div>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">User Input</p>
+                      <p className="text-[12px] text-muted-foreground mt-0.5">User Input</p>
                     </div>
                   </div>
                 </div>

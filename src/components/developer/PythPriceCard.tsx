@@ -50,7 +50,7 @@ export function PythPriceCard({ feedName, feedId }: { feedName: string; feedId: 
           </p>
         </>
       )}
-      <p className="mt-2 break-all font-mono text-[10px] text-muted-foreground">Contract {PYTH_CONTRACT} · Mezo Testnet</p>
+      <p className="mt-2 break-all font-mono text-[12px] text-muted-foreground">Contract {PYTH_CONTRACT} · Mezo Testnet</p>
     </div>
   );
 }

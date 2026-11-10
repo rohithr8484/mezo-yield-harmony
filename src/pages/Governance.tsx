@@ -183,10 +183,10 @@ const Governance = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-2">
                       <img src={p.authorAvatar} alt="" className="h-5 w-5 rounded-full ring-1 ring-border" />
-                      <span className={`inline-block rounded-md px-2.5 py-0.5 text-[11px] font-semibold uppercase ${statusStyles[p.status]}`}>
+                      <span className={`inline-block rounded-md px-2.5 py-0.5 text-[12px] font-semibold uppercase ${statusStyles[p.status]}`}>
                         {p.status}
                       </span>
-                      <span className="text-[11px] text-muted-foreground font-mono">{p.id}</span>
+                      <span className="text-[12px] text-muted-foreground font-mono">{p.id}</span>
                     </div>
                     <h3 className="mb-1 text-lg font-display font-bold leading-snug text-foreground transition-colors group-hover:text-primary">{p.title}</h3>
                     <p className="text-xs text-muted-foreground mb-2">by {p.author}</p>

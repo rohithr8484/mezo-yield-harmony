@@ -405,7 +405,7 @@ const ProposalDetail = () => {
                               {getPayButtonLabel("MEZO")}
                             </button>
                           </div>
-                          <div className="text-[10px] text-muted-foreground text-center space-y-0.5">
+                          <div className="text-[12px] text-muted-foreground text-center space-y-0.5">
                             <div>MUSD contract: {MUSD_TOKEN}</div>
                             <div>MEZO contract: {MEZO_TOKEN}</div>
                             <div>Required network: Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</div>
@@ -424,7 +424,7 @@ const ProposalDetail = () => {
               <div className="rounded-lg bg-card border border-border shadow-card p-6 space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg font-display font-bold text-foreground">{isActive ? "Live results" : "Final results"}</h3>
-                  <span className="flex items-center gap-1.5 text-[10px] text-emerald-600 font-semibold uppercase tracking-wide">
+                  <span className="flex items-center gap-1.5 text-[12px] text-emerald-600 font-semibold uppercase tracking-wide">
                     <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                     {isActive ? "Realtime" : "Finished"}
                   </span>
@@ -493,7 +493,7 @@ const ProposalDetail = () => {
                 {/* Contract addresses */}
                 <div className="border-t border-border pt-3 mt-3">
                   <p className="text-xs text-muted-foreground mb-1">Voting fee contracts:</p>
-                  <div className="text-[10px] text-muted-foreground space-y-0.5">
+                  <div className="text-[12px] text-muted-foreground space-y-0.5">
                     <div>MEZO: {MEZO_TOKEN.slice(0, 10)}...{MEZO_TOKEN.slice(-6)}</div>
                     <div>MUSD: {MUSD_TOKEN.slice(0, 10)}...{MUSD_TOKEN.slice(-6)}</div>
                   </div>

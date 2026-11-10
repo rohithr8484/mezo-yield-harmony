@@ -56,3 +56,5 @@
 - [x] Check the README pay-per-use address descriptions against the actual payment paths without editing the README.
 - [ ] Add the requested 0.005 MUSD platform transfer and 0.0005 MUSD reward transfer — blocked because the external x402 service does not execute them and the browser cannot authorize funds from the specified source address.
 - [x] Refine only the UI across Developer Services, Governance, and proposal details without changing behavior.
+
+- [x] Enlarge navbar headings and raise global text size (root 17px, tiny labels 12px); navbar split into two rows so no label wraps; 73 tests pass, build OK, no horizontal overflow at 1180/1280.

@@ -364,13 +364,13 @@ export function ServiceSellerStudio() {
                 <div className="p-5">
                 <div className="mb-4 flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-[10px] font-bold uppercase text-accent">{service.category}</p>
+                    <p className="text-[12px] font-bold uppercase text-accent">{service.category}</p>
                     <h4 className="mt-1 font-display text-lg font-semibold text-foreground">{service.title}</h4>
                   </div>
                   {deployed[service.listingId] ? (
-                    <span className="shrink-0 rounded-md border border-accent/30 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase text-accent">Live</span>
+                    <span className="shrink-0 rounded-md border border-accent/30 bg-accent/10 px-2 py-1 text-[12px] font-bold uppercase text-accent">Live</span>
                   ) : (
-                    <span className="shrink-0 rounded-md border border-border bg-secondary px-2 py-1 text-[10px] font-bold uppercase text-muted-foreground">Not deployed</span>
+                    <span className="shrink-0 rounded-md border border-border bg-secondary px-2 py-1 text-[12px] font-bold uppercase text-muted-foreground">Not deployed</span>
                   )}
                 </div>
                 <p className="text-sm leading-relaxed text-muted-foreground">{service.description}</p>

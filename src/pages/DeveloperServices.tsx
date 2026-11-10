@@ -188,15 +188,15 @@ const DeveloperServices = () => {
               <div className="grid min-w-0 grid-cols-2 border-y border-border/70 lg:grid-cols-1 lg:divide-y lg:divide-border lg:border-y-0 lg:border-l lg:pl-6">
                 <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Network className="h-5 w-5 text-accent" />
-                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Network</p><p className="font-display font-semibold">Chain 31611</p></div>
+                  <div><p className="text-[12px] font-bold uppercase text-muted-foreground">Network</p><p className="font-display font-semibold">Chain 31611</p></div>
                 </div>
                 <div className="flex items-center gap-3 py-3 lg:py-4">
                   <Layers3 className="h-5 w-5 text-primary" />
-                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Access</p><p className="font-display font-semibold">4 free entries</p></div>
+                  <div><p className="text-[12px] font-bold uppercase text-muted-foreground">Access</p><p className="font-display font-semibold">4 free entries</p></div>
                 </div>
                 <div className="col-span-2 flex items-center gap-3 border-t border-border/70 py-3 lg:col-span-1 lg:border-t-0 lg:py-4">
                   <Radio className="h-5 w-5 text-bitcoin" />
-                  <div><p className="text-[10px] font-bold uppercase text-muted-foreground">Settlement</p><p className="font-display font-semibold">MUSD · MEZO · BTC</p></div>
+                  <div><p className="text-[12px] font-bold uppercase text-muted-foreground">Settlement</p><p className="font-display font-semibold">MUSD · MEZO · BTC</p></div>
                 </div>
               </div>
             </div>
@@ -217,7 +217,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* API Marketplace */}
-      <section className="relative scroll-mt-24 py-10 md:py-12" id="api-marketplace">
+      <section className="relative scroll-mt-32 py-10 md:py-12" id="api-marketplace">
         <div className="container">
           <div>
             <div className="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
@@ -235,15 +235,15 @@ const DeveloperServices = () => {
               <div className="grid grid-cols-3 border-y border-border/70 text-center">
                 <div className="border-r border-border/70 px-4 py-3">
                   <p className="text-lg font-display font-bold text-foreground">4</p>
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Services</p>
+                  <p className="text-[12px] font-bold uppercase text-muted-foreground">Services</p>
                 </div>
                 <div className="border-r border-border/70 px-4 py-3">
                   <p className="text-lg font-display font-bold text-accent">04</p>
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Free uses</p>
+                  <p className="text-[12px] font-bold uppercase text-muted-foreground">Free uses</p>
                 </div>
                 <div className="px-4 py-3">
                   <p className="text-lg font-display font-bold text-primary">3</p>
-                  <p className="text-[10px] font-bold uppercase text-muted-foreground">Assets</p>
+                  <p className="text-[12px] font-bold uppercase text-muted-foreground">Assets</p>
                 </div>
               </div>
             </div>
@@ -290,7 +290,7 @@ const DeveloperServices = () => {
                 <article
                   key={service.key}
                   id={`service-${service.key}`}
-                  className="developer-service group flex min-w-0 scroll-mt-24 flex-col overflow-hidden rounded-lg border border-border bg-card p-5 shadow-card md:p-8"
+                  className="developer-service group flex min-w-0 scroll-mt-32 flex-col overflow-hidden rounded-lg border border-border bg-card p-5 shadow-card md:p-8"
                 >
                   <div className="relative flex h-full flex-col">
                     <ServiceImage kind={({ "ai-summarize": "summarization", analytics: "analytics", identity: "aml", run: "contracts" } as Record<string, ServiceImageKind>)[service.key]} alt={`${service.title} illustration`} className="mx-auto mb-7 aspect-[2/1] max-w-xl" />
@@ -300,11 +300,11 @@ const DeveloperServices = () => {
                           <service.icon className="h-5 w-5" />
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold uppercase text-muted-foreground">{service.label}</p>
+                          <p className="text-[12px] font-bold uppercase text-muted-foreground">{service.label}</p>
                           <h3 className="mt-1 text-xl font-display font-semibold text-foreground sm:text-2xl">{service.title}</h3>
                         </div>
                       </div>
-                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[10px] font-bold uppercase text-accent">
+                      <span className="inline-flex shrink-0 items-center gap-1.5 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-[12px] font-bold uppercase text-accent">
                         <CheckCircle2 className="h-3 w-3" /> Live
                       </span>
                     </div>
@@ -332,7 +332,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* Data Feeds / Oracles */}
-      <section className="scroll-mt-24 border-t border-border/70 bg-secondary/25 py-12 md:py-16" id="data-feeds">
+      <section className="scroll-mt-32 border-t border-border/70 bg-secondary/25 py-12 md:py-16" id="data-feeds">
         <div className="container">
           <div className="ops-section-heading mb-8 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
@@ -361,7 +361,7 @@ const DeveloperServices = () => {
                   </div>
                   <h3 className="text-xl font-display font-semibold text-foreground">{feed.name}</h3>
                   </div>
-                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-[10px] font-bold uppercase text-accent">
+                  <span className="inline-flex w-fit items-center gap-2 rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-[12px] font-bold uppercase text-accent">
                     <span className="ops-status-dot" /> Live oracle
                   </span>
                 </div>
@@ -409,7 +409,7 @@ const DeveloperServices = () => {
         </div>
       </section>
 
-      <section className="scroll-mt-24 border-t border-border/70 py-12 md:py-16" id="seller-studio">
+      <section className="scroll-mt-32 border-t border-border/70 py-12 md:py-16" id="seller-studio">
         <div className="container">
           <div className="ops-section-heading mb-8">
             <p className="mb-2 text-xs font-bold uppercase text-primary">03 / Seller studio</p>
@@ -452,7 +452,7 @@ const DeveloperServices = () => {
       </section>
 
       {/* Governance intro */}
-      <section className="scroll-mt-24 border-t border-border/60 py-16" id="governance-analytics">
+      <section className="scroll-mt-32 border-t border-border/60 py-16" id="governance-analytics">
         <div className="container">
           <div className="mx-auto max-w-3xl text-center">
           <ServiceImage kind="governance" alt="Governance proposals and participation illustration" className="mx-auto mb-8 aspect-[2/1] max-w-xl" />

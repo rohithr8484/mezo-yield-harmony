@@ -73,6 +73,11 @@
     @apply border-border;
   }
 
+  html {
+    /* Global text scale: every rem-based size (text, spacing) grows slightly. */
+    font-size: 17px;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
@@ -396,18 +401,18 @@ body {
 }
 
 /* Eyebrows and headings */
-.ui-eyebrow { @apply inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-accent; }
+.ui-eyebrow { @apply inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-accent; }
 .ui-display { @apply font-display font-bold tracking-tight text-foreground; }
 
 /* Charge + metadata strips */
 .ui-charge { @apply flex flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-lg border border-accent/25 bg-accent/10 px-4 py-2.5 text-center text-xs font-semibold text-accent; }
 .ui-meta { @apply grid gap-2 rounded-lg border border-hairline bg-surface px-4 py-3; }
 .ui-meta-row { @apply flex flex-wrap items-baseline gap-x-3 gap-y-1; }
-.ui-meta-label { @apply text-[10px] font-bold uppercase tracking-wider text-muted-foreground; }
-.ui-meta-value { @apply font-mono text-[11px] select-all text-foreground/80; }
+.ui-meta-label { @apply text-[12px] font-bold uppercase tracking-wider text-muted-foreground; }
+.ui-meta-value { @apply font-mono text-[12px] select-all text-foreground/80; }
 
 /* Status pills */
-.ui-pill { @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider; }
+.ui-pill { @apply inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-[12px] font-bold uppercase tracking-wider; }
 .ui-pill-live { @apply border-success/30 bg-success/10 text-success; }
 .ui-pill-active { @apply border-accent/35 bg-accent/10 text-accent; }
 .ui-pill-finished { @apply border-hairline bg-muted/60 text-muted-foreground; }
@@ -427,7 +432,7 @@ body {
 
 /* Stat rails */
 .ui-stat { @apply flex min-w-0 items-center gap-3 px-4 py-3; }
-.ui-stat-label { @apply text-[10px] font-bold uppercase tracking-wider text-muted-foreground; }
+.ui-stat-label { @apply text-[12px] font-bold uppercase tracking-wider text-muted-foreground; }
 .ui-stat-value { @apply truncate font-display text-sm font-semibold text-foreground; }
 
 /* Navigation links */

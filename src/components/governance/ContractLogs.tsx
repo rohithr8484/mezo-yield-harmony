@@ -104,7 +104,7 @@ export const ContractLogs = () => {
       <div className="grid gap-4 p-5 md:grid-cols-2">
         <div className="space-y-3">
           <p className="text-xs font-bold uppercase text-accent">GovernanceDataHelper</p>
-          <p className="break-all font-mono text-[11px] text-muted-foreground">{GOV_HELPER}</p>
+          <p className="break-all font-mono text-[12px] text-muted-foreground">{GOV_HELPER}</p>
           <div className="flex flex-wrap gap-2">
             <input aria-label="On-chain proposal IDs" className={`${input} w-28`} value={idList} onChange={(e) => setIdList(e.target.value)} placeholder="ids 1,2" />
             <B fn="getProposalsBatch" onClick={() => run("getProposalsBatch", () => client.readContract({ address: GOV_HELPER, abi: GOV_ABI, functionName: "getProposalsBatch", args: [ids(idList)] }))} />
@@ -122,7 +122,7 @@ export const ContractLogs = () => {
         </div>
         <div className="space-y-3">
           <p className="text-xs font-bold uppercase text-accent">VotingDataHelper</p>
-          <p className="break-all font-mono text-[11px] text-muted-foreground">{VOTE_HELPER}</p>
+          <p className="break-all font-mono text-[12px] text-muted-foreground">{VOTE_HELPER}</p>
           <div className="flex flex-wrap gap-2">
             <input className={`${input} w-14`} value={pid} onChange={(e) => setPid(e.target.value)} placeholder="id" />
             <B fn="getTurnout" onClick={() => run("getTurnout", () => client.readContract({ address: VOTE_HELPER, abi: VOTE_ABI, functionName: "getTurnout", args: [BigInt(pid || 0)] }))} />
@@ -140,7 +140,7 @@ export const ContractLogs = () => {
         ) : log.map((l, i) => (
           <div key={i} className="mb-3 last:mb-0">
             <p className={`font-mono text-xs font-semibold ${l.status === "success" ? "text-primary" : l.status === "empty" ? "text-muted-foreground" : "text-destructive"}`}>[{l.ts}] {l.fn}() {l.status === "success" ? "✓" : l.status === "empty" ? "— No results" : "✕"}</p>
-            <pre className="mt-1 whitespace-pre-wrap break-all font-mono text-[11px] text-foreground">{l.out}</pre>
+            <pre className="mt-1 whitespace-pre-wrap break-all font-mono text-[12px] text-foreground">{l.out}</pre>
           </div>
         ))}
       </div>

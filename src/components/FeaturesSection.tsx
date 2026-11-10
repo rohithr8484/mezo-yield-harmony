@@ -53,7 +53,7 @@ const FeaturesSection = () => {
             >
               <div className={`absolute -inset-px rounded-2xl bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-20 transition-opacity duration-500 blur-xl`} />
               <div className={`absolute top-0 left-6 right-6 h-[2px] rounded-full bg-gradient-to-r ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-              <div className={`relative inline-block px-2.5 py-1 rounded-full bg-gradient-to-r ${feature.gradient} bg-clip-text text-transparent text-[10px] font-bold uppercase tracking-[0.18em] mb-4`}>
+              <div className={`relative inline-block px-2.5 py-1 rounded-full bg-gradient-to-r ${feature.gradient} bg-clip-text text-transparent text-[12px] font-bold uppercase tracking-[0.18em] mb-4`}>
                 Bitcoin native
               </div>
               <h3 className="relative text-lg font-display font-bold text-foreground mb-2">

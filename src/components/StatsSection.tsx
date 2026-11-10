@@ -18,7 +18,7 @@ const StatsSection = () => {
 
       <div className="container relative">
         <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border/60 bg-card/60 backdrop-blur text-[11px] font-medium tracking-[0.18em] uppercase text-muted-foreground mb-6">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-border/60 bg-card/60 backdrop-blur text-[12px] font-medium tracking-[0.18em] uppercase text-muted-foreground mb-6">
             <span className="h-1.5 w-1.5 rounded-full bg-bitcoin animate-pulse" />
             Mezo Testnet · Live
           </span>
@@ -47,7 +47,7 @@ const StatsSection = () => {
           </div>
 
           {/* Subtle divider mark */}
-          <div className="mt-14 flex items-center gap-3 text-[10px] font-mono tracking-[0.3em] uppercase text-muted-foreground/60">
+          <div className="mt-14 flex items-center gap-3 text-[12px] font-mono tracking-[0.3em] uppercase text-muted-foreground/60">
             <span className="h-px w-10 bg-border" />
             Chain ID 31611
             <span className="h-px w-10 bg-border" />
