@@ -31,7 +31,7 @@ const HeroSection = () => {
           <span className="text-gradient-animated italic">.</span>
         </h1>
 
-        <p className="mt-6 text-lg sm:text-xl text-muted-foreground max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
+        <p className="mt-6 text-lg sm:text-xl text-hero-tagline font-light max-w-lg mx-auto animate-fade-in-up" style={{ animationDelay: "0.15s" }}>
           Bring everyday finance to your Bitcoin.
         </p>
 
