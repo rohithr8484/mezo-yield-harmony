@@ -113,6 +113,11 @@
     background-image: var(--gradient-hero);
   }
 
+  .hero-tagline-halo {
+    /* Pale halo keeps the light tagline legible over the coin's textured rim. */
+    text-shadow: 0 0 12px hsl(var(--background) / 0.95), 0 1px 3px hsl(var(--background) / 0.9);
+  }
+
   .glass-card {
     @apply backdrop-blur-xl bg-card/70 border border-border/60;
   }
