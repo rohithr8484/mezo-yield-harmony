@@ -50,3 +50,22 @@ Provides on-chain anchoring of governance proposals and voting results.
 - Emits events for anchoring, vote casting, and finalization.
 
 **Technology:** Solidity ^0.8.24, plain Solidity mappings and events with no external dependencies.
+
+---
+
+## MEZO Treasury Contract
+
+Provides a self-custody deposit vault for holding user MEZO on-chain.
+
+**File:** `MEZO-Treasury.sol`
+
+### Features
+
+- Accepts MEZO deposits from users after a direct token approval.
+- Tracks each wallet's recorded deposit and aggregate vault deposits.
+- Lets each wallet withdraw only its own recorded deposit.
+- Verifies the MEZO amount actually received before crediting a deposit.
+- Reports the configured MEZO address, per-wallet claims, total deposits, and the live token balance held by the vault.
+- Emits events for deposits and withdrawals.
+
+**Technology:** Solidity ^0.8.24, OpenZeppelin IERC20, SafeERC20, and ReentrancyGuard.
