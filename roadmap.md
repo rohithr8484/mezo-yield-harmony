@@ -58,3 +58,5 @@
 - [x] Refine only the UI across Developer Services, Governance, and proposal details without changing behavior.
 
 - [x] Enlarge navbar headings and raise global text size (root 17px, tiny labels 12px); navbar split into two rows so no label wraps; 73 tests pass, build OK, no horizontal overflow at 1180/1280.
+
+- [x] Lighten the homepage hero tagline to a soft indigo (new --hero-tagline token, light weight); measured 4.08:1 contrast on the coin background, 73 tests pass, build OK.
