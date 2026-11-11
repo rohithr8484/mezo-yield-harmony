@@ -13,8 +13,6 @@ import type { Eip1193Provider } from "ethers";
 import { X402Banner } from "./X402Banner";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
-const MUSD_TOKEN = "0x94FF830F078eb9c6e77bADe29FB46B1a249A5fd3" as `0x${string}`;
-const MEZO_TOKEN = "0x7B7c000000000000000000000000000000000001" as `0x${string}`;
 const FREE_ENTRY_LIMIT = 4;
 
 interface PaymentGateProps {
@@ -178,14 +176,6 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
       )}
       {!isPaid && !freeUnlocked && (
         <div className="ui-meta mt-3">
-          <div className="ui-meta-row">
-            <span className="ui-meta-label">MUSD</span>
-            <span className="ui-meta-value">{MUSD_TOKEN}</span>
-          </div>
-          <div className="ui-meta-row">
-            <span className="ui-meta-label">MEZO</span>
-            <span className="ui-meta-value">{MEZO_TOKEN}</span>
-          </div>
           <div className="ui-meta-row">
             <span className="ui-meta-label">Network</span>
             <span className="ui-meta-value">Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</span>
