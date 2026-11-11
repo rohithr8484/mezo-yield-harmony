@@ -406,8 +406,6 @@ const ProposalDetail = () => {
                             </button>
                           </div>
                           <div className="text-[12px] text-muted-foreground text-center space-y-0.5">
-                            <div>MUSD contract: {MUSD_TOKEN}</div>
-                            <div>MEZO contract: {MEZO_TOKEN}</div>
                             <div>Required network: Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</div>
                           </div>
                         </div>
