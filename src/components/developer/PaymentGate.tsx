@@ -179,14 +179,6 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
       {!isPaid && !freeUnlocked && (
         <div className="ui-meta mt-3">
           <div className="ui-meta-row">
-            <span className="ui-meta-label">MUSD</span>
-            <span className="ui-meta-value">{MUSD_TOKEN}</span>
-          </div>
-          <div className="ui-meta-row">
-            <span className="ui-meta-label">MEZO</span>
-            <span className="ui-meta-value">{MEZO_TOKEN}</span>
-          </div>
-          <div className="ui-meta-row">
             <span className="ui-meta-label">Network</span>
             <span className="ui-meta-value">Mezo Testnet (Chain ID: {MEZO_TESTNET_CHAIN_ID})</span>
           </div>
