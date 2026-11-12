@@ -365,6 +365,10 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 | **Client** | Signs Permit2 approvals | Testnet MUSD + BTC |
 ---
 
+# ✨ Wave 2 Features Of Mezo Auth Dev
+
+## Testing : Execution of tests as shown in Test Cases Summary (60 tests)
+
 ## **Test Cases Summary**
 
 ## Total Test Cases: 60
