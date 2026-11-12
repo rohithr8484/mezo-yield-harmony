@@ -367,7 +367,7 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 
 # ✨ Wave 2 Features Of Mezo Auth Dev
 
-## Changes to MarketplaceAdmin Contract
+## Changes to MarketplaceAdmin Contract - [`0x1D462522A9f8fbea6c10122dce01E09432A64dBF`](https://explorer.test.mezo.org/address/0x1D462522A9f8fbea6c10122dce01E09432A64dBF) 
 
 Added Role-based access control in VEMEZO Marketplace
 
@@ -379,14 +379,14 @@ Records one vote per wallet as Yes, No, or Abstain.
 Keeps separate Yes, No, and Abstain tallies for every proposal.
 Emits events for anchoring, vote casting, and finalization. 
 
-## Added MEZO Treasury Contract
+## Added MEZO Treasury Contract - [`0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694`](https://explorer.test.mezo.org/address/0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694) 
 
 Accepts MEZO deposits from users after a direct token approval.
 Lets each wallet withdraw only its own recorded deposit.
 Verifies the MEZO amount actually received before crediting a deposit.
 Emits events for deposits and withdrawals.
 
-## Added Pyth Oracle Contract to retrieve data feeds
+## Added Pyth Oracle Contract to retrieve data feeds - [`0x2880aB155794e7179c9eE2e38200202908C17B43`](https://explorer.test.mezo.org/address/0x2880aB155794e7179c9eE2e38200202908C17B43)
 Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
 
 ## Testing : Execution of tests as shown in Test Cases Summary (60 tests)
