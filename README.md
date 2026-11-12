@@ -372,7 +372,7 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 Added Role-based access control in VEMEZO Marketplace
 
 
-## Changes to Governance Records Contract
+## Changes to Governance Records Contract -  [`0x82531Fc1b2eB804D7484b1346fb0FE503F81c75a`](https://explorer.test.mezo.org/address/0x82531Fc1b2eB804D7484b1346fb0FE503F81c75a) 
 
 Anchors a proposal once with its content identifier.
 Records one vote per wallet as Yes, No, or Abstain.
