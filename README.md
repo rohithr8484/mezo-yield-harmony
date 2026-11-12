@@ -386,6 +386,9 @@ Lets each wallet withdraw only its own recorded deposit.
 Verifies the MEZO amount actually received before crediting a deposit.
 Emits events for deposits and withdrawals.
 
+## Added Pyth Oracle Contract to retrieve data feeds
+Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
+
 ## Testing : Execution of tests as shown in Test Cases Summary (60 tests)
 
 ## **Test Cases Summary**
