@@ -27,7 +27,6 @@ Provides secure custom controls for the veNFT marketplace.
 ### Features
 
 - Role-based access control and emergency pause.
-- Fee management with a timelock.
 - veNFT collection whitelist management.
 - Payment router administration.
 - MUSD balance tracking and funding.
