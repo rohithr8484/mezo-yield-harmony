@@ -131,7 +131,7 @@ Shape the future of Bitcoin finance through locked MEZO - priced in MEZO/MUSD
 
 ## Supported Markets
 
-Using Contract(Mezo Testnet): **0x2880aB155794e7179c9eE2e38200202908C17B43**
+Using Contract(Mezo Testnet): **[0x2880aB155794e7179c9eE2e38200202908C17B43]**(https://explorer.test.mezo.org/address/0x2880aB155794e7179c9eE2e38200202908C17B43) 
 
 | **Feed** | **Feed ID** |
 | --- | --- |
