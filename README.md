@@ -367,6 +367,25 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 
 # ✨ Wave 2 Features Of Mezo Auth Dev
 
+## Changes to MarketplaceAdmin Contract
+
+Added Role-based access control in VEMEZO Marketplace
+
+
+## Changes to Governance Records Contract
+
+Anchors a proposal once with its content identifier.
+Records one vote per wallet as Yes, No, or Abstain.
+Keeps separate Yes, No, and Abstain tallies for every proposal.
+Emits events for anchoring, vote casting, and finalization. 
+
+## Added MEZO Treasury Contract
+
+Accepts MEZO deposits from users after a direct token approval.
+Lets each wallet withdraw only its own recorded deposit.
+Verifies the MEZO amount actually received before crediting a deposit.
+Emits events for deposits and withdrawals.
+
 ## Testing : Execution of tests as shown in Test Cases Summary (60 tests)
 
 ## **Test Cases Summary**
