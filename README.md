@@ -406,6 +406,8 @@ Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
 
 ## Integrated new lock durations for VEMEZO to support additional Lock time frames 
 
+## Verified payments server-side using blockchain explorer
+
 
 ## TESTING
 
