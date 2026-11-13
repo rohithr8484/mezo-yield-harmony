@@ -35,7 +35,7 @@ Provides secure custom controls for the veNFT marketplace.
 
 ---
 
-## Governance Records Contract
+## Governance Records Contract - [`0x82531Fc1b2eB804D7484b1346fb0FE503F81c75a`](https://explorer.test.mezo.org/address/0x82531Fc1b2eB804D7484b1346fb0FE503F81c75a) 
 
 Provides on-chain anchoring of governance proposals and voting results.
 
