@@ -46,5 +46,5 @@ export function buildFlowGraph(legs: FlowLeg[], root: string, maxNodes = 40) {
     rows.set(d, row + 1);
     return { id, depth: d, row, isRoot: id === r, isContract: contracts.has(id) };
   });
-  return { nodes, edges: edges.filter(e => kept.has(e.from) && kept.has(e.to)), truncated: kept.size < all.size + (all.has(r) ? 0 : 1) };
+  return { nodes, edges: edges.filter(e => kept.has(e.from) && kept.has(e.to)), truncated: ids.length < depth.size };
 }
