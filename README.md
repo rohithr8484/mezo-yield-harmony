@@ -412,7 +412,9 @@ Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
 
  ### - Implemented transaction flow graphs for on-chain DeFi analytics and Anti-Money Laundering (AML) screening.
 
- ### - Verified payments server-side using mezo blockchain explorer
+ ### - Verified MEZO/MUSD payments server-side using mezo blockchain explorer
+
+ ### - Enhancement of UX/UI of Mezo Auth Dev
 
 
 ## TESTING
