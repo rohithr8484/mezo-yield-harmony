@@ -13,7 +13,7 @@ Mezo Auth Dev is Marketplace for Bitcoin-native Web3 on Mezo, powering an AI API
 
 ---
 
-# ✨ Wave 1 Features Of Mezo Auth Dev
+# ✨ Features Of Mezo Auth Dev
 
 ## Sellers can provide service 
 
