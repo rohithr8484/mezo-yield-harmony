@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { assessAMLBehavior, assessStructuringRisk, deriveAMLPayments } from "@/lib/amlScreening";
 import type { AMLResult } from "@/lib/amlExplorer";
 import { formatNumber, shortAddress } from "@/lib/onchainAnalytics";
+import { TransactionFlowGraph } from "./TransactionFlowGraph";
 
 const EXPLORER = "https://explorer.test.mezo.org";
 const watchlists = [
@@ -61,6 +62,9 @@ export function AMLScreeningPanel({ result }: { result: AMLResult }) {
       <p className="text-xs leading-relaxed text-muted-foreground">Sample-based pattern checks only · separate assets · distinct transactions · 60-minute observation window. Missing timestamps or unloaded records limit detection; no matching pattern is not a clean AML result.</p>
       <p className="text-xs leading-relaxed text-muted-foreground">Amounts count observed payment legs, not net wealth or traced funds. Native BTC movements and token transfer events are separate assets. Activity frequency or transfers alone do not prove laundering.</p>
       <div><h5 className="mb-2 text-xs font-semibold uppercase text-muted-foreground">Top payment legs · loaded records</h5>{observation.flows.slice(0, 6).map(flow => <div key={flow.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-border py-3 text-xs"><div className="flex items-center gap-2"><AddressLink address={flow.from} /><ArrowRight className="h-3 w-3 text-muted-foreground" /><AddressLink address={flow.to} /></div><span className="font-mono">{formatNumber(flow.amount)} {flow.symbol}</span></div>)}{observation.flows.length === 0 && <p className="text-xs text-muted-foreground">No supported payment legs in the loaded records; this is not an AML clearance.</p>}</div>
+    </Section>
+    <Section index="03" icon={ArrowRight} title="Transaction Flow Graph" status="Loaded records" subtitle="Who sent what to whom · successful native movements and token transfer events">
+      <TransactionFlowGraph root={result.address} rootLabel="Screened" legs={observation.flows} note="Drawn only from loaded successful movements; failed transactions are excluded and assets are never combined. This shows observed movements, not traced fund provenance." />
     </Section>
     <Section hidden index="03" icon={FileSearch} title="Adverse Media Screening" status="Not screened" subtitle="Requested coverage: NLP scan across 40,000+ news, regulatory and enforcement sources">
       <div className="space-y-2">{mediaCategories.map(category => <div key={category} className="flex items-start justify-between gap-3 rounded-lg border border-border bg-secondary/15 p-4"><div className="min-w-0"><h5 className="flex items-start gap-2 text-sm font-semibold"><CircleHelp className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />{category}</h5><p className="mt-2 text-xs text-muted-foreground">No source search performed; mentions are unknown.</p></div><span className="shrink-0 text-[12px] text-muted-foreground">Not screened</span></div>)}</div>
