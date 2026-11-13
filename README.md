@@ -369,10 +369,14 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 
 ## Changes to MarketplaceAdmin Contract - [`0x1D462522A9f8fbea6c10122dce01E09432A64dBF`](https://explorer.test.mezo.org/address/0x1D462522A9f8fbea6c10122dce01E09432A64dBF) 
 
+### Methods : grantRole, fundMarket
+
 Added Role-based access control in VEMEZO Marketplace
 
 
 ## Changes to Governance Records Contract -  [`0x82531Fc1b2eB804D7484b1346fb0FE503F81c75a`](https://explorer.test.mezo.org/address/0x82531Fc1b2eB804D7484b1346fb0FE503F81c75a) 
+
+### Methods : vote, anchorProposal, finalize
 
 Anchors a proposal once with its content identifier.
 Records one vote per wallet as Yes, No, or Abstain.
@@ -381,12 +385,17 @@ Emits events for anchoring, vote casting, and finalization.
 
 ## Added MEZO Treasury Contract - [`0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694`](https://explorer.test.mezo.org/address/0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694) 
 
+### Methods : Token transfer
+
 Accepts MEZO deposits from users after a direct token approval.
 Lets each wallet withdraw only its own recorded deposit.
 Verifies the MEZO amount actually received before crediting a deposit.
 Emits events for deposits and withdrawals.
 
 ## Added Pyth Oracle Contract to retrieve data feeds - [`0x2880aB155794e7179c9eE2e38200202908C17B43`](https://explorer.test.mezo.org/address/0x2880aB155794e7179c9eE2e38200202908C17B43)
+
+### Methods : getPriceNoOlderThan(pair_id, maxAgeSeconds)
+
 Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
 
 ## Testing : Execution of tests as shown in Test Cases Summary (60 tests)
