@@ -52,7 +52,7 @@ Provides on-chain anchoring of governance proposals and voting results.
 
 ---
 
-## MEZO Treasury Contract
+## MEZO Treasury Contract - [`0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694`](https://explorer.test.mezo.org/address/0x2Db34b3aBb62Ffcfe7F6927Cfa4F52C16D649694) 
 
 Provides a self-custody deposit vault for holding user MEZO on-chain.
 
