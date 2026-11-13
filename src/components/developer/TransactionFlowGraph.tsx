@@ -41,7 +41,7 @@ export function TransactionFlowGraph({ legs, root, rootLabel = "Origin", note }:
           const self = e.from === e.to;
           const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
           const sx = a.x + (dx / len) * R, sy = a.y + (dy / len) * R, ex = b.x - (dx / len) * (R + 4), ey = b.y - (dy / len) * (R + 4);
-          const bend = (i % 2 ? -1 : 1) * Math.ceil(i / 2) * 26 + (e.from > e.to && a.depth === b.depth ? 20 : 0);
+          const bend = (i % 2 ? -1 : 1) * Math.ceil(i / 2) * 26 + (e.from > e.to && a.node.depth === b.node.depth ? 20 : 0);
           const mx = (sx + ex) / 2 - (dy / len) * bend, my = (sy + ey) / 2 + (dx / len) * bend;
           const d = self ? `M${a.x - 8},${a.y - R} C${a.x - 40},${a.y - 70} ${a.x + 40},${a.y - 70} ${a.x + 8},${a.y - R - 2}` : `M${sx},${sy} Q${mx},${my} ${ex},${ey}`;
           const lx = self ? a.x : (sx + 2 * mx + ex) / 4, ly = self ? a.y - 62 : (sy + 2 * my + ey) / 4;
