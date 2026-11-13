@@ -406,7 +406,11 @@ Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
 
 ## Integrated new lock durations for VEMEZO to support additional Lock time frames 
 
-## Verified payments server-side using blockchain explorer
+## Route fees to a real MUSD and MEZO treasury 
+
+## Implemented transaction flow graphs for on-chain DeFi analytics and Anti-Money Laundering (AML) screening.
+
+## Verified payments server-side using mezo blockchain explorer
 
 
 ## TESTING
