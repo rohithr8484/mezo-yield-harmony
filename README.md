@@ -404,6 +404,8 @@ Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
 
 ## Provided Risk Score for On Chain Analytics 
 
+## Shipped working veMEZO marketplace with lock and withdraw MEZO
+
 ## Integrated new lock durations for VEMEZO to support additional Lock time frames 
 
 ## Route fees to a real MUSD and MEZO treasury 
