@@ -402,24 +402,25 @@ Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
 
 ## FEATURES
 
-## Provided Risk Score for On Chain Analytics 
+ ### Provided Risk Score for On Chain Analytics 
 
-## Shipped working veMEZO marketplace with lock and withdraw MEZO
+ ### Shipped working veMEZO marketplace with lock and withdraw MEZO
 
-## Integrated new lock durations for VEMEZO to support additional Lock time frames 
+ ### Integrated new lock durations for VEMEZO to support additional Lock time frames 
 
-## Route fees to a real MUSD and MEZO treasury 
+ ### Route fees to a real MUSD and MEZO treasury 
 
-## Implemented transaction flow graphs for on-chain DeFi analytics and Anti-Money Laundering (AML) screening.
+ ### Implemented transaction flow graphs for on-chain DeFi analytics and Anti-Money Laundering (AML) screening.
 
-## Verified payments server-side using mezo blockchain explorer
+ ### Verified payments server-side using mezo blockchain explorer
 
 
 ## TESTING
 
-## Testing : Execution of tests as shown in Test Cases Summary (60 tests)
+### Testing : Execution of tests as shown in Test Cases Summary (60 tests)
 
 ### folder : mezo-yield-harmony/src/lib
+
 
 ## **Test Cases Summary**
 
