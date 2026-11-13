@@ -367,6 +367,8 @@ Permit2 and MUSD are configured in the browser app. All three addresses are conf
 
 # ✨ Wave 2 Features Of Mezo Auth Dev
 
+## CONTRACTS
+
 ## Changes to MarketplaceAdmin Contract - [`0x1D462522A9f8fbea6c10122dce01E09432A64dBF`](https://explorer.test.mezo.org/address/0x1D462522A9f8fbea6c10122dce01E09432A64dBF) 
 
 ### Methods : grantRole, fundMarket
@@ -379,7 +381,7 @@ Added Role-based access control in VEMEZO Marketplace
 ### Methods : vote, anchorProposal, finalize
 
 Anchors a proposal once with its content identifier.
-Records one vote per wallet as Yes, No, or Abstain.
+Records one vote per wallet as Yes, No, or Abstain on chain
 Keeps separate Yes, No, and Abstain tallies for every proposal.
 Emits events for anchoring, vote casting, and finalization. 
 
@@ -397,6 +399,15 @@ Emits events for deposits and withdrawals.
 ### Methods : getPriceNoOlderThan(pair_id, maxAgeSeconds)
 
 Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
+
+## FEATURES
+
+## Provided Risk Score for On Chain Analytics 
+
+## Integrated new lock durations for VEMEZO to support additional Lock time frames 
+
+
+## TESTING
 
 ## Testing : Execution of tests as shown in Test Cases Summary (60 tests)
 
