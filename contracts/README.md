@@ -18,7 +18,7 @@ npx hardhat test RealVeMEZOCreate.test.ts --network mezoMats
 ```
 ---
 
-## MarketplaceAdmin Contract
+## MarketplaceAdmin Contract - [`0x1D462522A9f8fbea6c10122dce01E09432A64dBF`](https://explorer.test.mezo.org/address/0x1D462522A9f8fbea6c10122dce01E09432A64dBF) 
 
 Provides secure custom controls for the veNFT marketplace.
 
