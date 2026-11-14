@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useAccount, useSignMessage, useSwitchChain } from "wagmi";
 import { parseUnits } from "viem";
 import type { Eip1193Provider } from "ethers";
@@ -18,7 +18,9 @@ import { ServiceImage, type ServiceImageKind } from "@/components/ServiceImage";
 import {
   buildDeployMessage,
   createSellerService,
+  mergeSellerServices,
   readSellerServices,
+  SELLER_SERVICES_KEY,
   sellerServiceTemplates,
   usesSolidityInput,
   type SellerService,
@@ -51,7 +53,7 @@ export function ServiceSellerStudio() {
   const [services, setServices] = useState(() => readSellerServices());
   const normalizedAddress = address?.toLowerCase();
   const ownServices = useMemo(
-    () => services.filter((service) => service.sellerAddress === normalizedAddress && service.id !== "wallet-analytics"),
+    () => services.filter((service) => service.sellerAddress.toLowerCase() === normalizedAddress && service.id !== "wallet-analytics"),
     [normalizedAddress, services],
   );
 
@@ -60,18 +62,28 @@ export function ServiceSellerStudio() {
   const [busy, setBusy] = useState<string | null>(null);
   const [testOutput, setTestOutput] = useState<Record<string, string>>({});
 
-  const loadDeployed = useCallback(async () => {
-    if (!normalizedAddress) return setDeployed({});
-    const { data } = await supabase
-      .from("seller_services")
-      .select("id, listing_id, deployed_at")
-      .eq("seller_address", normalizedAddress);
-    setDeployed(Object.fromEntries((data ?? []).map((row) => [row.listing_id, row])));
+  useEffect(() => {
+    let cancelled = false;
+    setDeployed({});
+    if (!normalizedAddress) return;
+    const load = async () => {
+      const { data, error } = await supabase
+        .from("seller_services")
+        .select("id, listing_id, seller_address, template_id, title, category, description, endpoint, deployed_at")
+        .eq("seller_address", normalizedAddress);
+      if (cancelled || error || !data) return;
+      setDeployed(Object.fromEntries(data.map((row) => [row.listing_id, row])));
+      setServices((current) => mergeSellerServices(current, data, normalizedAddress));
+    };
+    void load();
+    return () => { cancelled = true; };
   }, [normalizedAddress]);
 
   useEffect(() => {
-    void loadDeployed();
-  }, [loadDeployed]);
+    try {
+      window.localStorage.setItem(SELLER_SERVICES_KEY, JSON.stringify(services));
+    } catch { /* The live registry remains available if browser storage is full. */ }
+  }, [services]);
 
   const deploy = async (service: SellerService) => {
     if (!address) {
