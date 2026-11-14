@@ -19,6 +19,7 @@ import {
   buildDeployMessage,
   createSellerService,
   readSellerServices,
+  mergeDeployedServices,
   sellerServiceTemplates,
   usesSolidityInput,
   type SellerService,
@@ -64,9 +65,11 @@ export function ServiceSellerStudio() {
     if (!normalizedAddress) return setDeployed({});
     const { data } = await supabase
       .from("seller_services")
-      .select("id, listing_id, deployed_at")
+      .select("id, listing_id, deployed_at, seller_address, template_id, title, category, description, endpoint")
       .eq("seller_address", normalizedAddress);
-    setDeployed(Object.fromEntries((data ?? []).map((row) => [row.listing_id, row])));
+    const rows = data ?? [];
+    setDeployed(Object.fromEntries(rows.map((row) => [row.listing_id, row])));
+    if (rows.length) setServices((current) => mergeDeployedServices(current, rows));
   }, [normalizedAddress]);
 
   useEffect(() => {

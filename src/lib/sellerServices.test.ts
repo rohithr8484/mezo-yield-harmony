@@ -37,3 +37,23 @@ describe("seller templates", () => {
     expect(sellerServiceTemplates.find((item) => item.id === "contract-review")?.endpoint).toBe("/api/review");
   });
 });
+
+import { mergeDeployedServices as mergeDeployed } from "./sellerServices";
+
+describe("mergeDeployedServices", () => {
+  it("restores a wallet's deployed services missing from this browser", () => {
+    const merged = mergeDeployed([], [{
+      listing_id: "0xabc:1700000000000", seller_address: "0xABC", template_id: "contract-review",
+      title: "Review", category: "Security", description: "d", endpoint: "/api/review", deployed_at: "2026-01-01T00:00:00Z",
+    }]);
+    expect(merged).toHaveLength(1);
+    expect(merged[0]).toMatchObject({ listingId: "0xabc:1700000000000", sellerAddress: "0xabc", createdAt: 1700000000000, id: "contract-review" });
+  });
+
+  it("does not duplicate services already stored in the browser", () => {
+    const local = [{ id: "text-summarizer", title: "Local", category: "c", description: "d", endpoint: "/e", listingId: "0xabc:1", sellerAddress: "0xabc", createdAt: 1 }];
+    const merged = mergeDeployed(local, [{ listing_id: "0xabc:1", seller_address: "0xabc", template_id: "text-summarizer", title: "Remote", category: "c", description: "d", endpoint: "/e", deployed_at: "" }]);
+    expect(merged).toHaveLength(1);
+    expect(merged[0].title).toBe("Local");
+  });
+});

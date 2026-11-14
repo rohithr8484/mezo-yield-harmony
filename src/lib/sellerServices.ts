@@ -108,3 +108,39 @@ export function createSellerService(
   storage.setItem(SELLER_SERVICES_KEY, JSON.stringify([listing, ...readSellerServices(storage)]));
   return listing;
 }
+
+export type DeployedSellerRow = {
+  listing_id: string;
+  seller_address: string;
+  template_id: string;
+  title: string;
+  category: string;
+  description: string;
+  endpoint: string;
+  deployed_at: string;
+};
+
+/**
+ * Merge services deployed to the backend registry into the browser list, so a wallet's
+ * published services reappear on any site address (preview or published) after refresh.
+ * Browser copies win; deployed rows only fill in listings this browser doesn't have.
+ */
+export function mergeDeployedServices(local: SellerService[], rows: DeployedSellerRow[]): SellerService[] {
+  const known = new Set(local.map((s) => s.listingId));
+  const restored: SellerService[] = rows
+    .filter((row) => !known.has(row.listing_id))
+    .map((row) => {
+      const stamp = Number(row.listing_id.split(":")[1]);
+      return {
+        id: row.template_id,
+        title: row.title,
+        category: row.category,
+        description: row.description,
+        endpoint: row.endpoint,
+        listingId: row.listing_id,
+        sellerAddress: row.seller_address.toLowerCase(),
+        createdAt: Number.isFinite(stamp) ? stamp : Date.parse(row.deployed_at) || 0,
+      };
+    });
+  return [...local, ...restored].sort((a, b) => b.createdAt - a.createdAt);
+}
