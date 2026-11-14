@@ -20,6 +20,7 @@ import {
   createSellerService,
   readSellerServices,
   sellerServiceTemplates,
+  usesSolidityInput,
   type SellerService,
   type SellerServiceTemplate,
 } from "@/lib/sellerServices";
@@ -29,6 +30,7 @@ const templateImage: Record<string, ServiceImageKind> = {
   "text-summarizer": "summarization",
   "wallet-analytics": "analytics",
   "contract-review": "contracts",
+  "contract-function-viewer": "contracts",
 };
 
 type DeployedService = { id: string; listing_id: string; deployed_at: string };
@@ -121,7 +123,7 @@ export function ServiceSellerStudio() {
   const testService = async (service: SellerService, id: string) => {
     setBusy(`test:${service.listingId}`);
     try {
-      const input = service.id === "contract-review"
+      const input = usesSolidityInput(service.id)
         ? contractFile?.source ||
           "contract Vault { mapping(address=>uint) b; function withdraw() external { (bool ok,) = msg.sender.call{value:b[msg.sender]}(\"\"); require(ok); b[msg.sender]=0; } }"
         : service.id === "wallet-analytics"
@@ -154,7 +156,7 @@ export function ServiceSellerStudio() {
     const reader = new FileReader();
     reader.onload = () => {
       setContractFile({ name: file.name, source: String(reader.result ?? "") });
-      toast.success(`${file.name} is ready to review.`);
+      toast.success(`${file.name} is ready.`);
     };
     reader.onerror = () => toast.error("The file could not be read.");
     reader.readAsText(file);
@@ -269,7 +271,7 @@ export function ServiceSellerStudio() {
               Description
               <Textarea className="mt-2 min-h-24" value={draft.description} onChange={(event) => setDraft({ ...draft, description: event.target.value })} maxLength={280} />
             </label>
-            {selected.id === "contract-review" && (
+            {usesSolidityInput(selected.id) && (
               <div>
                 <input
                   id="contract-upload"

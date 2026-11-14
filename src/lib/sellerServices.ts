@@ -36,7 +36,18 @@ export const sellerServiceTemplates: SellerServiceTemplate[] = [
     description: "Review Solidity source for common risks and return a structured report.",
     endpoint: "/api/review",
   },
+  {
+    id: "contract-function-viewer",
+    title: "Smart Contract Function Viewer",
+    category: "Developer / Contracts",
+    description: "Display all function names in Solidity source with a simple description of each function.",
+    endpoint: "/api/functions",
+  },
 ];
+
+export function usesSolidityInput(templateId: string): boolean {
+  return templateId === "contract-review" || templateId === "contract-function-viewer";
+}
 
 /** Message the seller wallet signs to deploy a listing. Must match the backend function. */
 export function buildDeployMessage(s: {
