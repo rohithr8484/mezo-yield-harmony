@@ -27,3 +27,4 @@
 - Use a shared ServiceImage component for homepage and developer-service illustrations so the same service keeps consistent imagery without affecting its access controls.
 - Apply presentation-only motion through the shared page layout and global styles, with reduced-motion overrides; access and result visibility must never depend on animation completion.
 - Keep seller-created developer services separate from built-in paid services; each browser-stored listing is bound to the connected wallet and deploys to the backend registry only via a server-verified wallet signature, so seller templates never alter existing access and payment flows.
+- Share Solidity input eligibility across seller contract templates; parse the function viewer's complete supplied source into a declaration inventory before server-side AI descriptions, so comments/calls are not mistaken for functions and existing review behavior stays separate.

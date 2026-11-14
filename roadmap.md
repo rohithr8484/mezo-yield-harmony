@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Add Smart Contract Function Viewer to seller templates with the same Solidity upload/configuration inputs and live function-name/description output; 80 tests pass, wallet-signed publishing and real uploaded-source output verified on desktop/mobile, existing services and payments preserved.
+
 - [x] Hide On-chain Analytics only in seller listings, preserving saved services and built-in Analytics.
 - [x] Add a 2 MEZO two-week lock below existing options through the same lock flow; 10 tests and browser unlock/refresh checks pass. Actual wallet submission not tested; expiry remains contract-rounded.
 
