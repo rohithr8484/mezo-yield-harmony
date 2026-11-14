@@ -49,6 +49,37 @@ export function usesSolidityInput(templateId: string): boolean {
   return templateId === "contract-review" || templateId === "contract-function-viewer";
 }
 
+export type StoredSellerService = {
+  listing_id: string;
+  seller_address: string;
+  template_id: string;
+  title: string;
+  category: string;
+  description: string;
+  endpoint: string;
+  deployed_at: string;
+};
+
+/** Restore wallet listings from the registry while keeping local pending listings. */
+export function mergeSellerServices(local: SellerService[], rows: StoredSellerService[], wallet: string): SellerService[] {
+  const owner = wallet.toLowerCase();
+  const merged = new Map(local.map((service) => [service.listingId, service]));
+  for (const row of rows) {
+    if (row.seller_address.toLowerCase() !== owner) continue;
+    merged.set(row.listing_id, {
+      id: row.template_id,
+      listingId: row.listing_id,
+      sellerAddress: owner,
+      title: row.title,
+      category: row.category,
+      description: row.description,
+      endpoint: row.endpoint,
+      createdAt: merged.get(row.listing_id)?.createdAt ?? Date.parse(row.deployed_at),
+    });
+  }
+  return [...merged.values()].sort((a, b) => b.createdAt - a.createdAt);
+}
+
 /** Message the seller wallet signs to deploy a listing. Must match the backend function. */
 export function buildDeployMessage(s: {
   listingId: string;
