@@ -64,7 +64,7 @@ Shape the future of Bitcoin finance through decentralized governance systems -  
 
 Shape the future of Bitcoin finance through locked MEZO - priced in MEZO/MUSD
 
-### Governance Features
+### Marketplace Features
 
 - veMEZO Benefits – Receive veMEZO based on the protocol’s locking mechanism.
 - Commitment-Based Benefits – Locking duration may influence the benefits
@@ -409,6 +409,8 @@ Pyth Oracle Contract: 0x2880aB155794e7179c9eE2e38200202908C17B43
  ### - Integrated new lock durations for VEMEZO to support additional Lock time frames 
 
  ### - Route fees to a real MUSD and MEZO treasury 
+
+ ### - Performed Smart contract analysis on contracts
 
  ### - Implemented transaction flow graphs for on-chain DeFi analytics and Anti-Money Laundering (AML) screening.
 
