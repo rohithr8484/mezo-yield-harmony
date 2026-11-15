@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import HomepageNewPayment from "@/components/HomepageNewPayment";
+import { PublicSellerServices } from "./PublicSellerServices";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ServiceImage, type ServiceImageKind } from "@/components/ServiceImage";
@@ -425,6 +426,7 @@ export function ServiceSellerStudio() {
           </div>
         )}
       </div>
+      <PublicSellerServices revision={deployed} />
     </div>
   );
 }

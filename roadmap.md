@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Add a separate public deployed-services section beneath Your published services, with live invocation for all visitors; preserve wallet-owned listings and existing payments.
+
 - [x] Add isolated homepage PAY(NEW) matching the supplied 5 test MUSD direct-transfer reference on the specified token; explain native testnet gas fees without changing existing payments.
 
 - [ ] Replace Data Feed graphs with verified Pyth market history, clearly separate from Mezo contract prices; blocked by missing Pyth Pro authorization (connection declined). Current history endpoint returns 401; legacy public chart endpoint returns 404. Existing charts and payments unchanged.
