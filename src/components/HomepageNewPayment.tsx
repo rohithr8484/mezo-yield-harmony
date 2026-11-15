@@ -9,7 +9,7 @@ import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, A
 import { HOMEPAGE_PAYMENT_AMOUNT, HOMEPAGE_PAYMENT_RECIPIENT, HOMEPAGE_REWARD_AMOUNT, payHomepageNew } from "@/lib/homepageNewPayment";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
 
-export default function HomepageNewPayment() {
+export default function HomepageNewPayment({ onPaymentSuccess }: { onPaymentSuccess?: () => void }) {
   const { isConnected, connector } = useAccount();
   const { openConnectModal } = useConnectModal();
   const [open, setOpen] = useState(false);
@@ -36,6 +36,7 @@ export default function HomepageNewPayment() {
       toast.success(`${HOMEPAGE_PAYMENT_AMOUNT} test MUSD transfer confirmed.`);
       if (result.rewardHash) toast.success(`${HOMEPAGE_REWARD_AMOUNT} contract MUSD reward confirmed.`);
       if (result.rewardError) toast.warning("Payment confirmed, but reward withdrawal failed. Do not repay to retry the reward.");
+      if (result.paymentHash && result.rewardHash && !result.rewardError) onPaymentSuccess?.();
     } catch (error) {
       toast.error(getTokenPaymentError(error));
     } finally {
@@ -58,7 +59,7 @@ export default function HomepageNewPayment() {
           <AlertDialogHeader>
             <AlertDialogTitle>PAY WITH MUSD (OFFICIAL) — {HOMEPAGE_PAYMENT_AMOUNT} test MUSD</AlertDialogTitle>
             <AlertDialogDescription className="break-words">
-              Mezo Testnet · Direct transfer to {HOMEPAGE_PAYMENT_RECIPIENT}, followed immediately after confirmation by a {HOMEPAGE_REWARD_AMOUNT} MUSD withdrawal request to your wallet. The reward uses the contract’s 0xD88b…a067 MUSD, not the payment token, and requires contract authorization and funds. A second wallet confirmation and test BTC gas fees apply; no service unlock.
+              Mezo Testnet · Direct transfer to {HOMEPAGE_PAYMENT_RECIPIENT}, followed immediately after confirmation by a {HOMEPAGE_REWARD_AMOUNT} MUSD withdrawal request to your wallet. The reward uses the contract’s 0xD88b…a067 MUSD, not the payment token, and requires contract authorization and funds. A second wallet confirmation and test BTC gas fees apply; service access unlocks only after both are confirmed.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

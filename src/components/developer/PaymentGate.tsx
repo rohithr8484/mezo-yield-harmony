@@ -165,7 +165,7 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
             <Wallet className="h-4 w-4" />
             {pending === "MUSD" && isProcessing ? "Wait..." : compact ? "MUSD" : "Pay with MUSD"}
           </Button>
-          <HomepageNewPayment />
+          <HomepageNewPayment onPaymentSuccess={onPaymentSuccess} />
           <Button
             onClick={() => handlePay("MEZO")}
             disabled={isProcessing}
