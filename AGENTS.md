@@ -1,5 +1,7 @@
 # Project Rules
 
+- Keep PAY(NEW) in an isolated homepage transfer module using the connected wallet and shared simulation/receipt checks; it must not modify regular payments, x402 settlement, service access, or rewards.
+
 - Data Feed charts plot only historical block-tagged reads from the configured Pyth contract, labeling block-state sampling, stale publication times and unavailable coverage; never synthesize prices or volume because stored oracle snapshots are not trade history.
 
 - Route MEZO and regular MUSD payments through the connected wallet and shared token-payment simulation/receipt checks; recover confirmed broadcasts without resending, and never present a wallet self-transfer as a funded reward.
