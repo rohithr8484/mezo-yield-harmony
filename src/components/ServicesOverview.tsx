@@ -23,7 +23,7 @@ export default function ServicesOverview() {
       </header>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map(service => <article key={service.kind} className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
-          {service.kind !== "oracles" && <ServiceImage kind={service.kind} alt={`${service.title} illustration`} className="aspect-[2/1] rounded-none" />}
+          <ServiceImage kind={service.kind} alt={`${service.title} illustration`} className="aspect-[2/1] rounded-none" />
           <div className="flex flex-1 flex-col p-6">
             <h3 className="font-display text-lg font-semibold text-foreground">{service.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{service.description}</p>
