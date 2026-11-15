@@ -1,5 +1,7 @@
 # Current tasks
 
+- [ ] Replace randomized Data Feeds charts with historical reads of the specified Pyth contract; show stale data and missing coverage honestly, preserving access/payment controls.
+
 - [x] Add Smart Contract Function Viewer to seller templates with the same Solidity upload/configuration inputs and live function-name/description output; 80 tests pass, wallet-signed publishing and real uploaded-source output verified on desktop/mobile, existing services and payments preserved.
 
 - [x] Hide On-chain Analytics only in seller listings, preserving saved services and built-in Analytics.
