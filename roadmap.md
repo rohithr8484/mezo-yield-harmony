@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Add a separate public deployed-services section beneath Your published services, with live invocation for all visitors; preserve wallet-owned listings and existing payments.
+- [x] Add a separate public deployed-services section beneath Your published services, with live invocation for all visitors; 11 tests pass, 11 real listings restored after refresh, and real summarization verified without a connected wallet; existing payments unchanged.
 
 - [x] Add isolated homepage PAY(NEW) matching the supplied 5 test MUSD direct-transfer reference on the specified token; explain native testnet gas fees without changing existing payments.
 
