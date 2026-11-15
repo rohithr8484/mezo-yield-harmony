@@ -3,8 +3,8 @@ import { Code2, Layers, Zap, GitBranch } from "lucide-react";
 const items = [
   {
     icon: Code2,
-    title: "Smart Contract SDK",
-    description: "Build on Mezo with our comprehensive SDK. Deploy Bitcoin-native smart contracts with ease.",
+    title: "Smart Contract Services",
+    description: "Build on Mezo with our comprehensive services. Deploy Bitcoin-native smart contracts with ease.",
   },
   {
     icon: Layers,
