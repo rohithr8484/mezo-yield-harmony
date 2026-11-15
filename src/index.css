@@ -722,10 +722,9 @@ input:focus-visible, textarea:focus-visible { box-shadow: 0 0 0 4px hsl(var(--ac
     transform-origin: 50% 45%;
   }
   .homepage-motion section:first-child h1 {
-    animation: none;
+    animation: cinematic-title-enter 1.5s 120ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
   .homepage-motion h1 > span {
-    display: inline-block;
     animation: homepage-word-arrive 1.5s 120ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
   }
   .homepage-motion h1 > span:nth-child(2) { animation-delay: 200ms; }
