@@ -1,6 +1,6 @@
 # Current tasks
 
-- [ ] Replace Data Feed graphs with verified Pyth market history, clearly separate from Mezo contract prices; preserve access and payments.
+- [ ] Replace Data Feed graphs with verified Pyth market history, clearly separate from Mezo contract prices; blocked by missing Pyth Pro authorization (connection declined). Current history endpoint returns 401; legacy public chart endpoint returns 404. Existing charts and payments unchanged.
 
 - [x] Replace randomized Data Feeds charts with historical reads of the specified Pyth contract; five tests pass and all three feeds verified via real free-entry unlocks on desktop/mobile, with refresh gating preserved. All 13 samples per feed return the unchanged July 27 publication, clearly marked stale; no generated prices or volume.
 
