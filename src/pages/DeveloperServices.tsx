@@ -357,7 +357,7 @@ const DeveloperServices = () => {
               <p className="seller-tag mt-2 text-sm font-semibold text-accent">(Seller → Mezo Auth Dev)</p>
             </div>
             <p className="max-w-xl text-muted-foreground md:text-right">
-              Real-time price feeds with charts. Each user gets 4 free feed unlocks before paid access.
+              Contract-sourced oracle prices and sampled history; freshness depends on on-chain updates. Each user gets 4 free feed unlocks before paid access.
             </p>
           </div>
           <div className="mx-auto max-w-6xl space-y-6">
@@ -378,7 +378,7 @@ const DeveloperServices = () => {
                   <h3 className="text-xl font-display font-semibold text-foreground">{feed.name}</h3>
                   </div>
                   <span className="inline-flex w-fit items-center gap-2 rounded-md border border-accent/20 bg-accent/10 px-2.5 py-1 text-[12px] font-bold uppercase text-accent">
-                    <span className="ops-status-dot" /> Live oracle
+                    <span className="ops-status-dot" /> On-chain oracle
                   </span>
                 </div>
                  <div className="mb-5 border-l-2 border-accent bg-secondary/40 px-4 py-3">
@@ -394,7 +394,7 @@ const DeveloperServices = () => {
                   extraButton={<X402Banner uniform onPaymentSuccess={(txHash) => markX402Paid(paymentKey, txHash)} />}
                 >
                   <PythPriceCard feedName={feed.name} feedId={feed.feedId} />
-                  <PriceFeedChart feedName={feed.name} />
+                  <PriceFeedChart feedName={feed.name} feedId={feed.feedId} />
                 </PaymentGate>
                 {x402Tx && (
                   <div className="mt-4 border-t border-border/60 pt-4">
