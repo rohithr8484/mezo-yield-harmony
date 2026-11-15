@@ -29,7 +29,7 @@ const StatsSection = () => {
           </h2>
 
           <p className="mt-5 text-base md:text-lg text-muted-foreground leading-relaxed max-w-xl">
-            A governance and developer layer for Bitcoin — settled in mUSD,
+            A governance and developer layer for Bitcoin — settled in MUSD,
             signed by your wallet, owned by no one.
           </p>
 
