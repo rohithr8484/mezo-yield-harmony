@@ -325,7 +325,9 @@ const DeveloperServices = () => {
                       </span>
                     </div>
                     <p className="mx-auto mb-4 w-full max-w-3xl text-sm leading-relaxed text-muted-foreground">{service.description}</p>
-                    <p className="mx-auto mb-6 w-full max-w-3xl border-y border-border/60 py-2 text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO per entry · first 4 entries free · MUSD payments return a 0.0005 MUSD reward</p>
+                    <p className="mx-auto w-full max-w-3xl border-y border-border/60 py-2 text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO per entry · first 4 entries free · MUSD payments return a 0.0005 MUSD reward</p>
+                    <p className="mx-auto w-full max-w-3xl text-center text-xs font-semibold text-accent">Charge of 0.001 MUSD - X402</p>
+                    <p className="mx-auto mb-6 w-full max-w-3xl text-center text-xs font-semibold text-accent">Charge of 0.00002 MUSD (Official)</p>
                     <div className="mx-auto mt-auto w-full max-w-3xl border-t border-border/60 pt-4">
                       {service.key === "analytics" || service.key === "identity" ? service.content : (
                       <PaymentGate
@@ -385,7 +387,9 @@ const DeveloperServices = () => {
                   <p className="text-xs text-muted-foreground mb-1">Feed ID</p>
                   <p className="font-mono text-xs text-foreground break-all select-all">{feed.feedId}</p>
                 </div>
-                <p className="mb-5 border-y border-border/60 py-2 text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO per unlock · pay-per-call 0.001 test MUSD · x402 · first 4 unlocks free</p>
+                <p className="border-y border-border/60 py-2 text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO per unlock · pay-per-call 0.001 test MUSD · x402 · first 4 unlocks free</p>
+                <p className="text-center text-xs font-semibold text-accent">Charge of 0.001 MUSD - X402</p>
+                <p className="mb-5 text-center text-xs font-semibold text-accent">Charge of 0.00002 MUSD (Official)</p>
                 <PaymentGate
                   serviceName={`${feed.name} Oracle`}
                   onPaymentSuccess={() => markPaid(paymentKey)}
@@ -452,7 +456,9 @@ const DeveloperServices = () => {
             Buy already-locked veMEZO positions from the Mezo ecosystem at market rates — escrowless P2P, on-chain
             settlement with free starter access per user.
           </p>
-          <p className="mb-10 text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO to open the marketplace · positions priced 0.2 MUSD</p>
+          <p className="text-center text-xs font-semibold text-accent">Charge: 0.2 MUSD or 0.2 MEZO to open the marketplace · positions priced 0.2 MUSD</p>
+          <p className="text-center text-xs font-semibold text-accent">Charge of 0.001 MUSD - X402</p>
+          <p className="mb-10 text-center text-xs font-semibold text-accent">Charge of 0.00002 MUSD (Official)</p>
           <div className="max-w-6xl mx-auto ops-card p-8">
             <PaymentGate
               serviceName="veNFT Marketplace"
@@ -479,6 +485,8 @@ const DeveloperServices = () => {
           <p className="text-center text-muted-foreground text-lg max-w-2xl mx-auto mb-10">
             Shape the future of Bitcoin finance through decentralized governance. Each user gets 4 free entries.
             <span className="mt-3 block text-xs font-semibold text-accent">Charge: 0.01 MUSD or 0.01 MEZO per entry · first 4 entries free</span>
+            <span className="mt-1 block text-xs font-semibold text-accent">Charge of 0.001 MUSD - X402</span>
+            <span className="mt-1 block text-xs font-semibold text-accent">Charge of 0.00002 MUSD (Official)</span>
           </p>
           <div className="flex justify-center mb-4">
             <Button

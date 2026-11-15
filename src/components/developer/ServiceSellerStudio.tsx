@@ -305,6 +305,8 @@ export function ServiceSellerStudio() {
             <div className="border-y border-border py-3 text-xs text-muted-foreground">
               Seller wallet: <span className="font-mono font-semibold text-foreground">{address ? shortAddress(address) : "Connect wallet to assign ownership"}</span>
               <span className="mt-2 block text-accent">Charge: Pay with MUSD 0.2 MUSD (0.0005 MUSD reward returned) · Pay with MEZO 0.2 MEZO · Publish &amp; deploy service is free</span>
+              <span className="mt-1 block text-accent">Charge of 0.001 MUSD - X402</span>
+              <span className="mt-1 block text-accent">Charge of 0.00002 MUSD (Official)</span>
             </div>
             <div className="flex flex-wrap gap-3">
               <Button type="button" onClick={publish} className="w-full sm:w-auto">
