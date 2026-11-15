@@ -158,10 +158,26 @@ const DeveloperServices = () => {
   }, [governanceFreeKey]);
 
   useEffect(() => {
-    if (location.hash) {
+    if (!location.hash) return;
+    const scrollToHash = () => {
       const el = document.querySelector(location.hash);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    // Retry while images/layout settle so the target section ends up in view.
+    scrollToHash();
+    const timers = [150, 500, 1200].map((ms) => window.setTimeout(scrollToHash, ms));
+    // Final instant correction in case a smooth scroll was interrupted by late layout shifts.
+    [1800, 3200].forEach((ms) =>
+      timers.push(
+        window.setTimeout(() => {
+          const el = document.querySelector(location.hash);
+          if (el && Math.abs(el.getBoundingClientRect().top) > 150) {
+            el.scrollIntoView({ block: "start" });
+          }
+        }, ms),
+      ),
+    );
+    return () => timers.forEach((t) => window.clearTimeout(t));
   }, [location]);
 
   return (
