@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import type { Eip1193Provider } from "ethers";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel } from "@/components/ui/alert-dialog";
-import { HOMEPAGE_PAYMENT_RECIPIENT, payHomepageNew } from "@/lib/homepageNewPayment";
+import { HOMEPAGE_PAYMENT_AMOUNT, HOMEPAGE_PAYMENT_RECIPIENT, payHomepageNew } from "@/lib/homepageNewPayment";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
 
 export default function HomepageNewPayment() {
@@ -27,7 +27,7 @@ export default function HomepageNewPayment() {
       const hash = await payHomepageNew(provider);
       setReceipt(hash);
       setOpen(false);
-      toast.success("5 test MUSD transfer confirmed.");
+      toast.success(`${HOMEPAGE_PAYMENT_AMOUNT} test MUSD transfer confirmed.`);
     } catch (error) {
       toast.error(getTokenPaymentError(error));
     } finally {
@@ -46,14 +46,14 @@ export default function HomepageNewPayment() {
       <AlertDialog open={open} onOpenChange={(value) => { if (!busy) setOpen(value); }}>
         <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-lg">
           <AlertDialogHeader>
-            <AlertDialogTitle>PAY(NEW) — 5 test MUSD</AlertDialogTitle>
+            <AlertDialogTitle>PAY(NEW) — {HOMEPAGE_PAYMENT_AMOUNT} test MUSD</AlertDialogTitle>
             <AlertDialogDescription className="break-words">
               Mezo Testnet · Direct transfer to {HOMEPAGE_PAYMENT_RECIPIENT}. Native test BTC gas fees apply; no additional app fee, approval, reward, or service unlock.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={busy}>Cancel</AlertDialogCancel>
-            <Button disabled={busy} onClick={pay}><Wallet className="h-4 w-4" />{busy ? "Confirming…" : "Pay 5 test MUSD"}</Button>
+            <Button disabled={busy} onClick={pay}><Wallet className="h-4 w-4" />{busy ? "Confirming…" : `Pay ${HOMEPAGE_PAYMENT_AMOUNT} test MUSD`}</Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
