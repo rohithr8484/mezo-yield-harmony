@@ -25,7 +25,6 @@ import { OnchainAnalytics } from "@/components/developer/OnchainAnalytics";
 import { IdentityVerification } from "@/components/developer/IdentityVerification";
 import { RunSection } from "@/components/developer/RunSection";
 
-import { PriceFeedChart } from "@/components/developer/PriceFeedChart";
 import { PythPriceCard } from "@/components/developer/PythPriceCard";
 import { VeNFTMarketplace } from "@/components/developer/VeNFTMarketplace";
 import { AITextSummarizer } from "@/components/developer/AITextSummarizer";
@@ -394,7 +393,6 @@ const DeveloperServices = () => {
                   extraButton={<X402Banner uniform onPaymentSuccess={(txHash) => markX402Paid(paymentKey, txHash)} />}
                 >
                   <PythPriceCard feedName={feed.name} feedId={feed.feedId} />
-                  <PriceFeedChart feedName={feed.name} feedId={feed.feedId} />
                 </PaymentGate>
                 {x402Tx && (
                   <div className="mt-4 border-t border-border/60 pt-4">
