@@ -179,6 +179,7 @@ MUSD powers the entire infrastructure economy.
 
 | Pay with | Services / data feeds | Governance entry | Proposal vote | Provide your own service |
 |---|---:|---:|---:|---:|
+| MUSD(Official) | 0.00002 MUSD | 0.00002 MUSD | 0.00002 MUSD | 0.00002 MUSD (0.00001 MUSD reward returned) |
 | MUSD | 0.2 MUSD | 0.01 MUSD | 0.2 MUSD | 0.2 MUSD (0.0005 MUSD reward returned) |
 | MEZO | 0.2 MEZO | 0.01 MEZO | 0.2 MEZO | 0.2 MEZO |
 | x402 (MUSD) | 0.001 MUSD | 0.001 MUSD | 0.001 MUSD | - |
@@ -189,6 +190,7 @@ Network gas and any first-time token approval are additional; x402 settlement ga
 
 | Pay with | Services / data feeds | Governance entry | Proposal vote | Provide your own service |
 |---|---:|---:|---:|---:|
+| MUSD (official) | 0.00001 MUSD | 0.00001 MUSD | 0.00001 MUSD | 0.00001 MUSD reward |
 | MUSD | 0.0005 MUSD | 0.0005 MUSD | 0.0005 MUSD | 0.0005 MUSD reward |
 
 For each regular MUSD payment, the app attempts to send this reward from platform `0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7` back to the paying wallet after the payment confirms. This reward does not apply to x402, MEZO payments.
