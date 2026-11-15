@@ -39,8 +39,9 @@ const useScrollReveal = () => {
       main.querySelectorAll<HTMLElement>("section, article, .ops-card, .ui-card").forEach((element) => {
         if (observed.has(element) || element.closest("[data-no-reveal]")) return;
         // Avoid stacking transforms on both a section and its cards.
-        if (element.matches("section") && element.querySelector("article, .ops-card, .ui-card")) return;
-        if (!element.matches("section") && element.parentElement?.closest("article, .ops-card, .ui-card")) return;
+        const isSection = element.tagName === "SECTION";
+        if (isSection && element.querySelector("article, .ops-card, .ui-card")) return;
+        if (!isSection && element.parentElement?.closest("article, .ops-card, .ui-card")) return;
         observed.add(element);
         observer.observe(element);
       });
