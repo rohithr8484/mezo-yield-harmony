@@ -1,5 +1,7 @@
 # Current tasks
 
+- [x] Replace randomized Data Feeds charts with historical reads of the specified Pyth contract; five tests pass and all three feeds verified via real free-entry unlocks on desktop/mobile, with refresh gating preserved. All 13 samples per feed return the unchanged July 27 publication, clearly marked stale; no generated prices or volume.
+
 - [x] Add Smart Contract Function Viewer to seller templates with the same Solidity upload/configuration inputs and live function-name/description output; 80 tests pass, wallet-signed publishing and real uploaded-source output verified on desktop/mobile, existing services and payments preserved.
 
 - [x] Hide On-chain Analytics only in seller listings, preserving saved services and built-in Analytics.

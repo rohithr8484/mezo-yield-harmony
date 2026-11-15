@@ -1,5 +1,7 @@
 # Project Rules
 
+- Data Feed charts plot only historical block-tagged reads from the configured Pyth contract, labeling block-state sampling, stale publication times and unavailable coverage; never synthesize prices or volume because stored oracle snapshots are not trade history.
+
 - Route MEZO and regular MUSD payments through the connected wallet and shared token-payment simulation/receipt checks; recover confirmed broadcasts without resending, and never present a wallet self-transfer as a funded reward.
 
 - Derive observation scores in pure modules using disclosed fixed weights, assessed-check counts and unresolved-weight bounds; missing data is never a passed check and scores never imply calibrated probability or compliance clearance.
