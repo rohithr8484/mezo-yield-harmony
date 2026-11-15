@@ -3,7 +3,7 @@ import { getPaymentSigner, sendTokenPayment } from "./tokenPayment";
 
 export const HOMEPAGE_PAYMENT_TOKEN = "0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503";
 export const HOMEPAGE_PAYMENT_RECIPIENT = "0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7";
-export const HOMEPAGE_PAYMENT_AMOUNT = "5";
+export const HOMEPAGE_PAYMENT_AMOUNT = "0.00002";
 
 const ABI = [
   "function decimals() view returns (uint8)",
@@ -20,6 +20,6 @@ export async function payHomepageNew(walletProvider: ethers.Eip1193Provider): Pr
   if (decimals !== 18) throw new Error("Payment token decimals differ from the reference. No transfer submitted.");
   const amount = ethers.parseUnits(HOMEPAGE_PAYMENT_AMOUNT, decimals);
   const balance: bigint = await token.balanceOf(user);
-  if (balance < amount) throw new Error(`PAY(NEW) needs 5 test MUSD; this wallet has ${ethers.formatUnits(balance, decimals)} test MUSD in the selected token on Mezo Testnet. Other MUSD tokens do not count. No transfer submitted.`);
+  if (balance < amount) throw new Error(`PAY(NEW) needs ${HOMEPAGE_PAYMENT_AMOUNT} test MUSD; this wallet has ${ethers.formatUnits(balance, decimals)} test MUSD in the selected token on Mezo Testnet. Other MUSD tokens do not count. No transfer submitted.`);
   return sendTokenPayment(token.transfer, [HOMEPAGE_PAYMENT_RECIPIENT, amount]);
 }

@@ -14,7 +14,7 @@ describe("standalone homepage reference payment", () => {
     vi.clearAllMocks();
     mocks.signer.mockResolvedValue({ getAddress: async () => "0xuser" });
     mocks.decimals.mockResolvedValue(18n);
-    mocks.balance.mockResolvedValue(5000000000000000000n);
+    mocks.balance.mockResolvedValue(20000000000000n);
     mocks.contract.mockImplementation(function () { return { decimals: mocks.decimals, balanceOf: mocks.balance, transfer: mocks.transfer }; });
     mocks.send.mockResolvedValue("0xconfirmed");
   });
@@ -23,13 +23,13 @@ describe("standalone homepage reference payment", () => {
     expect(mocks.signer).toHaveBeenCalledWith(provider);
     expect(mocks.contract.mock.calls.map(([address]) => address)).toEqual(["0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503"]);
   });
-  it("matches the reference's 5 MUSD direct transfer and returns its confirmed receipt", async () => {
+  it("transfers exactly 0.00002 MUSD and returns its confirmed receipt", async () => {
     expect(await payHomepageNew(provider)).toBe("0xconfirmed");
-    expect(mocks.send).toHaveBeenCalledExactlyOnceWith(mocks.transfer, ["0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7", 5000000000000000000n]);
+    expect(mocks.send).toHaveBeenCalledExactlyOnceWith(mocks.transfer, ["0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7", 20000000000000n]);
   });
   it("does not submit when the wallet lacks the payment amount", async () => {
-    mocks.balance.mockResolvedValue(4999999999999999999n);
-    await expect(payHomepageNew(provider)).rejects.toThrow("PAY(NEW) needs 5 test MUSD; this wallet has 4.999999999999999999 test MUSD");
+    mocks.balance.mockResolvedValue(19999999999999n);
+    await expect(payHomepageNew(provider)).rejects.toThrow("PAY(NEW) needs 0.00002 test MUSD; this wallet has 0.000019999999999999 test MUSD");
     expect(mocks.send).not.toHaveBeenCalled();
   });
 });
