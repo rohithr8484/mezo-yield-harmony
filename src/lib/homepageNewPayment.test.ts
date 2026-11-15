@@ -25,11 +25,11 @@ describe("standalone homepage reference payment", () => {
   });
   it("matches the reference's 5 MUSD direct transfer and returns its confirmed receipt", async () => {
     expect(await payHomepageNew(provider)).toBe("0xconfirmed");
-    expect(mocks.send).toHaveBeenCalledExactlyOnceWith(mocks.transfer, ["0x94958151d1789c8279a67f5ce4631e9ddde43cb6", 5000000000000000000n]);
+    expect(mocks.send).toHaveBeenCalledExactlyOnceWith(mocks.transfer, ["0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7", 5000000000000000000n]);
   });
   it("does not submit when the wallet lacks the payment amount", async () => {
     mocks.balance.mockResolvedValue(4999999999999999999n);
-    await expect(payHomepageNew(provider)).rejects.toThrow("Insufficient test MUSD");
+    await expect(payHomepageNew(provider)).rejects.toThrow("PAY(NEW) needs 5 test MUSD; this wallet has 4.999999999999999999 test MUSD");
     expect(mocks.send).not.toHaveBeenCalled();
   });
 });
