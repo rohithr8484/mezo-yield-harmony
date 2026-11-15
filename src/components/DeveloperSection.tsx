@@ -1,4 +1,4 @@
-import { Code2, Layers, Zap, GitBranch } from "lucide-react";
+import { Code2, Layers, Zap } from "lucide-react";
 
 const items = [
   {
@@ -16,11 +16,6 @@ const items = [
     title: "High Performance",
     description: "Sub-second finality with optimistic rollup technology built specifically for Bitcoin DeFi.",
   },
-  {
-    icon: GitBranch,
-    title: "Open Source",
-    description: "Fully open-source infrastructure. Audit, fork, and build with complete transparency.",
-  },
 ];
 
 const DeveloperSection = () => {
@@ -34,7 +29,7 @@ const DeveloperSection = () => {
           Mezo's infrastructure mechanisms powering the next generation of Bitcoin applications.
         </p>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((item) => (
             <div
               key={item.title}
