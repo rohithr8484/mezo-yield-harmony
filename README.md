@@ -203,7 +203,7 @@ For each regular MUSD payment, the app attempts to send this reward from platfor
 |      Token         | Transaction Hash                                  |  Activity Type |       link   | 
 | --------------------- | -------------------------------------------- | ----------------------| ---------------------- |
 | MUSD   (Official)         | `0xaff0b09fe41977e62f2491b12179f955d188c6698a4e95765266274c76445d62` | MUSD payment from wallet | [`Transaction`](https://explorer.test.mezo.org/tx/0xaff0b09fe41977e62f2491b12179f955d188c6698a4e95765266274c76445d62)  |
-| MUSD   (Official)         | `0x24fd8024e6a592f88b62daef99dabcc3164400639482f6edd2f0ab30f194d768` | MUSD reward to wallet | [`Transaction`](https://explorer.test.mezo.org/tx/0x24fd8024e6a592f88b62daef99dabcc3164400639482f6edd2f0ab30f194d768)  |
+| MUSD            | `0x24fd8024e6a592f88b62daef99dabcc3164400639482f6edd2f0ab30f194d768` | MUSD reward to wallet | [`Transaction`](https://explorer.test.mezo.org/tx/0x24fd8024e6a592f88b62daef99dabcc3164400639482f6edd2f0ab30f194d768)  |
 | MUSD            | `0x274349523ae3b5bc6977ce926a95406e6ee18f298c0f7875ff798fa21bbef27c` | approve MUSD | [`Transaction`](https://explorer.test.mezo.org/tx/0x274349523ae3b5bc6977ce926a95406e6ee18f298c0f7875ff798fa21bbef27c)   |
 | MUSD            | `0x8b8dc03cdb7f20ccd8613ca5d4e998cde5d94b4ad50e47d2f1e95985209ac98d` | MUSD payment From wallet | [`Transaction`](https://explorer.test.mezo.org/tx/0x8b8dc03cdb7f20ccd8613ca5d4e998cde5d94b4ad50e47d2f1e95985209ac98d)  |
 | MUSD            | `0xa8c548a65b008b915b3dee1fb153cb011abfdd7345e7e8f20dba9eccbfd34be4` | Reward MUSD to wallet | [`Transaction`](https://explorer.test.mezo.org/tx/0xa8c548a65b008b915b3dee1fb153cb011abfdd7345e7e8f20dba9eccbfd34be4)   |
