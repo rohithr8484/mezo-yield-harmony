@@ -331,6 +331,7 @@ VITE_SUPABASE_URL=
 | Contract / Component | Address | Description |
 |---|---|---|
 | **Mezo Caller/Token** | [`0x7B7c000000000000000000000000000000000001`](https://explorer.test.mezo.org/address/0x7B7c000000000000000000000000000000000001) | Executes pay-per-use settlement flows. |
+| **MUSD Token** | [`0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503`](https://explorer.test.mezo.org/address/0x118917a40FAF1CD7a13dB0Ef56C86De7973Ac503) | Mezo USD Official Stablecoin to be added by user for payments. |
 | **MUSD Token** | [`0xD88b46ef8444dAA8aa493d714b1124DE75CCa067`](https://explorer.test.mezo.org/address/0xD88b46ef8444dAA8aa493d714b1124DE75CCa067) | Mezo USD Stablecoin to be added by user for payments. |
 | **MUSD Platform/payments** | [`0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7`](https://explorer.test.mezo.org/address/0x21f7C9fdA5ED418AF3a1C7593dec52142350A0F7) | Treasury reserve and liquidity manager. |
 
