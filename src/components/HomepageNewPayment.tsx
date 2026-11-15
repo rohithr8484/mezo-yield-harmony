@@ -58,7 +58,7 @@ export default function HomepageNewPayment({ onPaymentSuccess }: { onPaymentSucc
         <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-lg">
           <AlertDialogHeader>
             <AlertDialogTitle>PAY WITH MUSD (OFFICIAL) — {HOMEPAGE_PAYMENT_AMOUNT} test MUSD</AlertDialogTitle>
-            <AlertDialogDescription className="break-words">
+            <AlertDialogDescription className="hidden">
               Mezo Testnet · Direct transfer to {HOMEPAGE_PAYMENT_RECIPIENT}, followed immediately after confirmation by a {HOMEPAGE_REWARD_AMOUNT} MUSD withdrawal request to your wallet. The reward uses the contract’s 0xD88b…a067 MUSD, not the payment token, and requires contract authorization and funds. A second wallet confirmation and test BTC gas fees apply; service access unlocks only after both are confirmed.
             </AlertDialogDescription>
           </AlertDialogHeader>
