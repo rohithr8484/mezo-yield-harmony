@@ -8,7 +8,7 @@ const services: { title: string; kind: ServiceImageKind; description: string; an
   { title: "On Chain Analytics", kind: "analytics", description: "Inspect a transaction’s token movements, participants, decoded input and gas usage, with evidence-backed risk signals.", anchor: "service-analytics", charge: "0.2 MUSD or 0.2 MEZO per entry · first 4 free" },
   { title: "AML Screening", kind: "aml", description: "Examine observed payment patterns and transaction flows, including exploratory ML structuring analysis—not compliance clearance.", anchor: "service-identity", charge: "0.2 MUSD or 0.2 MEZO per entry · first 4 free" },
   { title: "Smart Contract Analysis", kind: "contracts", description: "Review uploaded Solidity code with AI-assisted analysis of potential risks and attack vectors.", anchor: "service-run", charge: "0.2 MUSD or 0.2 MEZO per entry · first 4 free" },
-  { title: "Data Feeds / Oracles", kind: "oracles", description: "View live price feeds and their charts, with free-entry and pay-per-use access.", anchor: "data-feeds", charge: "0.2 MUSD or 0.2 MEZO per unlock · or pay-per-call 0.001 test MUSD · x402 · first 4 free" },
+  { title: "Data Feeds / Oracles", kind: "oracles", description: "View live price feeds with free-entry and pay-per-use access.", anchor: "data-feeds", charge: "0.2 MUSD or 0.2 MEZO per unlock · or pay-per-call 0.001 test MUSD · x402 · first 4 free" },
   { title: "veMEZO Marketplace", kind: "vemezo", description: "Access vote-escrowed positions, create MEZO locks and manage eligible withdrawals through your connected wallet.", anchor: "venft-marketplace", charge: "0.2 MUSD or 0.2 MEZO entry · positions priced 0.2 MUSD" },
   { title: "Governance", kind: "governance", description: "Browse proposals, follow voting deadlines and view the recorded results for each proposal.", anchor: "governance-analytics", charge: "0.01 MUSD or 0.01 MEZO per entry · first 4 free" },
 ];
@@ -23,7 +23,7 @@ export default function ServicesOverview() {
       </header>
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {services.map(service => <article key={service.kind} className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-border bg-card">
-          <ServiceImage kind={service.kind} alt={`${service.title} illustration`} className="aspect-[2/1] rounded-none" />
+          {service.kind !== "oracles" && <ServiceImage kind={service.kind} alt={`${service.title} illustration`} className="aspect-[2/1] rounded-none" />}
           <div className="flex flex-1 flex-col p-6">
             <h3 className="font-display text-lg font-semibold text-foreground">{service.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{service.description}</p>
