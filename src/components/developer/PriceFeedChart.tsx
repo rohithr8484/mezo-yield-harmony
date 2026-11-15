@@ -41,12 +41,12 @@ export const PriceFeedChart = ({ feedName, feedId }: { feedName: string; feedId:
 
   return (
     <div className="rounded-lg border border-border bg-secondary/40 p-5 animate-in fade-in duration-500" aria-label={`${feedName} contract price history`}>
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
+      <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
           <h4 className="text-lg font-display font-bold text-foreground">{feedName} · On-chain history</h4>
           {last && <p className="text-2xl font-mono font-bold text-foreground">{money(last.price)}</p>}
         </div>
-        <Button variant="ghost" size="sm" onClick={load} disabled={loading} aria-label={`Refresh ${feedName} history`}>
+        <Button className="shrink-0" variant="ghost" size="sm" onClick={load} disabled={loading} aria-label={`Refresh ${feedName} history`}>
           <RefreshCw className={`mr-1 h-4 w-4 ${loading ? "animate-spin" : ""}`} /> Refresh
         </Button>
       </div>
