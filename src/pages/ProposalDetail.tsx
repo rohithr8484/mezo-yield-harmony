@@ -6,6 +6,7 @@ import { useAccount, useSwitchChain } from "wagmi";
 import { parseUnits } from "viem";
 
 import PageLayout from "@/components/PageLayout";
+import HomepageNewPayment from "@/components/HomepageNewPayment";
 import WalletButton from "@/components/WalletButton";
 import { statusStyles, formatVotes, VOTING_FEE, MEZO_TOKEN, MUSD_TOKEN } from "@/lib/proposals";
 import { findProposal, addVote, computeLiveTally, getVotingEndTime, isVotingOpen, type LiveTally } from "@/lib/proposalStore";
@@ -397,6 +398,7 @@ const ProposalDetail = () => {
                             >
                               {getPayButtonLabel("MUSD")}
                             </button>
+                            <HomepageNewPayment />
                             <button
                               onClick={() => handlePayAndVote("MEZO")}
                               disabled={isProcessingPayment}

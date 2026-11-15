@@ -11,6 +11,7 @@ import { payWithBTC } from "@/lib/btcPayment";
 import { getTokenPaymentError } from "@/lib/tokenPayment";
 import type { Eip1193Provider } from "ethers";
 import { X402Banner } from "./X402Banner";
+import HomepageNewPayment from "@/components/HomepageNewPayment";
 
 const MEZO_TESTNET_CHAIN_ID = 31611;
 const FREE_ENTRY_LIMIT = 4;
@@ -164,6 +165,7 @@ export const PaymentGate = ({ serviceName, displayName = serviceName, onPaymentS
             <Wallet className="h-4 w-4" />
             {pending === "MUSD" && isProcessing ? "Wait..." : compact ? "MUSD" : "Pay with MUSD"}
           </Button>
+          <HomepageNewPayment />
           <Button
             onClick={() => handlePay("MEZO")}
             disabled={isProcessing}

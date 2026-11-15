@@ -11,6 +11,7 @@ import { getTokenPaymentError } from "@/lib/tokenPayment";
 import type { Eip1193Provider } from "ethers";
 import { payWithBTC } from "@/lib/btcPayment";
 import PageLayout from "@/components/PageLayout";
+import HomepageNewPayment from "@/components/HomepageNewPayment";
 import { Button } from "@/components/ui/button";
 import { ServiceImage, type ServiceImageKind } from "@/components/ServiceImage";
 
@@ -498,6 +499,7 @@ const DeveloperServices = () => {
               <Wallet className="h-4 w-4" />
               {govPending === "MUSD" ? "Confirming..." : "Pay with MUSD"}
             </Button>
+            <HomepageNewPayment />
             <Button
               onClick={() => handleGovPay("MEZO")}
               disabled={!!govPending}
