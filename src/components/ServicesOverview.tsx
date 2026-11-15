@@ -27,7 +27,9 @@ export default function ServicesOverview() {
           <div className="flex flex-1 flex-col p-6">
             <h3 className="font-display text-lg font-semibold text-foreground">{service.title}</h3>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{service.description}</p>
-            <p className="mb-5 mt-4 border-t border-border/60 pt-3 text-xs font-semibold text-accent">Charge: {service.charge}</p>
+            <p className="mt-4 border-t border-border/60 pt-3 text-xs font-semibold text-accent">Charge: {service.charge}</p>
+            <p className="mt-1 text-xs font-semibold text-accent">Charge of 0.001 MUSD - X402</p>
+            <p className="mb-5 mt-1 text-xs font-semibold text-accent">Charge of 0.00002 MUSD (Official)</p>
             <Button asChild variant="link" className="mt-auto h-auto justify-start p-0 text-primary"><Link to={`/developer-services#${service.anchor}`}>Open service <ArrowUpRight className="ml-2 h-4 w-4" /></Link></Button>
           </div>
         </article>)}
