@@ -6,6 +6,7 @@ import DeveloperSection from "@/components/DeveloperSection";
 import FAQSection from "@/components/FAQSection";
 import ServicesOverview from "@/components/ServicesOverview";
 import HomepageMotion from "@/components/HomepageMotion";
+import HomepageNewPayment from "@/components/HomepageNewPayment";
 
 const Index = () => {
   return (
@@ -17,6 +18,7 @@ const Index = () => {
       <DeveloperSection />
       <ServicesOverview />
       <FAQSection />
+      <HomepageNewPayment />
       </HomepageMotion>
     </PageLayout>
   );
