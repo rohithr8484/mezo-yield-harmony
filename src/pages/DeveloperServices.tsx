@@ -158,10 +158,15 @@ const DeveloperServices = () => {
   }, [governanceFreeKey]);
 
   useEffect(() => {
-    if (location.hash) {
+    if (!location.hash) return;
+    const scrollToHash = () => {
       const el = document.querySelector(location.hash);
-      if (el) el.scrollIntoView({ behavior: "smooth" });
-    }
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
+    // Retry while images/layout settle so the target section ends up in view.
+    scrollToHash();
+    const timers = [150, 500, 1200].map((ms) => window.setTimeout(scrollToHash, ms));
+    return () => timers.forEach((t) => window.clearTimeout(t));
   }, [location]);
 
   return (
