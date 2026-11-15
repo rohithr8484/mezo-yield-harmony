@@ -499,7 +499,7 @@ const DeveloperServices = () => {
               <Wallet className="h-4 w-4" />
               {govPending === "MUSD" ? "Confirming..." : "Pay with MUSD"}
             </Button>
-            <HomepageNewPayment />
+            <HomepageNewPayment onPaymentSuccess={() => markPaid("governance")} />
             <Button
               onClick={() => handleGovPay("MEZO")}
               disabled={!!govPending}
