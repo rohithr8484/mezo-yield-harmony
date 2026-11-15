@@ -45,18 +45,18 @@ export default function HomepageNewPayment() {
   };
 
   return (
-    <section className="container mx-auto flex flex-col items-center gap-3 px-4 py-10">
-      <Button className="ui-btn ui-btn-pay min-h-11 px-6" disabled={busy} onClick={() => {
+    <div className="flex min-w-0 max-w-full flex-col items-center gap-3">
+      <Button className="ui-btn ui-btn-pay min-h-10 max-w-full whitespace-normal px-4" disabled={busy} onClick={() => {
         if (!isConnected) { openConnectModal?.(); return; }
         setOpen(true);
-      }}><Wallet className="h-4 w-4" />PAY(NEW)</Button>
+      }}><Wallet className="h-4 w-4" />PAY WITH MUSD (OFFICIAL)</Button>
       {receipt && <a href={`https://explorer.test.mezo.org/tx/${receipt}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-primary underline">Confirmed payment <ExternalLink className="h-4 w-4" /></a>}
       {rewardReceipt && <a href={`https://explorer.test.mezo.org/tx/${rewardReceipt}`} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-primary underline">Confirmed reward <ExternalLink className="h-4 w-4" /></a>}
       {rewardError && <p role="status" className="max-w-lg break-words text-center text-sm text-muted-foreground">Payment confirmed; reward not confirmed: {rewardError} Do not pay again to retry the reward.</p>}
       <AlertDialog open={open} onOpenChange={(value) => { if (!busy) setOpen(value); }}>
         <AlertDialogContent className="max-w-[calc(100%-2rem)] sm:max-w-lg">
           <AlertDialogHeader>
-            <AlertDialogTitle>PAY(NEW) — {HOMEPAGE_PAYMENT_AMOUNT} test MUSD</AlertDialogTitle>
+            <AlertDialogTitle>PAY WITH MUSD (OFFICIAL) — {HOMEPAGE_PAYMENT_AMOUNT} test MUSD</AlertDialogTitle>
             <AlertDialogDescription className="break-words">
               Mezo Testnet · Direct transfer to {HOMEPAGE_PAYMENT_RECIPIENT}, followed immediately after confirmation by a {HOMEPAGE_REWARD_AMOUNT} MUSD withdrawal request to your wallet. The reward uses the contract’s 0xD88b…a067 MUSD, not the payment token, and requires contract authorization and funds. A second wallet confirmation and test BTC gas fees apply; no service unlock.
             </AlertDialogDescription>
@@ -67,6 +67,6 @@ export default function HomepageNewPayment() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </section>
+    </div>
   );
 }

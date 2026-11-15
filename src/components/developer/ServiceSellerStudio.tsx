@@ -12,6 +12,7 @@ import { Braces, CheckCircle2, FileUp, Loader2, Play, Rocket, Store, Wallet } fr
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import HomepageNewPayment from "@/components/HomepageNewPayment";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ServiceImage, type ServiceImageKind } from "@/components/ServiceImage";
@@ -313,6 +314,7 @@ export function ServiceSellerStudio() {
                 {paying === "MUSD" ? <Loader2 className="animate-spin" /> : <Wallet />}
                 {paying === "MUSD" ? "Wait..." : "Pay with MUSD"}
               </Button>
+              <HomepageNewPayment />
               <Button type="button" onClick={() => payAndPublish("MEZO")} disabled={paying !== null} className="w-full sm:w-auto">
                 {paying === "MEZO" ? <Loader2 className="animate-spin" /> : <Wallet />}
                 {paying === "MEZO" ? "Wait..." : "Pay with MEZO"}
